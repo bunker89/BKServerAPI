@@ -118,7 +118,8 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 		try {
 			Peer<ByteBuffer> c = prototypePeer.clone();
 			NIOWriter writer = new NIOWriter((SocketChannel) keyTwo.channel(), c);
-			writer.setWriteBufferSize(mWriteBufferSizeKb);
+			if (mWriteBufferSizeKb > 0)
+				writer.setWriteBufferSize(mWriteBufferSizeKb);
 			c.setWriter(new NIOWriter((SocketChannel) keyTwo.channel(), c));
 			Resource<ByteBuffer> resource = mResourcePool.newPeer(keyTwo, c);
 			threadPool.newPeer(resource);
