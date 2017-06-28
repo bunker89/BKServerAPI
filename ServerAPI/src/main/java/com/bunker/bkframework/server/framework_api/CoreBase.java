@@ -53,7 +53,7 @@ abstract public class CoreBase<PacketType> extends Thread implements ServerCore<
 			return this;
 		}
 		
-		public CoreBuilder<PacketType> setWriteBuffer(String paramName, Object param) {
+		public CoreBuilder<PacketType> setParam(String paramName, Object param) {
 			coreBase.setParam(paramName, param);
 			return this;
 		}
