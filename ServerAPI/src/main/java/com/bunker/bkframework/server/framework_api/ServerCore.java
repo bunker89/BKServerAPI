@@ -1,4 +1,4 @@
-package framework_api;
+package com.bunker.bkframework.server.framework_api;
 
 import com.bunker.bkframework.newframework.LifeCycle;
 import com.bunker.bkframework.newframework.Peer;

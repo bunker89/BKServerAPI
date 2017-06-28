@@ -1,8 +1,11 @@
-package framework_api;
+package com.bunker.bkframework.server.framework_api;
+
+import java.util.Iterator;
 
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.newframework.Peer;
+import com.bunker.bkframework.newframework.Resource;
 import com.bunker.bkframework.sec.SecureFactory;
 
 abstract public class CoreBase<PacketType> extends Thread implements ServerCore<PacketType>, CoreController {
@@ -49,8 +52,13 @@ abstract public class CoreBase<PacketType> extends Thread implements ServerCore<
 			coreBase.port = port;
 			return this;
 		}
+		
+		public CoreBuilder<PacketType> setWriteBuffer(String paramName, Object param) {
+			coreBase.setParam(paramName, param);
+			return this;
+		}
 	}
-	
+
 	@Override
 	final public void run() {
 		launch(port);
@@ -59,4 +67,6 @@ abstract public class CoreBase<PacketType> extends Thread implements ServerCore<
 	abstract void setPeer(Peer<PacketType> peer);
 	abstract void usePeerServer(SecureFactory<PacketType> sec, Business<PacketType> business);
 	abstract void usePeerServer(Business<PacketType> business);
+	abstract String getServerLog();
+	abstract void setParam(String paramName, Object param);
 }

@@ -1,4 +1,4 @@
-package framework_api;
+package com.bunker.bkframework.server.framework_api;
 
 import java.util.Calendar;
 
@@ -7,8 +7,7 @@ import com.bunker.bkframework.business.BusinessPeer;
 import com.bunker.bkframework.newframework.PacketFactory;
 import com.bunker.bkframework.newframework.Resource;
 import com.bunker.bkframework.sec.SecureFactory;
-
-import framework_api.ZombieKiller.Killable;
+import com.bunker.bkframework.server.framework_api.ZombieKiller.Killable;
 
 public class ServerPeer<PacketType> extends BusinessPeer<PacketType> implements Killable {
 	private Resource<PacketType> mResource;
@@ -62,5 +61,9 @@ public class ServerPeer<PacketType> extends BusinessPeer<PacketType> implements 
 	@Override
 	public void kill() {
 		close();
+	}
+	
+	public ZombieKiller getZombieKiller() {
+		return mKiller;
 	}
 }

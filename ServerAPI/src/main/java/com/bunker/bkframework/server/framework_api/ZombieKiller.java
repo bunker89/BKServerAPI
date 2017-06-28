@@ -1,4 +1,4 @@
-package framework_api;
+package com.bunker.bkframework.server.framework_api;
 
 import java.util.Calendar;
 import java.util.Collections;

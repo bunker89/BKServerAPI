@@ -1,4 +1,4 @@
-package framework_api;
+package com.bunker.bkframework.server.framework_api;
 
 public interface CoreController {
 	public void destroyCore();

@@ -1,4 +1,4 @@
-package framework_api;
+package com.bunker.bkframework.server.framework_api;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -8,6 +8,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.function.BiConsumer;
 
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.ByteBufferBusinessConnector;
@@ -20,8 +21,7 @@ import com.bunker.bkframework.newframework.Peer;
 import com.bunker.bkframework.newframework.PeerLife;
 import com.bunker.bkframework.newframework.Resource;
 import com.bunker.bkframework.sec.SecureFactory;
-
-import framework_api.NIOResourcePool.NIOResource;
+import com.bunker.bkframework.server.framework_api.NIOResourcePool.NIOResource;
 
 /**
  * 자바 New IO의 클라이언트 접속, read와 관련된 클래스
@@ -46,6 +46,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 	private boolean isSuspended = false;
 	private Peer<ByteBuffer> prototypePeer;
 	private static final String _Tag = "NIOCore";
+	private int mWriteBufferSizeKb = 0;
 
 	public NIOCore() {
 /*
@@ -116,6 +117,8 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 
 		try {
 			Peer<ByteBuffer> c = prototypePeer.clone();
+			NIOWriter writer = new NIOWriter((SocketChannel) keyTwo.channel(), c);
+			writer.setWriteBufferSize(mWriteBufferSizeKb);
 			c.setWriter(new NIOWriter((SocketChannel) keyTwo.channel(), c));
 			Resource<ByteBuffer> resource = mResourcePool.newPeer(keyTwo, c);
 			threadPool.newPeer(resource);
@@ -140,7 +143,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 		ByteBuffer buffer = resource.getReadBuffer();
 		int offset = buffer.position();
 		//버퍼 할당이 제대로 되지 않았을 때
-		if (buffer.limit() != Constants.PACKET_TOTAL_SIZE) {
+		if (buffer.limit() != Constants.PACKET_DEFAULT_TOTAL_SIZE) {
 			Logger.err("NIOCore", "Buffer alloc err");
 			return;
 		}
@@ -153,10 +156,10 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 			threadPool.closePeer(resource.mPeer);
 		}
 
-		if (numRead + offset < Constants.PACKET_TOTAL_SIZE) { //패킷이 짤려서 날라온 경우 붙이는 작업
+		if (numRead + offset < Constants.PACKET_DEFAULT_TOTAL_SIZE) { //패킷이 짤려서 날라온 경우 붙이는 작업
 			resource.remainBuffer(buffer);
 			return;
-		} else if (numRead + offset == Constants.PACKET_TOTAL_SIZE) { //패킷이 다 왔을 때
+		} else if (numRead + offset == Constants.PACKET_DEFAULT_TOTAL_SIZE) { //패킷이 다 왔을 때
 			resource.remainBuffer(null); //남아있는 버퍼를 없앤다.
 			buffer.flip(); //버퍼의 사용르 위해 flip
 			threadPool.readData(resource.getPeer(), buffer);
@@ -219,8 +222,34 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 		prototypePeer = new ServerPeer<ByteBuffer>(new FixedSizeByteBufferPacketFactory(), new ByteBufferBusinessConnector(business), 2000);
 		setPeer(prototypePeer);
 	}
-	
+
 	public NIOResourcePool getResourcePool() {
 		return mResourcePool;
+	}
+
+	@Override
+	protected String getServerLog() {
+		BiConsumer<SelectionKey, NIOResource> consumer = new BiConsumer<SelectionKey, NIOResource>() {
+
+			@Override
+			public void accept(SelectionKey s, NIOResource r) {
+				
+			}
+		};
+		if (prototypePeer instanceof ServerPeer) {
+			String zombieLog = makeZombieData(((ServerPeer) prototypePeer).getZombieKiller());
+		}
+		mResourcePool.forEarch(consumer);
+		return "test";
+	}
+
+	private String makeZombieData(ZombieKiller killer) {
+		return "zombie test";
+	}
+
+	@Override
+	void setParam(String paramName, Object param) {
+		if (paramName.equals("write_buffer"))
+			mWriteBufferSizeKb = (int) param;
 	}
 }

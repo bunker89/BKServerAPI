@@ -1,4 +1,4 @@
-package framework_api;
+package com.bunker.bkframework.server.framework_api;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -8,6 +8,7 @@ import org.json.simple.parser.JSONParser;
 
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.PeerConnection;
+import com.bunker.bkframework.working.Working;
 import com.bunker.bkframework.working.WorkingFlyWeight;
 import com.bunker.bkframework.working.WorkingResult;
 
@@ -74,7 +75,13 @@ public class RJSonServerBusiness implements Business<ByteBuffer> {
 		try {
 			JSONObject json = (JSONObject) new JSONParser().parse(new String(data));
 			System.out.println("ServerBusiness:" + json);
+			if (!json.containsKey("working"))
+				throw new NullPointerException("JSon has no working data");
 			int work = (int) (long) json.get("working");
+			Working working = WorkingFlyWeight.getWorking(work);
+			if (working == null)
+				throw new NullPointerException("Working is not registered");
+			
 			WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, connector.getEnviroment());
 			connector.sendToPeer(result.getResultParams().toString().getBytes(), sequence);
 		} catch (Exception e) {

@@ -1,4 +1,4 @@
-package framework_api;
+package com.bunker.bkframework.server.framework_api;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;
@@ -66,9 +66,5 @@ public class ThreadPool {
 	public void closePeer(Peer<ByteBuffer> peer) {
 		peer.interceptCycle();
 		peer.close();
-	}
-
-	public Iterator<Peer<ByteBuffer>> getPeers() {
-		return null;
 	}
 }
