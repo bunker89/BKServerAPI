@@ -1,4 +1,4 @@
-package com.bunker.bkframework.working;
+package com.bunker.bkframework.server.working;
 
 import java.util.HashMap;
 import java.util.Map;

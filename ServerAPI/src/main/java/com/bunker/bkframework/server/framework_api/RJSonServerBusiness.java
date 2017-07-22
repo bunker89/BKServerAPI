@@ -1,18 +1,37 @@
 package com.bunker.bkframework.server.framework_api;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.PeerConnection;
-import com.bunker.bkframework.working.Working;
-import com.bunker.bkframework.working.WorkingFlyWeight;
-import com.bunker.bkframework.working.WorkingResult;
+import com.bunker.bkframework.newframework.Logger;
+import com.bunker.bkframework.server.reserved.LogAction;
+import com.bunker.bkframework.server.reserved.Pair;
+import com.bunker.bkframework.server.working.Working;
+import com.bunker.bkframework.server.working.WorkingFlyWeight;
+import com.bunker.bkframework.server.working.WorkingResult;
 
-public class RJSonServerBusiness implements Business<ByteBuffer> {
+public class RJSonServerBusiness implements Business<ByteBuffer>, LogAction {
+	private final String _TAG = getClass().getSimpleName();
+	public static final String LOG_WORK = "work";
+
+	private class WorkLog {
+		private int mAccumTime, mAccumCount, mMaxCalTime;
+	}
+
 	/**
 	 * 세션 조작의 충돌을 막기 위해 동기화를 구현한 클래스
 	 * Copyright 2016~ by bunker Corp.,
@@ -70,23 +89,61 @@ public class RJSonServerBusiness implements Business<ByteBuffer> {
 		}
 	}
 
+	private boolean mLogActionInited = false;
+	private Map<Integer, WorkLog> mWorkLogMap;
+	private final Object mLogMutex = new Object();
+
 	@Override
 	public void receive(PeerConnection connector, byte[] data, int sequence) {
 		try {
-			JSONObject json = (JSONObject) new JSONParser().parse(new String(data));
-			System.out.println("ServerBusiness:" + json);
-			if (!json.containsKey("working"))
-				throw new NullPointerException("JSon has no working data");
-			int work = (int) (long) json.get("working");
-			Working working = WorkingFlyWeight.getWorking(work);
-			if (working == null)
-				throw new NullPointerException("Working is not registered");
-			
-			WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, connector.getEnviroment());
-			connector.sendToPeer(result.getResultParams().toString().getBytes(), sequence);
-		} catch (Exception e) {
-			e.printStackTrace();
+			JSONObject json = (JSONObject) new JSONParser().parse(new String(data, "utf-8"));
+
+			if (mLogActionInited)
+				loggingDriveJson(connector, json, sequence);
+			else
+				driveJson(connector, json, sequence);
+		} catch (UnsupportedEncodingException | ParseException e) {
+			Logger.err(_TAG, new String(data));
 		}
+	}
+
+	private void loggingDriveJson(PeerConnection connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
+		int work = (int) (long) json.get("working");
+		long time = Calendar.getInstance().getTimeInMillis();
+		driveJson(connector, json, sequence);
+		time = Calendar.getInstance().getTimeInMillis() - time;
+		if (!mWorkLogMap.containsKey(work)) {
+			synchronized (mLogMutex) {
+				if (!mWorkLogMap.containsKey(work)) {
+					mWorkLogMap.put(work, new WorkLog());
+				}
+			}
+		}
+
+		if (time > 10000000)
+			time = 10000000;
+
+		WorkLog wLog = mWorkLogMap.get(work);
+
+		synchronized (mLogMutex) {
+			wLog.mAccumCount++;
+			wLog.mAccumTime += time;
+			if (wLog.mMaxCalTime < time)
+				wLog.mMaxCalTime = (int) time;
+		}
+	}
+
+	private void driveJson(PeerConnection connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
+		if (!json.containsKey("working"))
+			throw new NullPointerException("JSon has no working data");
+		int work = (int) (long) json.get("working");
+		Working working = WorkingFlyWeight.getWorking(work);
+		if (working == null)
+			throw new NullPointerException("Working is not registered");
+
+		WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, connector.getEnviroment());
+        String jsonString = result.getResultParams().toString();
+		connector.sendToPeer(jsonString.getBytes("utf-8"), sequence);
 	}
 
 	@Override
@@ -102,5 +159,34 @@ public class RJSonServerBusiness implements Business<ByteBuffer> {
 	}
 
 	public void sessionBrake(String sessionId) {
+	}
+
+	@Override
+	public List<Pair> act() {
+		JSONArray jsonArray = new JSONArray();
+		Iterator<Entry<Integer, WorkLog>> iter = mWorkLogMap.entrySet().iterator();
+
+		while (iter.hasNext()) {
+			Entry<Integer, WorkLog> entry = iter.next();
+			WorkLog log = entry.getValue();
+			int averageTime = log.mAccumTime / log.mAccumCount;
+			JSONObject json = new JSONObject();
+			json.put("work_num", entry.getKey());
+			json.put("work_average_time", averageTime);
+			json.put("work_max_time", log.mMaxCalTime);
+			json.put("work_count", log.mAccumCount);
+			jsonArray.add(json);
+		}
+
+		List<Pair> list = new LinkedList<>();
+		Pair pair = new Pair("work", jsonArray);
+		list.add(pair);
+		return list;
+	}
+
+	@Override
+	public void bindAction() {
+		mWorkLogMap = new HashMap<>();
+		mLogActionInited = true;
 	}
 }

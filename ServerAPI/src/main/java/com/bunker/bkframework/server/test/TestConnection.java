@@ -1,4 +1,4 @@
-package connection;
+package com.bunker.bkframework.server.test;
 
 import java.nio.ByteBuffer;
 

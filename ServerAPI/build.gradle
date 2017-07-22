@@ -28,6 +28,6 @@ dependencies {
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     
-    compile 'com.github.bunker89:BKFramwork:4746e59917'
+    compile 'com.github.bunker89:BKFramwork:246d836891'
     testCompile 'junit:junit:4.12'
 }
