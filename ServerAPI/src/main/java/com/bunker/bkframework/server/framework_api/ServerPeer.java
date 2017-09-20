@@ -10,12 +10,13 @@ import com.bunker.bkframework.sec.SecureFactory;
 import com.bunker.bkframework.server.framework_api.ZombieKiller.Killable;
 
 public class ServerPeer<PacketType> extends BusinessPeer<PacketType> implements Killable {
-	private Resource<PacketType> mResource;
 	private ZombieKiller mKiller = new ZombieKiller();
 
 	//--------공유 안되는 데이터
+	private Resource<PacketType> mResource;
 	private long mLastAttachTime = currentTime;
 	private boolean mCloseLoopGuard = false;
+	private boolean mIsNetInited = false;
 
 	@SuppressWarnings("unchecked")
 	public ServerPeer(PacketFactory<PacketType> factory, SecureFactory<PacketType> secFac,
@@ -34,6 +35,10 @@ public class ServerPeer<PacketType> extends BusinessPeer<PacketType> implements 
 		mLastAttachTime = Calendar.getInstance().getTimeInMillis();
 		mKiller.addKillable(this);
 		super.networkInited(resource);
+		if (mCloseLoopGuard)
+			serverPeerClose();
+		else
+			mIsNetInited = true;
 	}
 
 	@Override
@@ -44,13 +49,17 @@ public class ServerPeer<PacketType> extends BusinessPeer<PacketType> implements 
 
 	@Override
 	public void close() {
-		if (mCloseLoopGuard == true)
-			return;
+		if (mIsNetInited) {
+			serverPeerClose();
+			super.close();
+		}
+	}
+	
+	private void serverPeerClose() {
 		mCloseLoopGuard = true;
-		super.close();
 		mResource.destroy();
 		mKiller.removeKillable(this);
-		mWriter.destroy();
+		mWriter.destroy();		
 	}
 
 	@Override
@@ -62,7 +71,7 @@ public class ServerPeer<PacketType> extends BusinessPeer<PacketType> implements 
 	public void kill() {
 		close();
 	}
-	
+
 	public ZombieKiller getZombieKiller() {
 		return mKiller;
 	}

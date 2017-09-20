@@ -1,7 +1,6 @@
 package com.bunker.bkframework.server.framework_api;
 
 import java.nio.ByteBuffer;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -11,12 +10,12 @@ import com.bunker.bkframework.newframework.Peer;
 import com.bunker.bkframework.newframework.Resource;
 
 public class ThreadPool {
-	public class InitRunnable implements Runnable {
+	private class InitRunnable implements Runnable {
 		private Resource<ByteBuffer> mResource;
 		private InitRunnable(Resource<ByteBuffer> resource) {
 			mResource = resource;
 		}
-		
+
 		@Override
 		public void run() {
 			Peer<ByteBuffer> p = mResource.getPeer();
@@ -59,10 +58,11 @@ public class ThreadPool {
 	 * @param key
 	 */
 	public void newPeer(Resource<ByteBuffer> resource) {
+		Peer<ByteBuffer> peer = resource.getPeer();
 		resource.getPeer().interceptCycle();
 		ex.submit(new InitRunnable(resource));
 	}
-	
+
 	public void closePeer(Peer<ByteBuffer> peer) {
 		peer.interceptCycle();
 		peer.close();

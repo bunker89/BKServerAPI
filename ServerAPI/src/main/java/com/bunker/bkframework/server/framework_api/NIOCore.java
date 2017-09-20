@@ -120,11 +120,11 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 			NIOWriter writer = new NIOWriter((SocketChannel) keyTwo.channel(), c);
 			if (mWriteBufferSizeKb > 0)
 				writer.setWriteBufferSize(mWriteBufferSizeKb);
-			c.setWriter(new NIOWriter((SocketChannel) keyTwo.channel(), c));
+			c.setWriter(writer);
 			Resource<ByteBuffer> resource = mResourcePool.newPeer(keyTwo, c);
 			threadPool.newPeer(resource);
 		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
+			Logger.err(_Tag, "accept:clone not support exception");
 		}
 	}
 
