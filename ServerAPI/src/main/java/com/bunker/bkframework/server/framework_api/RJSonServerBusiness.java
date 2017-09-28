@@ -18,13 +18,13 @@ import org.json.simple.parser.ParseException;
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.PeerConnection;
 import com.bunker.bkframework.newframework.Logger;
-import com.bunker.bkframework.server.reserved.LogAction;
+import com.bunker.bkframework.server.reserved.LogComposite;
 import com.bunker.bkframework.server.reserved.Pair;
 import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingFlyWeight;
 import com.bunker.bkframework.server.working.WorkingResult;
 
-public class RJSonServerBusiness implements Business<ByteBuffer>, LogAction {
+public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	private final String _TAG = getClass().getSimpleName();
 	public static final String LOG_WORK = "work";
 
@@ -162,7 +162,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogAction {
 	}
 
 	@Override
-	public List<Pair> act() {
+	public List<Pair> logging() {
 		JSONArray jsonArray = new JSONArray();
 		Iterator<Entry<Integer, WorkLog>> iter = mWorkLogMap.entrySet().iterator();
 
@@ -188,5 +188,10 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogAction {
 	public void bindAction() {
 		mWorkLogMap = new HashMap<>();
 		mLogActionInited = true;
+	}
+	
+	@Override
+	public void releaseLog() {
+		mLogActionInited = false;
 	}
 }

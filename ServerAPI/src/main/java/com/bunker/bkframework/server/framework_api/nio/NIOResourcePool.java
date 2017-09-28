@@ -1,4 +1,4 @@
-package com.bunker.bkframework.server.framework_api;
+package com.bunker.bkframework.server.framework_api.nio;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -13,6 +13,8 @@ import com.bunker.bkframework.newframework.Resource;
 
 public class NIOResourcePool {
 	private final String _TAG = "NIOResourcePool";
+	private ResourceEmptyCallback mEmptyCallback;
+
 	public class NIOResource implements Resource<ByteBuffer>{
 		private ByteBuffer remainBuffer;
 		public NIOResource(SelectionKey key, Peer<ByteBuffer> peer) {
@@ -49,6 +51,10 @@ public class NIOResourcePool {
 	}
 
 	private Map<SelectionKey, NIOResource> resourceMap = new HashMap<SelectionKey, NIOResource>();
+
+	public void setOnResourceEmptyCallback(ResourceEmptyCallback callback) {
+		mEmptyCallback = callback;
+	}
 
 	public NIOResource getResource(SelectionKey key) {
 		return resourceMap.get(key);

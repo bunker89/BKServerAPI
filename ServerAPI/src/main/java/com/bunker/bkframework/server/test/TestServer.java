@@ -8,11 +8,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.json.simple.JSONObject;
-import org.junit.Test;
 
+import com.bunker.bkframework.server.framework_api.CoreBase;
 import com.bunker.bkframework.server.framework_api.CoreBase.CoreBuilder;
-import com.bunker.bkframework.server.framework_api.NIOCore;
 import com.bunker.bkframework.server.framework_api.RJSonServerBusiness;
+import com.bunker.bkframework.server.framework_api.nio.NIOCore;
 import com.bunker.bkframework.server.reserved.Pair;
 import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingFlyWeight;
@@ -35,11 +35,13 @@ public class TestServer {
 
 	public TestServer() {
 		RJSonServerBusiness business = new RJSonServerBusiness();
-		new Thread(new CoreBuilder<ByteBuffer>(NIOCore.class)
+		CoreBase<ByteBuffer> core = new CoreBuilder<ByteBuffer>(NIOCore.class)
 				.setParam("wrtie_buffer", 8)
 				.setPort(9011)
 				.useServerPeer(business)
-				.build()).start();
+				.build(); 
+		new Thread(core).start();
+		System.out.println(core.getSystemParam("use_ping_port"));
 
 		business.bindAction();
 		TestWorking working = new TestWorking();
@@ -56,7 +58,7 @@ public class TestServer {
 			public void run() {
 				System.out.println("run");
 
-				List<Pair> list = business.act();
+				List<Pair> list = business.logging();
 				Iterator<Pair> iter = list.iterator();
 				System.out.println(iter.next().getValue());
 			}

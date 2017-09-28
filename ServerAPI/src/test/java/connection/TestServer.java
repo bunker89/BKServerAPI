@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 import org.junit.Test;
 
 import com.bunker.bkframework.server.framework_api.CoreBase.CoreBuilder;
-import com.bunker.bkframework.server.framework_api.NIOCore;
+import com.bunker.bkframework.server.framework_api.nio.NIOCore;
 import com.bunker.bkframework.server.framework_api.RJSonServerBusiness;
 import com.bunker.bkframework.server.reserved.Pair;
 import com.bunker.bkframework.server.working.Working;
@@ -50,7 +50,7 @@ public class TestServer {
 			public void run() {
 				System.out.println("run");
 
-				List<Pair> list = business.act();
+				List<Pair> list = business.logging();
 				Iterator<Pair> iter = list.iterator();
 				System.out.println(iter.next().getValue());
 			}

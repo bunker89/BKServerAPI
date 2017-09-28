@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.PeerConnection;
-import com.bunker.bkframework.server.framework_api.NIOCore;
 import com.bunker.bkframework.server.framework_api.CoreBase.CoreBuilder;
+import com.bunker.bkframework.server.framework_api.nio.NIOCore;
 
 public class TestConnection {
 	public static void main(String []args) {

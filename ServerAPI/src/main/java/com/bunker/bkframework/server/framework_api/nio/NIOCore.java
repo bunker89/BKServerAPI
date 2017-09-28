@@ -1,4 +1,4 @@
-package com.bunker.bkframework.server.framework_api;
+package com.bunker.bkframework.server.framework_api.nio;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -21,7 +21,14 @@ import com.bunker.bkframework.newframework.Peer;
 import com.bunker.bkframework.newframework.PeerLife;
 import com.bunker.bkframework.newframework.Resource;
 import com.bunker.bkframework.sec.SecureFactory;
-import com.bunker.bkframework.server.framework_api.NIOResourcePool.NIOResource;
+import com.bunker.bkframework.server.framework_api.CoreBase;
+import com.bunker.bkframework.server.framework_api.ServerPeer;
+import com.bunker.bkframework.server.framework_api.ZombieKiller;
+import com.bunker.bkframework.server.framework_api.nio.NIOResourcePool.NIOResource;
+import com.bunker.bkframework.server.resilience.ResilienceState;
+import com.bunker.bkframework.server.resilience.Resilience;
+import com.bunker.bkframework.server.resilience.ErrMessage;
+import com.bunker.bkframework.server.resilience.RecoverManager;
 
 /**
  * 자바 New IO의 클라이언트 접속, read와 관련된 클래스
@@ -39,7 +46,7 @@ import com.bunker.bkframework.server.framework_api.NIOResourcePool.NIOResource;
  *
  *
  */
-public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
+public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, ResourceEmptyCallback {
 	private Selector selector;
 	private ThreadPool threadPool;
 	private NIOResourcePool mResourcePool;
@@ -48,13 +55,65 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 	private static final String _Tag = "NIOCore";
 	private int mWriteBufferSizeKb = 0;
 
+	private Resilience mLoopResilience = new Resilience() {
+		private ResilienceState mState;
+		private long mLoopErrorTime;
+
+		@Override
+		public boolean restartPart(ErrMessage msg) {
+			return false;
+		}
+		
+		@Override
+		public boolean recoverPart(ErrMessage msg) {
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						serverLoop();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
+			return true;
+		}
+		
+		@Override
+		public boolean outOfSystem(ErrMessage msg) {
+			return false;
+		}
+		
+		@Override
+		public boolean changeSafetyModule(ErrMessage msg) {
+			return false;
+		}
+		
+		@Override
+		public void changeResilienceState(ResilienceState state, int status) {
+			mState = state;
+		}
+
+		@Override
+		public void needRecover(ErrMessage msg) {
+			mState.recorver(this, msg);
+		}
+
+		@Override
+		public String getResilienceName() {
+			return "NIOCoreLoop";
+		}
+	};
+
 	public NIOCore() {
-/*
+		/*
 		prototypePeer = new ServerPeer<ByteBuffer>(new FixedSizeByteBufferPacketFactory(), new ByteBufferBusinessConnector(business), 2000);
 		prototypePeer.setLifeCycle(this);
-		*/
+		 */
 		threadPool = new ThreadPool(this);
 		mResourcePool = new NIOResourcePool();
+		RecoverManager.getInstance().initResilienceModule(mLoopResilience);
 	}
 
 	@Override
@@ -65,40 +124,48 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 			InetSocketAddress addr = new InetSocketAddress(port);
 			serverSocket.bind(addr);
 			serverSocket.configureBlocking(false);
-
 			serverSocket.register(selector, SelectionKey.OP_ACCEPT);
-
-			while (true) {
-				selector.select();
-				Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
-
-				while (keys.hasNext()) {
-					SelectionKey key = (SelectionKey) keys.next();
-					keys.remove();
-
-					try {
-						if (!key.isValid()) {
-							continue;
-						}
-
-						if (key.isAcceptable()) {
-							accept(key);
-						} else if (key.isReadable()) {
-							read(key);
-						} 
-					} catch (IOException e) {
-						Logger.logging(_Tag, "connection broked");
-						NIOResource resource = mResourcePool.getResource(key);
-						if (resource != null) {
-							threadPool.closePeer(resource.mPeer);
-						}
-						key.cancel();
-					}
-				} 
-			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.err(_Tag, "NIOserver launch exception");
 		}
+		
+		try {
+			serverLoop();
+		} catch (IOException e) {
+			Logger.err(_Tag, "NIOserver loop exception");
+		}
+	}
+
+	private void serverLoop() throws IOException {
+		while (true) {
+			selector.select();
+			Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+
+			while (keys.hasNext()) {
+				SelectionKey key = (SelectionKey) keys.next();
+				keys.remove();
+
+				try {
+					if (!key.isValid()) {
+						continue;
+					}
+
+					if (key.isAcceptable()) {
+						accept(key);
+					} else if (key.isReadable()) {
+						read(key);
+					} 
+				} catch (IOException e) {
+					Logger.logging(_Tag, "connection broked");
+					NIOResource resource = mResourcePool.getResource(key);
+					if (resource != null) {
+						threadPool.closePeer(resource.mPeer);
+					}
+					key.cancel();
+				}
+			} 
+		}
+
 	}
 
 	/**
@@ -184,7 +251,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 	}
 
 	@Override
-	public void restart() {
+	public void acceptNewPeer() {
 		isSuspended = false;
 	}
 
@@ -201,7 +268,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 	}
 
 	@Override
-	public void setPeer(Peer<ByteBuffer> peer) {
+	protected void setPeer(Peer<ByteBuffer> peer) {
 		prototypePeer = peer;
 		prototypePeer.setLifeCycle(this);
 	}
@@ -212,14 +279,14 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 	}
 
 	@Override
-	void usePeerServer(SecureFactory<ByteBuffer> sec, Business<ByteBuffer> business) {
+	public void usePeerServer(SecureFactory<ByteBuffer> sec, Business<ByteBuffer> business) {
 		if (sec != null)
 			prototypePeer = new ServerPeer<ByteBuffer>(new FixedSizeByteBufferPacketFactory(), sec, new ByteBufferBusinessConnector(business), 2000);
 		setPeer(prototypePeer);
 	}
 
 	@Override
-	void usePeerServer(Business<ByteBuffer> business) {
+	public void usePeerServer(Business<ByteBuffer> business) {
 		prototypePeer = new ServerPeer<ByteBuffer>(new FixedSizeByteBufferPacketFactory(), new ByteBufferBusinessConnector(business), 2000);
 		setPeer(prototypePeer);
 	}
@@ -229,12 +296,11 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 	}
 
 	@Override
-	protected String getServerLog() {
+	public String getServerLog() {
 		BiConsumer<SelectionKey, NIOResource> consumer = new BiConsumer<SelectionKey, NIOResource>() {
 
 			@Override
 			public void accept(SelectionKey s, NIOResource r) {
-				
 			}
 		};
 		if (prototypePeer instanceof ServerPeer) {
@@ -249,8 +315,24 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle {
 	}
 
 	@Override
-	void setParam(String paramName, Object param) {
+	protected void setParam(String paramName, Object param) {
 		if (paramName.equals("write_buffer"))
 			mWriteBufferSizeKb = (int) param;
+	}
+
+	@Override
+	public void moduleForceRestart() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void moduleSafetyRestart() {
+		suspendNewPeer();
+	}
+
+	@Override
+	public void empty() {
+		
 	}
 }
