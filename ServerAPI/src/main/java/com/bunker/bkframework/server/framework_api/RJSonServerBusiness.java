@@ -161,6 +161,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	public void sessionBrake(String sessionId) {
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pair> logging() {
 		JSONArray jsonArray = new JSONArray();

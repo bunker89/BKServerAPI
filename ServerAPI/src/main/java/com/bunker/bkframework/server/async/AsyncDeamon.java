@@ -70,7 +70,6 @@ public class AsyncDeamon implements Runnable {
    }
 
    private void restore(AsyncRun run) {
-      String errMsg = run.err();
       startDeamon();
    }
 

@@ -70,4 +70,8 @@ public class RecoverManager {
 
 	public void restart() {
 	}
+
+	public void recover(Resilience resilience) {
+		
+	}
 }

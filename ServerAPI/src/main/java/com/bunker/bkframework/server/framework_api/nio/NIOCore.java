@@ -27,6 +27,7 @@ import com.bunker.bkframework.server.framework_api.ZombieKiller;
 import com.bunker.bkframework.server.framework_api.nio.NIOResourcePool.NIOResource;
 import com.bunker.bkframework.server.resilience.ResilienceState;
 import com.bunker.bkframework.server.resilience.Resilience;
+import com.bunker.bkframework.server.resilience.DefaultResilience;
 import com.bunker.bkframework.server.resilience.ErrMessage;
 import com.bunker.bkframework.server.resilience.RecoverManager;
 
@@ -55,7 +56,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 	private static final String _Tag = "NIOCore";
 	private int mWriteBufferSizeKb = 0;
 
-	private Resilience mLoopResilience = new Resilience() {
+	private Resilience mLoopResilience = new DefaultResilience() {
 		private ResilienceState mState;
 		private long mLoopErrorTime;
 

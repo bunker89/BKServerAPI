@@ -18,7 +18,6 @@ public class ServerPeer<PacketType> extends BusinessPeer<PacketType> implements 
 	private boolean mCloseLoopGuard = false;
 	private boolean mIsNetInited = false;
 
-	@SuppressWarnings("unchecked")
 	public ServerPeer(PacketFactory<PacketType> factory, SecureFactory<PacketType> secFac,
 			BusinessConnector<PacketType> business, int maxPeer) {
 		super(factory, secFac, business);

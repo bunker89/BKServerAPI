@@ -82,8 +82,10 @@ abstract public class CoreBase<PacketType> implements ServerCore<PacketType>, Co
 
 	private JSONObject parseParamFile() {
 		File file = new File("setting.json");
-		if (!file.exists())
+		if (!file.exists()) {
+			Logger.logging(_TAG, "setting.json is not found");
 			return new JSONObject();
+		}
 		try {
 			FileReader reader = new FileReader(file);
 			JSONObject json = (JSONObject) new JSONParser().parse(reader);
