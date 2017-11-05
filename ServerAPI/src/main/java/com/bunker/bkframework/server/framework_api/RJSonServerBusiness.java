@@ -195,4 +195,8 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	public void releaseLog() {
 		mLogActionInited = false;
 	}
+
+	@Override
+	public void invokeTestErr() {
+	}
 }

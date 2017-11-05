@@ -25,11 +25,10 @@ import com.bunker.bkframework.server.framework_api.CoreBase;
 import com.bunker.bkframework.server.framework_api.ServerPeer;
 import com.bunker.bkframework.server.framework_api.ZombieKiller;
 import com.bunker.bkframework.server.framework_api.nio.NIOResourcePool.NIOResource;
-import com.bunker.bkframework.server.resilience.ResilienceState;
-import com.bunker.bkframework.server.resilience.Resilience;
 import com.bunker.bkframework.server.resilience.DefaultResilience;
 import com.bunker.bkframework.server.resilience.ErrMessage;
 import com.bunker.bkframework.server.resilience.RecoverManager;
+import com.bunker.bkframework.server.resilience.Resilience;
 
 /**
  * 자바 New IO의 클라이언트 접속, read와 관련된 클래스
@@ -55,15 +54,10 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 	private Peer<ByteBuffer> prototypePeer;
 	private static final String _Tag = "NIOCore";
 	private int mWriteBufferSizeKb = 0;
+	private boolean mLoopAlive = true;
+	private boolean mReservedRestart = false;
 
 	private Resilience mLoopResilience = new DefaultResilience() {
-		private ResilienceState mState;
-		private long mLoopErrorTime;
-
-		@Override
-		public boolean restartPart(ErrMessage msg) {
-			return false;
-		}
 		
 		@Override
 		public boolean recoverPart(ErrMessage msg) {
@@ -82,23 +76,8 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 		}
 		
 		@Override
-		public boolean outOfSystem(ErrMessage msg) {
-			return false;
-		}
-		
-		@Override
-		public boolean changeSafetyModule(ErrMessage msg) {
-			return false;
-		}
-		
-		@Override
-		public void changeResilienceState(ResilienceState state, int status) {
-			mState = state;
-		}
-
-		@Override
 		public void needRecover(ErrMessage msg) {
-			mState.recorver(this, msg);
+			RecoverManager.getInstance().recover(this, msg);
 		}
 
 		@Override
@@ -138,7 +117,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 	}
 
 	private void serverLoop() throws IOException {
-		while (true) {
+		while (mLoopAlive) {
 			selector.select();
 			Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
 
@@ -304,6 +283,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 			public void accept(SelectionKey s, NIOResource r) {
 			}
 		};
+
 		if (prototypePeer instanceof ServerPeer) {
 			String zombieLog = makeZombieData(((ServerPeer) prototypePeer).getZombieKiller());
 		}
@@ -323,17 +303,28 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 
 	@Override
 	public void moduleForceRestart() {
-		// TODO Auto-generated method stub
-		
+		Logger.logging(_Tag, "moduleForceRestarting..");
 	}
 
 	@Override
 	public void moduleSafetyRestart() {
 		suspendNewPeer();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}	
+		if (mResourcePool.getResourceCount() > 0)
+			mReservedRestart = true;
+		else {
+			moduleForceRestart();
+		}
 	}
 
 	@Override
 	public void empty() {
-		
+		if (mReservedRestart) {
+			moduleForceRestart();
+		}
 	}
 }

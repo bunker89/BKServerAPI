@@ -1,10 +1,13 @@
 package com.bunker.bkframework.server.resilience;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class RecoverManager {
 	private static RecoverManager This;
+	private Set<Resilience> mRecoverings = new HashSet<>();
 
 	public static RecoverManager getInstance() {
 		if (This == null) {
@@ -36,7 +39,12 @@ public class RecoverManager {
 	private final ResilienceState mPartRestart = new ResilienceState() {
 
 		@Override
-		public void recorver(Resilience resilience, ErrMessage msg) {
+		public void recorver(Resilience resilience, ErrMessage msg) {			
+			if (resilience.restartPart(msg))
+				return;
+
+			resilience.changeResilienceState(mChangeSafety, 2);
+			resilience.needRecover(msg);
 		}
 	};
 
@@ -44,7 +52,11 @@ public class RecoverManager {
 
 		@Override
 		public void recorver(Resilience resilience, ErrMessage msg) {
-			
+			if (resilience.changeSafetyModule(msg))
+				return;
+
+			resilience.changeResilienceState(mOutOfSystem, 3);
+			resilience.needRecover(msg);
 		}
 	};
 
@@ -52,8 +64,11 @@ public class RecoverManager {
 
 		@Override
 		public void recorver(Resilience resilience, ErrMessage msg) {
-			// TODO Auto-generated method stub
+			if (resilience.outOfSystem(msg))
+				return;
 
+			resilience.changeResilienceState(mCantRecover, 4);
+			resilience.needRecover(msg);
 		}
 	};
 
@@ -61,17 +76,24 @@ public class RecoverManager {
 
 		@Override
 		public void recorver(Resilience resilience, ErrMessage msg) {
-			// TODO Auto-generated method stub
-			
+			restart();
 		}
 	};
-	
+
 	private List<SystemModule> mSystemModules = new ArrayList<>();
 
 	public void restart() {
 	}
 
-	public void recover(Resilience resilience) {
-		
+	synchronized public void recover(final Resilience resilience, final ErrMessage msg) {
+		if (mRecoverings.contains(resilience))
+			return;
+
+		new Thread() {
+			@Override
+			public void run() {
+				resilience.getRecoverState().recorver(resilience, msg);
+			}
+		}.start();
 	}
 }

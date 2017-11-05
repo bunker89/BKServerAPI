@@ -70,4 +70,8 @@ public class NIOResourcePool {
 	public void forEarch(BiConsumer<? super SelectionKey, ? super NIOResource> consumer) {
 		resourceMap.forEach(consumer);
 	}
+
+	public int getResourceCount() {
+		return resourceMap.size();
+	}
 }

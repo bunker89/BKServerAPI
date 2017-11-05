@@ -12,4 +12,5 @@ public interface LogComposite {
 	public void bindAction();
 	public List<Pair> logging();
 	public void releaseLog();
+	public void invokeTestErr();
 }

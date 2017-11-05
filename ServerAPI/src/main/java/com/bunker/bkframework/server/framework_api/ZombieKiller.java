@@ -17,6 +17,7 @@ public class ZombieKiller extends Thread {
 
 	public ZombieKiller() {
 		setPriority(MIN_PRIORITY);
+		setDaemon(true);
 	}
 
 	public void addKillable(Killable r) {
