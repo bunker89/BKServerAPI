@@ -1,5 +1,6 @@
 package com.bunker.bkframework.server.test;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import com.bunker.bkframework.business.PeerConnection;

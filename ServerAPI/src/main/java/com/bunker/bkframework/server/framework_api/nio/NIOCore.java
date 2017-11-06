@@ -54,27 +54,17 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 	private Peer<ByteBuffer> prototypePeer;
 	private static final String _Tag = "NIOCore";
 	private int mWriteBufferSizeKb = 0;
-	private boolean mLoopAlive = true;
-	private boolean mReservedRestart = false;
+	private boolean mLoopKeep = true;
+	private boolean mIsLooping = true;
 
 	private Resilience mLoopResilience = new DefaultResilience() {
-		
+	
 		@Override
 		public boolean recoverPart(ErrMessage msg) {
-			new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					try {
-						serverLoop();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}).start();
+			reStartLoop();
 			return true;
 		}
-		
+
 		@Override
 		public void needRecover(ErrMessage msg) {
 			RecoverManager.getInstance().recover(this, msg);
@@ -94,6 +84,20 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 		threadPool = new ThreadPool(this);
 		mResourcePool = new NIOResourcePool();
 		RecoverManager.getInstance().initResilienceModule(mLoopResilience);
+	}
+	
+	private void reStartLoop() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					serverLoop();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 
 	@Override
@@ -117,7 +121,8 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 	}
 
 	private void serverLoop() throws IOException {
-		while (mLoopAlive) {
+		mIsLooping = true;
+		while (mLoopKeep) {
 			selector.select();
 			Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
 
@@ -145,7 +150,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 				}
 			} 
 		}
-
+		mIsLooping = false;
 	}
 
 	/**
@@ -285,7 +290,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 		};
 
 		if (prototypePeer instanceof ServerPeer) {
-			String zombieLog = makeZombieData(((ServerPeer) prototypePeer).getZombieKiller());
+			String zombieLog = makeZombieData(((ServerPeer<ByteBuffer>) prototypePeer).getZombieKiller());
 		}
 		mResourcePool.forEarch(consumer);
 		return "test";
@@ -307,24 +312,25 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 	}
 
 	@Override
-	public void moduleSafetyRestart() {
+	public void moduleSafetyStop() {
 		suspendNewPeer();
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}	
-		if (mResourcePool.getResourceCount() > 0)
-			mReservedRestart = true;
-		else {
-			moduleForceRestart();
-		}
 	}
 
 	@Override
 	public void empty() {
-		if (mReservedRestart) {
-			moduleForceRestart();
-		}
+	}
+
+	@Override
+	public boolean isStoped() {
+		return mIsLooping;
+	}
+
+	@Override
+	public boolean moduleStart() {
+		if (mIsLooping || mLoopKeep)
+		return false;
+		
+		reStartLoop();
+		return true;
 	}
 }

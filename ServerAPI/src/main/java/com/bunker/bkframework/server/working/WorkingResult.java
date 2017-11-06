@@ -1,8 +1,8 @@
 package com.bunker.bkframework.server.working;
 
-import java.util.Map;
+import java.io.Serializable;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 public class WorkingResult {
 	public static final int RESULT_FAIL = 0b1;
@@ -23,19 +23,13 @@ public class WorkingResult {
 	public JSONObject param;
 	public byte[] byteParam;
 		
-	public void putReplyParam(Object key, Object data) {
+	public void putReplyParam(String key, Serializable data) {
 		if (param == null)
 			param = new JSONObject();
 		param.put(key, data);
 	}
 	
-	public void putAll(Map json) {
-		if (param == null)
-			param = new JSONObject();
-		param.putAll(json);
-	}
-	
-	public Object getParam(Object key) {
+	public Object getParam(String key) {
 		return param.get(key);
 	}
 

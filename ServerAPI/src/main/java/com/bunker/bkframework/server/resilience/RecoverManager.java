@@ -83,6 +83,7 @@ public class RecoverManager {
 	private List<SystemModule> mSystemModules = new ArrayList<>();
 
 	public void restart() {
+		
 	}
 
 	synchronized public void recover(final Resilience resilience, final ErrMessage msg) {

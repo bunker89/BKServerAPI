@@ -1,5 +1,6 @@
 package com.bunker.bkframework.server.framework_api;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Calendar;
@@ -10,10 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.PeerConnection;
@@ -42,13 +41,14 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	 *
 	 *
 	 */
-	public class Session {
+	public class Session implements Serializable {
+		private static final long serialVersionUID = 1265158012165193745L;
 		public static final int SESSION_BROKEN = -1;
 		private static final int SESSION_IN = 1;
 		public static final int SESSION_WAIT = 0;
 
 		private	int state = SESSION_WAIT;
-		private final Object mutex = new Object();
+		private transient final Object mutex = new Object();
 		private String mSessionId = null;
 		private long mInternalId = -1;
 
@@ -95,15 +95,16 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 
 	@Override
 	public void receive(PeerConnection connector, byte[] data, int sequence) {
-		try {
-			JSONObject json = (JSONObject) new JSONParser().parse(new String(data, "utf-8"));
+		JSONObject json = new JSONObject(new String(data));
+		//TODO 여기 json utf-8로 잘 들어오는지 확인
 
+		try {
 			if (mLogActionInited)
 				loggingDriveJson(connector, json, sequence);
 			else
 				driveJson(connector, json, sequence);
-		} catch (UnsupportedEncodingException | ParseException e) {
-			Logger.err(_TAG, new String(data));
+		} catch (UnsupportedEncodingException e) {
+			Logger.err(_TAG, "receive:UnsupportedEncoding");
 		}
 	}
 
@@ -134,7 +135,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	}
 
 	private void driveJson(PeerConnection connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
-		if (!json.containsKey("working"))
+		if (!json.has("working"))
 			throw new NullPointerException("JSon has no working data");
 		int work = (int) (long) json.get("working");
 		Working working = WorkingFlyWeight.getWorking(work);
@@ -142,7 +143,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 			throw new NullPointerException("Working is not registered");
 
 		WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, connector.getEnviroment());
-        String jsonString = result.getResultParams().toString();
+		String jsonString = result.getResultParams().toString();
 		connector.sendToPeer(jsonString.getBytes("utf-8"), sequence);
 	}
 
@@ -161,7 +162,6 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	public void sessionBrake(String sessionId) {
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pair> logging() {
 		JSONArray jsonArray = new JSONArray();
@@ -176,7 +176,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 			json.put("work_average_time", averageTime);
 			json.put("work_max_time", log.mMaxCalTime);
 			json.put("work_count", log.mAccumCount);
-			jsonArray.add(json);
+			jsonArray.put(json);
 		}
 
 		List<Pair> list = new LinkedList<>();
@@ -190,7 +190,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 		mWorkLogMap = new HashMap<>();
 		mLogActionInited = true;
 	}
-	
+
 	@Override
 	public void releaseLog() {
 		mLogActionInited = false;

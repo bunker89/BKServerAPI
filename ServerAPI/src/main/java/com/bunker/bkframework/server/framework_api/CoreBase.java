@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.newframework.Logger;
@@ -88,9 +87,11 @@ abstract public class CoreBase<PacketType> implements ServerCore<PacketType>, Co
 		}
 		try {
 			FileReader reader = new FileReader(file);
-			JSONObject json = (JSONObject) new JSONParser().parse(reader);
+			
+			JSONTokener tok = new JSONTokener(reader);
+			JSONObject json = new JSONObject(tok);
 			return json;
-		} catch (IOException | ParseException e) {
+		} catch (IOException e) {
 			Logger.err(_TAG, "parseParamFile:system json parse error");
 		}
 		return new JSONObject();

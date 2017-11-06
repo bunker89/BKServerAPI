@@ -1,8 +1,5 @@
-package com.bunker.bkframework.server.reserved;import java.util.Collection;
-
-import org.json.simple.JSONAware;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONStreamAware;
+package com.bunker.bkframework.server.reserved;import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Pair {
 	private String mKey;
@@ -24,7 +21,7 @@ public class Pair {
 	public String getDatabaseValue() {
 		if (mValue instanceof String)
 			return "'" + mValue + "'";
-		if (mValue instanceof JSONAware || mValue instanceof JSONStreamAware) {
+		if (mValue instanceof JSONObject || mValue instanceof JSONArray) {
 			String str = mValue.toString();
 			str.replaceAll("'", "\'\'");
 			return str;

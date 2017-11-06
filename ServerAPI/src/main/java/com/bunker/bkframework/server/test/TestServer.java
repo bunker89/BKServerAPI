@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import com.bunker.bkframework.server.framework_api.CoreBase;
 import com.bunker.bkframework.server.framework_api.CoreBase.CoreBuilder;
@@ -49,7 +49,7 @@ public class TestServer {
 		JSONObject json = new JSONObject();
 		json.put("working", 1);
 
-		business.receive(new TestPeerConnection(), json.toJSONString().getBytes(), 1);
+		business.receive(new TestPeerConnection(), json.toString().getBytes(), 1);
 
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {

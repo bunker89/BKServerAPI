@@ -7,12 +7,11 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.simple.JSONObject;
-import org.junit.Test;
+import org.json.JSONObject;
 
 import com.bunker.bkframework.server.framework_api.CoreBase.CoreBuilder;
-import com.bunker.bkframework.server.framework_api.nio.NIOCore;
 import com.bunker.bkframework.server.framework_api.RJSonServerBusiness;
+import com.bunker.bkframework.server.framework_api.nio.NIOCore;
 import com.bunker.bkframework.server.reserved.Pair;
 import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingFlyWeight;
@@ -41,7 +40,7 @@ public class TestServer {
 		WorkingFlyWeight.setCreatedWorking(1, working);
 		JSONObject json = new JSONObject();
 		json.put("working", 1);
-		business.receive(new TestPeerConnection(), json.toJSONString().getBytes(), 1);
+		business.receive(new TestPeerConnection(), json.toString().getBytes(), 1);
 
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {

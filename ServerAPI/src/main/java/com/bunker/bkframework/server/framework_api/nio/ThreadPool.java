@@ -58,7 +58,6 @@ public class ThreadPool {
 	 * @param key
 	 */
 	public void newPeer(Resource<ByteBuffer> resource) {
-		Peer<ByteBuffer> peer = resource.getPeer();
 		resource.getPeer().interceptCycle();
 		ex.submit(new InitRunnable(resource));
 	}
