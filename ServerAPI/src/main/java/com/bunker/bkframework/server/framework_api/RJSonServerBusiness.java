@@ -103,7 +103,8 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 				loggingDriveJson(connector, json, sequence);
 			else
 				driveJson(connector, json, sequence);
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			Logger.err(_TAG, "receive:UnsupportedEncoding");
 		}
 	}
