@@ -138,7 +138,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	private void driveJson(PeerConnection connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		if (!json.has("working"))
 			throw new NullPointerException("JSon has no working data");
-		int work = (int) (long) json.get("working");
+		int work = json.getInt("working");
 		Working working = WorkingFlyWeight.getWorking(work);
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
