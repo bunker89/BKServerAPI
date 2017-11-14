@@ -32,7 +32,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	}
 
 	/**
-	 * ¼¼¼Ç Á¶ÀÛÀÇ Ãæµ¹À» ¸·±â À§ÇØ µ¿±âÈ­¸¦ ±¸ÇöÇÑ Å¬·¡½º
+	 * ì„¸ì…˜ ì¡°ì‘ì˜ ì¶©ëŒì„ ë§‰ê¸° ìœ„í•´ ë™ê¸°í™”ë¥¼ êµ¬í˜„í•œ í´ë˜ìŠ¤
 	 * Copyright 2016~ by bunker Corp.,
 	 * All rights reserved.
 	 *
@@ -96,7 +96,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	@Override
 	public void receive(PeerConnection connector, byte[] data, int sequence) {
 		JSONObject json = new JSONObject(new String(data));
-		//TODO ¿©±â json utf-8·Î Àß µé¾î¿À´ÂÁö È®ÀÎ
+		//TODO ì—¬ê¸° json utf-8ë¡œ ì˜ ë“¤ì–´ì˜¤ëŠ”ì§€ í™•ì¸
 
 		try {
 			if (mLogActionInited)
@@ -109,7 +109,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	}
 
 	private void loggingDriveJson(PeerConnection connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
-		int work = (int) (long) json.get("working");
+		int work = json.getInt("working");
 		long time = Calendar.getInstance().getTimeInMillis();
 		driveJson(connector, json, sequence);
 		time = Calendar.getInstance().getTimeInMillis() - time;
