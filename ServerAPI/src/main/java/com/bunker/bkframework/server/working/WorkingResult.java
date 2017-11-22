@@ -23,7 +23,7 @@ public class WorkingResult {
 	public JSONObject param;
 	public byte[] byteParam;
 		
-	public void putReplyParam(String key, Serializable data) {
+	public void putReplyParam(String key, Object data) {
 		if (param == null)
 			param = new JSONObject();
 		param.put(key, data);
