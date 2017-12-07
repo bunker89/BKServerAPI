@@ -32,7 +32,6 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	}
 
 	/**
-	 * 세션 조작의 충돌을 막기 위해 동기화를 구현한 클래스
 	 * Copyright 2016~ by bunker Corp.,
 	 * All rights reserved.
 	 *
@@ -96,7 +95,6 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	@Override
 	public void receive(PeerConnection connector, byte[] data, int sequence) {
 		JSONObject json = new JSONObject(new String(data));
-		//TODO 여기 json utf-8로 잘 들어오는지 확인
 
 		try {
 			if (mLogActionInited)

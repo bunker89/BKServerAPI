@@ -1,4 +1,4 @@
-package com.bunker.bkframework.server.test;
+package test;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;
