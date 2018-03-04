@@ -1,11 +1,10 @@
 package test;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import com.bunker.bkframework.business.PeerConnection;
 
-public class TestPeerConnection implements PeerConnection {
+public class TestPeerConnection implements PeerConnection<byte[]> {
 
 	@Override
 	public void closePeer() {

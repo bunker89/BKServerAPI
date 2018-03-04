@@ -29,7 +29,7 @@ public class TestServer {
 
 	public TestServer() {
 		RJSonServerBusiness business = new RJSonServerBusiness();
-		new Thread(new CoreBuilder<ByteBuffer>(NIOCore.class).
+		new Thread(new CoreBuilder<ByteBuffer, byte[], byte[]>(NIOCore.class).
 				setParam("wrtie_buffer", 8)
 				.setPort(9011)
 				.useServerPeer(business)

@@ -23,7 +23,7 @@ import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingFlyWeight;
 import com.bunker.bkframework.server.working.WorkingResult;
 
-public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
+public class RJSonServerBusiness implements Business<ByteBuffer, byte[], byte[]>, LogComposite {
 	private final String _TAG = getClass().getSimpleName();
 	public static final String LOG_WORK = "work";
 
@@ -93,7 +93,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	private final Object mLogMutex = new Object();
 
 	@Override
-	public void receive(PeerConnection connector, byte[] data, int sequence) {
+	public void receive(PeerConnection<byte[]> connector, byte[] data, int sequence) {
 		JSONObject json = new JSONObject(new String(data));
 
 		try {
@@ -107,7 +107,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 		}
 	}
 
-	private void loggingDriveJson(PeerConnection connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
+	private void loggingDriveJson(PeerConnection<byte[]> connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		int work = json.getInt("working");
 		long time = Calendar.getInstance().getTimeInMillis();
 		driveJson(connector, json, sequence);
@@ -133,7 +133,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 		}
 	}
 
-	private void driveJson(PeerConnection connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
+	private void driveJson(PeerConnection<byte[]> connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		if (!json.has("working"))
 			throw new NullPointerException("JSon has no working data");
 		int work = json.getInt("working");
@@ -147,13 +147,13 @@ public class RJSonServerBusiness implements Business<ByteBuffer>, LogComposite {
 	}
 
 	@Override
-	public void removeBusinessData(PeerConnection connector) {
+	public void removeBusinessData(PeerConnection<byte[]> connector) {
 		Session session = (Session) connector.getEnviroment().get("session");
 		session.sessionBroked();
 	}
 
 	@Override
-	public void established(PeerConnection b) {
+	public void established(PeerConnection<byte[]> b) {
 		b.getEnviroment().put("connection", b);
 		b.getEnviroment().put("session", new Session());
 	}

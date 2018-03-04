@@ -31,12 +31,12 @@ import com.bunker.bkframework.server.resilience.RecoverManager;
 import com.bunker.bkframework.server.resilience.Resilience;
 
 /**
- * ÀÚ¹Ù New IOÀÇ Å¬¶óÀÌ¾ðÆ® Á¢¼Ó, read¿Í °ü·ÃµÈ Å¬·¡½º
- * ÀÐÀº Á¤º¸´Â ThreadPool¿¡¼­ °ü¸®ÇÏ´Â Threadµé¿¡¼­ ÇÚµé¸µ ÇÏ°í
- * Ã¤³Î°ú µ¥ÀÌÅÍ¸¦ ThreadPool¿¡°Ô °ü¸®¸¦ À§ÀÓÇÑ´Ù.
+ * ï¿½Ú¹ï¿½ New IOï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½, readï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ Å¬ï¿½ï¿½ï¿½ï¿½
+ * ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ThreadPoolï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Threadï¿½é¿¡ï¿½ï¿½ ï¿½Úµé¸µ ï¿½Ï°ï¿½
+ * Ã¤ï¿½Î°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ThreadPoolï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
  * 
- * New IO´Â ÀÌº¥Æ® ±â¹Ý LifeCycleÀ» °¡Áö°í ÀÖÀ¸¹Ç·Î
- * »ý¸í ÁÖ±â¸¦ ¿äÃ»ÇÒ ¶§ ÇÊ¿äÇÑ ¸¸Å­ »ç¿ëÇÏ°í Á¾·áÇÏµµ·Ï ÇÑ´Ù.
+ * New IOï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ LifeCycleï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½
+ * ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±â¸¦ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
  * 
  * Copyright 2016~ by bunker Corp.,
  * All rights reserved.
@@ -46,7 +46,7 @@ import com.bunker.bkframework.server.resilience.Resilience;
  *
  *
  */
-public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, ResourceEmptyCallback {
+public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements LifeCycle, ResourceEmptyCallback {
 	private Selector selector;
 	private ThreadPool threadPool;
 	private NIOResourcePool mResourcePool;
@@ -154,7 +154,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 	}
 
 	/**
-	 * ÇÇ¾îÀÇ Á¢¼Ó
+	 * ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	 * @param key
 	 * @throws IOException
 	 */
@@ -181,7 +181,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 	}
 
 	/**
-	 * Æ¯Á¤ ÇÇ¾îÀÇ µ¥ÀÌÅÍ¸¦ ÀÐ¾îµéÀÎ´Ù
+	 * Æ¯ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Î´ï¿½
 	 * @param key
 	 * @throws IOException
 	 */
@@ -195,7 +195,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 		}
 		ByteBuffer buffer = resource.getReadBuffer();
 		int offset = buffer.position();
-		//¹öÆÛ ÇÒ´çÀÌ Á¦´ë·Î µÇÁö ¾Ê¾ÒÀ» ¶§
+		//ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾ï¿½ï¿½ï¿½ ï¿½ï¿½
 		if (buffer.limit() != Constants.PACKET_DEFAULT_TOTAL_SIZE) {
 			Logger.err("NIOCore", "Buffer alloc err");
 			return;
@@ -209,12 +209,12 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 			threadPool.closePeer(resource.mPeer);
 		}
 
-		if (numRead + offset < Constants.PACKET_DEFAULT_TOTAL_SIZE) { //ÆÐÅ¶ÀÌ Â©·Á¼­ ³¯¶ó¿Â °æ¿ì ºÙÀÌ´Â ÀÛ¾÷
+		if (numRead + offset < Constants.PACKET_DEFAULT_TOTAL_SIZE) { //ï¿½ï¿½Å¶ï¿½ï¿½ Â©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½Û¾ï¿½
 			resource.remainBuffer(buffer);
 			return;
-		} else if (numRead + offset == Constants.PACKET_DEFAULT_TOTAL_SIZE) { //ÆÐÅ¶ÀÌ ´Ù ¿ÔÀ» ¶§
-			resource.remainBuffer(null); //³²¾ÆÀÖ´Â ¹öÆÛ¸¦ ¾ø¾Ø´Ù.
-			buffer.flip(); //¹öÆÛÀÇ »ç¿ë¸£ À§ÇØ flip
+		} else if (numRead + offset == Constants.PACKET_DEFAULT_TOTAL_SIZE) { //ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+			resource.remainBuffer(null); //ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Û¸ï¿½ ï¿½ï¿½ï¿½Ø´ï¿½.
+			buffer.flip(); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ë¸£ ï¿½ï¿½ï¿½ï¿½ flip
 			threadPool.readData(resource.getPeer(), buffer);
 		} else {
 			Logger.err("NIOCore", "Buffer Overflow");
@@ -264,15 +264,15 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 	}
 
 	@Override
-	public void usePeerServer(SecureFactory<ByteBuffer> sec, Business<ByteBuffer> business) {
+	public void usePeerServer(SecureFactory<ByteBuffer> sec, Business<ByteBuffer, byte[], byte[]> business) {
 		if (sec != null)
-			prototypePeer = new ServerPeer<ByteBuffer>(new FixedSizeByteBufferPacketFactory(), sec, new ByteBufferBusinessConnector(business), 2000);
+			prototypePeer = new ServerPeer<ByteBuffer, byte[], byte[]>(new FixedSizeByteBufferPacketFactory(), sec, new ByteBufferBusinessConnector(business), 2000);
 		setPeer(prototypePeer);
 	}
 
 	@Override
-	public void usePeerServer(Business<ByteBuffer> business) {
-		prototypePeer = new ServerPeer<ByteBuffer>(new FixedSizeByteBufferPacketFactory(), new ByteBufferBusinessConnector(business), 2000);
+	public void usePeerServer(Business<ByteBuffer, byte[], byte[]> business) {
+		prototypePeer = new ServerPeer<ByteBuffer, byte[], byte[]>(new FixedSizeByteBufferPacketFactory(), new ByteBufferBusinessConnector(business), 2000);
 		setPeer(prototypePeer);
 	}
 
@@ -290,7 +290,7 @@ public class NIOCore extends CoreBase<ByteBuffer> implements LifeCycle, Resource
 		};
 
 		if (prototypePeer instanceof ServerPeer) {
-			String zombieLog = makeZombieData(((ServerPeer<ByteBuffer>) prototypePeer).getZombieKiller());
+			String zombieLog = makeZombieData(((ServerPeer<ByteBuffer, byte[], byte[]>) prototypePeer).getZombieKiller());
 		}
 		mResourcePool.forEarch(consumer);
 		return "test";
