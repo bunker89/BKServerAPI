@@ -6,7 +6,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.bunker.bkframework.server.framework_api.CoreBase.CoreBuilder;
-import com.bunker.bkframework.server.framework_api.RJSonServerBusiness;
+import com.bunker.bkframework.server.framework_api.NIOJsonBusiness;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 import com.bunker.bkframework.server.framework_api.nio.NIOCore;
 import com.bunker.bkframework.server.working.Working;
@@ -39,7 +39,7 @@ public class PeerBaseTest {
 	}
 
 	public PeerBaseTest() {
-		RJSonServerBusiness business = new RJSonServerBusiness();
+		NIOJsonBusiness business = new NIOJsonBusiness();
 		new Thread(new CoreBuilder<ByteBuffer, byte[], byte[]>(NIOCore.class).
 				setParam("wrtie_buffer", 8)
 				.setPort(9011)

@@ -1,6 +1,5 @@
 package com.bunker.bkframework.server.framework_api;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Calendar;
@@ -23,69 +22,12 @@ import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingFlyWeight;
 import com.bunker.bkframework.server.working.WorkingResult;
 
-public class RJSonServerBusiness implements Business<ByteBuffer, byte[], byte[]>, LogComposite {
+public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, LogComposite {
 	private final String _TAG = getClass().getSimpleName();
 	public static final String LOG_WORK = "work";
 
 	private class WorkLog {
 		private int mAccumTime, mAccumCount, mMaxCalTime;
-	}
-
-	/**
-	 * Copyright 2016~ by bunker Corp.,
-	 * All rights reserved.
-	 *
-	 * @author Young soo Ahn <bunker.ys89@gmail.com>
-	 * 2016. 11. 4.
-	 *
-	 *
-	 */
-	public class Session implements Serializable {
-		private static final long serialVersionUID = 1265158012165193745L;
-		public static final int SESSION_BROKEN = -1;
-		private static final int SESSION_IN = 1;
-		public static final int SESSION_WAIT = 0;
-
-		private	int state = SESSION_WAIT;
-		private transient final Object mutex = new Object();
-		private String mSessionId = null;
-		private long mInternalId = -1;
-
-		public void sessoinIn(Map<String, Object> enviroment, SessionControl control, String sessionId, long internalId) {
-			synchronized (mutex) {
-				if (state == SESSION_WAIT) {
-					control.syncSessionIn(enviroment, sessionId, internalId);
-					state = SESSION_IN;
-					mSessionId = sessionId;
-					mInternalId = internalId;
-				} else
-					control.err(sessionId, state);
-			}
-		}
-
-		public void sessionOut(SessionControl control) {
-			synchronized (mutex) {
-				control.syncSessionOut(mSessionId);
-				state = SESSION_WAIT;
-				mSessionId = null;
-			}
-		}
-
-		private void sessionBroked() {
-			synchronized (mutex) {
-				state = SESSION_BROKEN;
-				sessionBrake(mSessionId);
-				mSessionId = null;
-			}
-		}
-
-		public String getSessionId() {
-			return mSessionId;
-		}
-
-		public long getInternalId() {
-			return mInternalId;
-		}
 	}
 
 	private boolean mLogActionInited = false;
@@ -153,6 +95,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer, byte[], byte[]>
 	}
 
 	private void addTrace(Map<String, Object> enviroment, WorkTrace trace) {
+		@SuppressWarnings("unchecked")
 		List<WorkTrace> list = (List<WorkTrace>) enviroment.get("trace_list");
 		list.add(trace);
 	}
@@ -168,9 +111,6 @@ public class RJSonServerBusiness implements Business<ByteBuffer, byte[], byte[]>
 		b.getEnviroment().put("connection", b);
 		b.getEnviroment().put("session", new Session());
 		b.getEnviroment().put("trace_list", new LinkedList<>());
-	}
-
-	public void sessionBrake(String sessionId) {
 	}
 
 	@Override
