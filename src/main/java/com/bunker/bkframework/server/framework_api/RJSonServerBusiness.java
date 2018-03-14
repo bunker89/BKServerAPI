@@ -133,17 +133,28 @@ public class RJSonServerBusiness implements Business<ByteBuffer, byte[], byte[]>
 		}
 	}
 
-	private void driveJson(PeerConnection<byte[]> connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
+	private void driveJson(PeerConnection<byte[]> connection, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		if (!json.has("working"))
 			throw new NullPointerException("JSon has no working data");
 		int work = json.getInt("working");
 		Working working = WorkingFlyWeight.getWorking(work);
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
-
-		WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, connector.getEnviroment());
+		
+		WorkTrace trace = new WorkTrace();
+		trace.setWorkNumber(work);
+		trace.setName(working.getName());
+		
+		Map<String, Object> enviroment = connection.getEnviroment();
+		WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, enviroment, trace);
 		String jsonString = result.getResultParams().toString();
-		connector.sendToPeer(jsonString.getBytes("utf-8"), sequence);
+		connection.sendToPeer(jsonString.getBytes("utf-8"), sequence);
+		addTrace(enviroment, trace);
+	}
+
+	private void addTrace(Map<String, Object> enviroment, WorkTrace trace) {
+		List<WorkTrace> list = (List<WorkTrace>) enviroment.get("trace_list");
+		list.add(trace);
 	}
 
 	@Override
@@ -156,6 +167,7 @@ public class RJSonServerBusiness implements Business<ByteBuffer, byte[], byte[]>
 	public void established(PeerConnection<byte[]> b) {
 		b.getEnviroment().put("connection", b);
 		b.getEnviroment().put("session", new Session());
+		b.getEnviroment().put("trace_list", new LinkedList<>());
 	}
 
 	public void sessionBrake(String sessionId) {
