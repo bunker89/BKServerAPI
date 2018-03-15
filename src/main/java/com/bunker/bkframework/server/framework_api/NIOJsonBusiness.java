@@ -110,7 +110,7 @@ public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, Lo
 	public void established(PeerConnection<byte[]> b) {
 		b.getEnviroment().put("connection", b);
 		b.getEnviroment().put("session", new Session());
-		b.getEnviroment().put("trace_list", new LinkedList<>());
+		b.getEnviroment().put("trace_list", new WorkTraceList());
 	}
 
 	@Override
