@@ -36,6 +36,14 @@ abstract public class CoreBase<PacketType, SendDataType, ReceiveDataType> implem
 				e.printStackTrace();
 			}
 		}
+	
+		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> initLoggingSystem() {
+			Boolean debug = (Boolean) coreBase.getSystemParam("logging");
+			if (debug != null || debug == false) {
+				Logger.mLog = new ServerDefaultLog();
+			}
+			return this;
+		}
 
 		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> peer(Peer<PacketType> peer) {
 			coreBase.setPeer(peer);
@@ -76,7 +84,9 @@ abstract public class CoreBase<PacketType, SendDataType, ReceiveDataType> implem
 	}
 
 	public Object getSystemParam(String key) {
-		return mSystemParam.get(key);
+		if (mSystemParam.has(key))
+			return mSystemParam.get(key);
+		return null;
 	}
 
 	private JSONObject parseParamFile() {

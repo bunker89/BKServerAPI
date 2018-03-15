@@ -45,7 +45,7 @@ public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, Lo
 				driveJson(connector, json, sequence);
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.err(_TAG, e);
+			Logger.err(_TAG, "null", e);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, Lo
 		Working working = WorkingFlyWeight.getWorking(work);
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
-		
+
 		WorkTrace trace = new WorkTrace();
 		trace.setWorkNumber(work);
 		trace.setName(working.getName());
