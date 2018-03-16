@@ -38,8 +38,8 @@ abstract public class CoreBase<PacketType, SendDataType, ReceiveDataType> implem
 		}
 	
 		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> initLoggingSystem() {
-			Boolean debug = (Boolean) coreBase.getSystemParam("logging");
-			if (debug != null || debug == false) {
+			Boolean debug = (Boolean) coreBase.getSystemParam("debugging");
+			if (debug == null || debug == false) {
 				Logger.mLog = new ServerDefaultLog();
 			}
 			return this;
