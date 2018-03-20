@@ -29,14 +29,13 @@ abstract public class CoreBase<PacketType, SendDataType, ReceiveDataType> implem
 			try {
 				coreBase = cl.newInstance();
 			} catch (InstantiationException e) {
-				Logger.err("CoreBase", "class loadException");
+				Logger.err("CoreBase", "class loadException", e);
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				Logger.err("CoreBase", "class loadException");
-				e.printStackTrace();
+				Logger.err("CoreBase", "class loadException", e);
 			}
 		}
-	
+
 		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> initLoggingSystem() {
 			Boolean debug = (Boolean) coreBase.getSystemParam("debugging");
 			if (debug == null || debug == false) {
@@ -102,7 +101,7 @@ abstract public class CoreBase<PacketType, SendDataType, ReceiveDataType> implem
 			JSONObject json = new JSONObject(tok);
 			return json;
 		} catch (IOException e) {
-			Logger.err(_TAG, "parseParamFile:system json parse error");
+			Logger.err(_TAG, "parseParamFile:system json parse error", e);
 		}
 		return new JSONObject();
 	}

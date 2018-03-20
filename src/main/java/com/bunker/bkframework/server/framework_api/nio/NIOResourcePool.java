@@ -37,7 +37,10 @@ public class NIOResourcePool {
 		@Override
 		public void destroy() {
 			resourceMap.remove(mKey);
-			Logger.logging(_TAG, "resource killed, count:" + resourceMap.size());;
+			Logger.logging(_TAG, "resource killed, count:" + resourceMap.size());
+			if (resourceMap.size() == 0) {
+				System.gc();
+			}
 		}
 
 		@Override
