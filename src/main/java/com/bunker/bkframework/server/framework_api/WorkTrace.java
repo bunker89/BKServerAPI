@@ -1,8 +1,5 @@
 package com.bunker.bkframework.server.framework_api;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.json.JSONObject;
 
 public class WorkTrace {

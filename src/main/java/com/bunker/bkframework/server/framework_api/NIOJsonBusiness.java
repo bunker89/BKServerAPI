@@ -45,7 +45,7 @@ public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, Lo
 				driveJson(connector, json, sequence);
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.err(_TAG, "null", e);
+			Logger.err(_TAG, "receive error", e);
 		}
 	}
 

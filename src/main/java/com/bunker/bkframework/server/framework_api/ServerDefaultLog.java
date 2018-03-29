@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import com.bunker.bkframework.newframework.Log;
+import com.bunker.bkframework.newframework.Logger;
 
 public class ServerDefaultLog implements Log {
 	private final String ERROR_FOLDER = "error_info/";
@@ -113,7 +114,7 @@ public class ServerDefaultLog implements Log {
 		try {
 			FileInputStream stream = new FileInputStream("asbass");
 		} catch (FileNotFoundException e) {
-			log.err("tag", "test", e);
+			Logger.err("tag", "test", e);
 		}
 	}
 }
