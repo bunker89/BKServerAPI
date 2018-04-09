@@ -54,7 +54,7 @@ abstract public class CoreBase<PacketType, SendDataType, ReceiveDataType> implem
 			coreBase.usePeerServer(sec, business);
 			return this;
 		}
-		
+
 		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> useServerPeer(Business<PacketType, SendDataType, ReceiveDataType> business) {
 			coreBase.usePeerServer(business); 
 			return this;

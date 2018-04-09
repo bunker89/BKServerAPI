@@ -1,9 +1,12 @@
 package com.bunker.bkframework.server.framework_api;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 
 import com.bunker.bkframework.business.BusinessConnector;
 import com.bunker.bkframework.business.BusinessPeer;
+import com.bunker.bkframework.newframework.Packet;
 import com.bunker.bkframework.newframework.PacketFactory;
 import com.bunker.bkframework.newframework.Resource;
 import com.bunker.bkframework.sec.SecureFactory;
@@ -73,5 +76,14 @@ public class ServerPeer<PacketType, SendDataType, ReceiveDataType> extends Busin
 
 	public ZombieKiller getZombieKiller() {
 		return mKiller;
+	}
+	
+	@Override
+	protected void logPacket(long arg0, List<Packet<PacketType>> arg1, List<PacketType> arg2, List<PacketType> arg3,
+			String arg4) throws IOException {
+		if (arg4 != null)
+			super.logPacket(arg0, arg1, arg2, arg3, arg4 + "\n" + mResource.getClientHostInfo());
+		else
+			super.logPacket(arg0, arg1, arg2, arg3, mResource.getClientHostInfo());
 	}
 }

@@ -31,12 +31,12 @@ import com.bunker.bkframework.server.resilience.RecoverManager;
 import com.bunker.bkframework.server.resilience.Resilience;
 
 /**
- * �ڹ� New IO�� Ŭ���̾�Ʈ ����, read�� ���õ� Ŭ����
- * ���� ������ ThreadPool���� �����ϴ� Thread�鿡�� �ڵ鸵 �ϰ�
- * ä�ΰ� �����͸� ThreadPool���� ������ �����Ѵ�.
+ * 占쌘뱄옙 New IO占쏙옙 클占쏙옙占싱억옙트 占쏙옙占쏙옙, read占쏙옙 占쏙옙占시듸옙 클占쏙옙占쏙옙
+ * 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 ThreadPool占쏙옙占쏙옙 占쏙옙占쏙옙占싹댐옙 Thread占썽에占쏙옙 占쌘들링 占싹곤옙
+ * 채占싸곤옙 占쏙옙占쏙옙占싶몌옙 ThreadPool占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싼댐옙.
  * 
- * New IO�� �̺�Ʈ ��� LifeCycle�� ������ �����Ƿ�
- * ���� �ֱ⸦ ��û�� �� �ʿ��� ��ŭ ����ϰ� �����ϵ��� �Ѵ�.
+ * New IO占쏙옙 占싱븝옙트 占쏙옙占� LifeCycle占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占실뤄옙
+ * 占쏙옙占쏙옙 占쌍기를 占쏙옙청占쏙옙 占쏙옙 占십울옙占쏙옙 占쏙옙큼 占쏙옙占쏙옙構占� 占쏙옙占쏙옙占싹듸옙占쏙옙 占싼댐옙.
  * 
  * Copyright 2016~ by bunker Corp.,
  * All rights reserved.
@@ -116,7 +116,7 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 		try {
 			serverLoop();
 		} catch (IOException e) {
-			Logger.err(_Tag, "NIOserver loop exception");
+			Logger.err(_Tag, "NIOserver loop exception", e);
 		}
 	}
 
@@ -154,7 +154,7 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 	}
 
 	/**
-	 * �Ǿ��� ����
+	 * 占실억옙占쏙옙 占쏙옙占쏙옙
 	 * @param key
 	 * @throws IOException
 	 */
@@ -176,12 +176,12 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 			Resource<ByteBuffer> resource = mResourcePool.newPeer(keyTwo, c);
 			threadPool.newPeer(resource);
 		} catch (CloneNotSupportedException e) {
-			Logger.err(_Tag, "accept:clone not support exception");
+			Logger.err(_Tag, "accept:clone not support exception", e);
 		}
 	}
 
 	/**
-	 * Ư�� �Ǿ��� �����͸� �о���δ�
+	 * 특占쏙옙 占실억옙占쏙옙 占쏙옙占쏙옙占싶몌옙 占싻억옙占쏙옙灌占�
 	 * @param key
 	 * @throws IOException
 	 */
@@ -195,7 +195,7 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 		}
 		ByteBuffer buffer = resource.getReadBuffer();
 		int offset = buffer.position();
-		//���� �Ҵ��� ����� ���� �ʾ��� ��
+		//占쏙옙占쏙옙 占쌀댐옙占쏙옙 占쏙옙占쏙옙占� 占쏙옙占쏙옙 占십억옙占쏙옙 占쏙옙
 		if (buffer.limit() != Constants.PACKET_DEFAULT_TOTAL_SIZE) {
 			Logger.err("NIOCore", "Buffer alloc err");
 			return;
@@ -209,12 +209,12 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 			threadPool.closePeer(resource.mPeer);
 		}
 
-		if (numRead + offset < Constants.PACKET_DEFAULT_TOTAL_SIZE) { //��Ŷ�� ©���� ����� ��� ���̴� �۾�
+		if (numRead + offset < Constants.PACKET_DEFAULT_TOTAL_SIZE) { //占쏙옙킷占쏙옙 짤占쏙옙占쏙옙 占쏙옙占쏙옙占� 占쏙옙占� 占쏙옙占싱댐옙 占쌜억옙
 			resource.remainBuffer(buffer);
 			return;
-		} else if (numRead + offset == Constants.PACKET_DEFAULT_TOTAL_SIZE) { //��Ŷ�� �� ���� ��
-			resource.remainBuffer(null); //�����ִ� ���۸� ���ش�.
-			buffer.flip(); //������ ��븣 ���� flip
+		} else if (numRead + offset == Constants.PACKET_DEFAULT_TOTAL_SIZE) { //占쏙옙킷占쏙옙 占쏙옙 占쏙옙占쏙옙 占쏙옙
+			resource.remainBuffer(null); //占쏙옙占쏙옙占쌍댐옙 占쏙옙占쌜몌옙 占쏙옙占쌔댐옙.
+			buffer.flip(); //占쏙옙占쏙옙占쏙옙 占쏙옙釉� 占쏙옙占쏙옙 flip
 			threadPool.readData(resource.getPeer(), buffer);
 		} else {
 			Logger.err("NIOCore", "Buffer Overflow");

@@ -1,7 +1,9 @@
 package com.bunker.bkframework.server.framework_api.nio;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -17,9 +19,21 @@ public class NIOResourcePool {
 
 	public class NIOResource implements Resource<ByteBuffer>{
 		private ByteBuffer remainBuffer;
+		private String remoteAddress;
+
 		public NIOResource(SelectionKey key, Peer<ByteBuffer> peer) {
 			mPeer = peer;
 			mKey = key;
+			if (key != null) {
+				SocketChannel channel = (SocketChannel) key.channel();
+				if (channel != null) {
+					try {
+						remoteAddress = channel.getRemoteAddress().toString();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 		Peer<ByteBuffer> mPeer;
 		SelectionKey mKey;
@@ -50,6 +64,11 @@ public class NIOResourcePool {
 
 		public void remainBuffer(ByteBuffer buffer) {
 			remainBuffer = buffer;
+		}
+
+		@Override
+		public String getClientHostInfo() {
+			return remoteAddress;
 		}
 	}
 
