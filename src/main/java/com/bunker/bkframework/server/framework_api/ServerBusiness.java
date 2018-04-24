@@ -22,9 +22,8 @@ import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingFlyWeight;
 import com.bunker.bkframework.server.working.WorkingResult;
 
-public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, LogComposite {
+public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> implements Business<PacketType, SendDataType, ReceiveDataType>, LogComposite {
 	private final String _TAG = getClass().getSimpleName();
-	public static final String LOG_WORK = "work";
 
 	private class WorkLog {
 		private int mAccumTime, mAccumCount, mMaxCalTime;
@@ -35,8 +34,8 @@ public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, Lo
 	private final Object mLogMutex = new Object();
 
 	@Override
-	public void receive(PeerConnection<byte[]> connector, byte[] data, int sequence) {
-		JSONObject json = new JSONObject(new String(data));
+	public void receive(PeerConnection<SendDataType> connector, ReceiveDataType data, int sequence) {
+		JSONObject json = createJSON(data);
 
 		try {
 			if (mLogActionInited)
@@ -45,11 +44,13 @@ public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, Lo
 				driveJson(connector, json, sequence);
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.err(_TAG, "receive error", e);
+			Logger.err(_TAG, "receive err", e);
 		}
 	}
 
-	private void loggingDriveJson(PeerConnection<byte[]> connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
+	protected abstract JSONObject createJSON(ReceiveDataType data);
+
+	private void loggingDriveJson(PeerConnection<SendDataType> connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		int work = json.getInt("working");
 		long time = Calendar.getInstance().getTimeInMillis();
 		driveJson(connector, json, sequence);
@@ -75,24 +76,25 @@ public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, Lo
 		}
 	}
 
-	private void driveJson(PeerConnection<byte[]> connection, JSONObject json, int sequence) throws UnsupportedEncodingException {
+	private void driveJson(PeerConnection<SendDataType> connection, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		if (!json.has("working"))
 			throw new NullPointerException("JSon has no working data");
 		int work = json.getInt("working");
 		Working working = WorkingFlyWeight.getWorking(work);
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
-
+		
 		WorkTrace trace = new WorkTrace();
 		trace.setWorkNumber(work);
 		trace.setName(working.getName());
 		
 		Map<String, Object> enviroment = connection.getEnviroment();
 		WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, enviroment, trace);
-		String jsonString = result.getResultParams().toString();
-		connection.sendToPeer(jsonString.getBytes("utf-8"), sequence);
+		sendToPeer(connection, result, sequence);
 		addTrace(enviroment, trace);
 	}
+	
+	protected abstract void sendToPeer(PeerConnection<SendDataType> connection, WorkingResult result, int sequence);
 
 	private void addTrace(Map<String, Object> enviroment, WorkTrace trace) {
 		@SuppressWarnings("unchecked")
@@ -101,16 +103,16 @@ public class NIOJsonBusiness implements Business<ByteBuffer, byte[], byte[]>, Lo
 	}
 
 	@Override
-	public void removeBusinessData(PeerConnection<byte[]> connector) {
+	public void removeBusinessData(PeerConnection<SendDataType> connector) {
 		Session session = (Session) connector.getEnviroment().get("session");
 		session.sessionBroked();
 	}
 
 	@Override
-	public void established(PeerConnection<byte[]> b) {
+	public void established(PeerConnection<SendDataType> b) {
 		b.getEnviroment().put("connection", b);
 		b.getEnviroment().put("session", new Session());
-		b.getEnviroment().put("trace_list", new WorkTraceList());
+		b.getEnviroment().put("trace_list", new LinkedList<>());
 	}
 
 	@Override
