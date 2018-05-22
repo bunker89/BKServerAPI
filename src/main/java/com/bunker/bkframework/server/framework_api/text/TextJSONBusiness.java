@@ -1,4 +1,4 @@
-package com.bunker.bkframework.server.framework_api.http;
+package com.bunker.bkframework.server.framework_api.text;
 
 import org.json.JSONObject;
 

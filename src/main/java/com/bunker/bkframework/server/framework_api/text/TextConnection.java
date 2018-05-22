@@ -1,11 +1,11 @@
-package com.bunker.bkframework.server.framework_api.http;
+package com.bunker.bkframework.server.framework_api.text;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.bunker.bkframework.business.PeerConnection;
 
-public class TextBusinessConnecter implements PeerConnection<String> {
+public class TextConnection implements PeerConnection<String> {
 	private String mResult;
 	private int mSequence;
 	private Map<String ,Object> mEnviroment = new HashMap<String, Object>();
