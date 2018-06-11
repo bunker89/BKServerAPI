@@ -87,7 +87,7 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 	}
 	
 	private void reStartLoop() {
-		new Thread(new Runnable() {
+		Thread th = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -97,7 +97,8 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 					e.printStackTrace();
 				}
 			}
-		}).start();
+		});
+		th.start();
 	}
 
 	@Override
@@ -116,6 +117,7 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 		try {
 			serverLoop();
 		} catch (IOException e) {
+			mIsLooping = false;
 			Logger.err(_Tag, "NIOserver loop exception", e);
 		}
 	}
@@ -139,7 +141,7 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 						accept(key);
 					} else if (key.isReadable()) {
 						read(key);
-					} 
+					}
 				} catch (IOException e) {
 					Logger.logging(_Tag, "connection broked");
 					NIOResource resource = mResourcePool.getResource(key);
