@@ -324,7 +324,7 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 
 	@Override
 	public boolean isStoped() {
-		return mIsLooping;
+		return !mIsLooping;
 	}
 
 	@Override
