@@ -7,79 +7,21 @@ import java.io.IOException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import com.bunker.bkframework.business.Business;
+import com.bunker.bkframework.newframework.LifeCycle;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.newframework.Peer;
-import com.bunker.bkframework.sec.SecureFactory;
+import com.bunker.bkframework.newframework.Writer;
 
-abstract public class CoreBase<PacketType, SendDataType, ReceiveDataType> implements ServerCore<PacketType>, CoreController, Runnable {
-	private int port = 9011;
+public abstract class CoreBase<PacketType> implements ServerCore<PacketType>, CoreController {
+	private final String _TAG = "CoreBase";
 	private JSONObject mSystemParam;
-	private String _TAG = getClass().getSimpleName();
-
+	
 	public CoreBase() {
 		mSystemParam = parseParamFile();
 	}
-
-	public static class CoreBuilder<PacketType, SendDataType, ReceiveDataType> {
-		private CoreBase<PacketType, SendDataType, ReceiveDataType> coreBase;
-		private boolean isDefaultPeer = true;
-
-		public CoreBuilder(Class<? extends CoreBase<PacketType, SendDataType, ReceiveDataType>> cl) {
-			try {
-				coreBase = cl.newInstance();
-			} catch (InstantiationException e) {
-				Logger.err("CoreBase", "class loadException", e);
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				Logger.err("CoreBase", "class loadException", e);
-			}
-		}
-
-		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> initLoggingSystem() {
-			Boolean debug = (Boolean) coreBase.getSystemParam("debugging");
-			if (debug == null || debug == false) {
-				Logger.mLog = new ServerDefaultLog();
-			}
-			return this;
-		}
-
-		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> peer(Peer<PacketType> peer) {
-			coreBase.setPeer(peer);
-			isDefaultPeer = false;
-			return this;
-		}
-
-		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> useServerPeer(SecureFactory<PacketType> sec, Business<PacketType, SendDataType, ReceiveDataType> business) {
-			coreBase.usePeerServer(sec, business);
-			return this;
-		}
-
-		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> useServerPeer(Business<PacketType, SendDataType, ReceiveDataType> business) {
-			coreBase.usePeerServer(business); 
-			return this;
-		}
+	
+	public void start() {
 		
-		public CoreBase<PacketType, SendDataType, ReceiveDataType> build() {
-			if (isDefaultPeer)
-				Logger.logging("CoreBase", "Business Peer is default!!");
-			return coreBase;
-		}
-		
-		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> setPort(int port) {
-			coreBase.port = port;
-			return this;
-		}
-
-		public CoreBuilder<PacketType, SendDataType, ReceiveDataType> setParam(String paramName, Object param) {
-			coreBase.setParam(paramName, param);
-			return this;
-		}
-	}
-
-	@Override
-	final public void run() {
-		launch(port);
 	}
 
 	public Object getSystemParam(String key) {
@@ -105,14 +47,9 @@ abstract public class CoreBase<PacketType, SendDataType, ReceiveDataType> implem
 		}
 		return new JSONObject();
 	}
-
-	public void start() {
-		new Thread(this).start();
+	
+	protected void initPeer(Peer<PacketType> peer, Writer<PacketType> writer, LifeCycle life) {
+		peer.setLifeCycle(life);
+		peer.setWriter(writer);		
 	}
-
-	protected abstract void setPeer(Peer<PacketType> peer);
-	public abstract void usePeerServer(SecureFactory<PacketType> sec, Business<PacketType, SendDataType, ReceiveDataType> business);
-	public abstract void usePeerServer(Business<PacketType, SendDataType, ReceiveDataType> business);
-	public abstract String getServerLog();
-	protected abstract void setParam(String paramName, Object param);
 }

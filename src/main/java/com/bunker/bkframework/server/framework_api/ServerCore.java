@@ -4,7 +4,6 @@ import com.bunker.bkframework.newframework.LifeCycle;
 import com.bunker.bkframework.newframework.Peer;
 
 public interface ServerCore<PacketType> {
-	public void launch(int port);
-	public LifeCycle getLifeCycle();
+	public void start();
 	public Peer<PacketType> getPrototypePeer();
 }

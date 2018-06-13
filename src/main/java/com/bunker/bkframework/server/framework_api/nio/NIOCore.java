@@ -21,7 +21,7 @@ import com.bunker.bkframework.newframework.Peer;
 import com.bunker.bkframework.newframework.PeerLife;
 import com.bunker.bkframework.newframework.Resource;
 import com.bunker.bkframework.sec.SecureFactory;
-import com.bunker.bkframework.server.framework_api.CoreBase;
+import com.bunker.bkframework.server.framework_api.SocketCore;
 import com.bunker.bkframework.server.framework_api.ServerPeer;
 import com.bunker.bkframework.server.framework_api.ZombieKiller;
 import com.bunker.bkframework.server.framework_api.nio.NIOResourcePool.NIOResource;
@@ -46,7 +46,7 @@ import com.bunker.bkframework.server.resilience.Resilience;
  *
  *
  */
-public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements LifeCycle, ResourceEmptyCallback {
+public class NIOCore extends SocketCore<ByteBuffer, byte[], byte[]> implements LifeCycle, ResourceEmptyCallback {
 	private Selector selector;
 	private ThreadPool threadPool;
 	private NIOResourcePool mResourcePool;
@@ -255,7 +255,7 @@ public class NIOCore extends CoreBase<ByteBuffer, byte[], byte[]> implements Lif
 	@Override
 	protected void setPeer(Peer<ByteBuffer> peer) {
 		prototypePeer = peer;
-		prototypePeer.setLifeCycle(this);
+		initPeer(peer, null, this);
 	}
 
 	@Override

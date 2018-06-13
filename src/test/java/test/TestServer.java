@@ -9,8 +9,8 @@ import java.util.TimerTask;
 
 import org.json.JSONObject;
 
-import com.bunker.bkframework.server.framework_api.CoreBase;
-import com.bunker.bkframework.server.framework_api.CoreBase.CoreBuilder;
+import com.bunker.bkframework.server.framework_api.SocketCore;
+import com.bunker.bkframework.server.framework_api.SocketCore.SocketCoreBuilder;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 import com.bunker.bkframework.server.framework_api.nio.NIOCore;
 import com.bunker.bkframework.server.framework_api.nio.NIOJsonBusiness;
@@ -48,7 +48,7 @@ public class TestServer {
 
 	public TestServer() {
 		NIOJsonBusiness business = new NIOJsonBusiness();
-		CoreBase<ByteBuffer, byte[], byte[]> core = new CoreBuilder<ByteBuffer, byte[], byte[]>(NIOCore.class)
+		SocketCore<ByteBuffer, byte[], byte[]> core = new SocketCoreBuilder<ByteBuffer, byte[], byte[]>(NIOCore.class)
 				.setParam("wrtie_buffer", 8)
 				.setPort(9011)
 				.useServerPeer(business)
