@@ -16,6 +16,7 @@ import com.bunker.bkframework.newframework.Resource;
 public class NIOResourcePool {
 	private final String _TAG = "NIOResourcePool";
 	private ResourceEmptyCallback mEmptyCallback;
+	private boolean mLoggingOn = true;
 
 	public class NIOResource implements Resource<ByteBuffer>{
 		private ByteBuffer remainBuffer;
@@ -40,7 +41,7 @@ public class NIOResourcePool {
 
 		@Override
 		public ByteBuffer getReadBuffer() {
-			//TODO °úºÎÇÏ Ã¼Å©
+			//TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 			if (remainBuffer == null) {
 				return ByteBuffer.allocateDirect(Constants.PACKET_DEFAULT_TOTAL_SIZE);
 			}
@@ -51,7 +52,8 @@ public class NIOResourcePool {
 		@Override
 		public void destroy() {
 			resourceMap.remove(mKey);
-			Logger.logging(_TAG, "resource killed, count:" + resourceMap.size());
+			if (mLoggingOn)
+				Logger.logging(_TAG, "resource killed, count:" + resourceMap.size());
 			if (resourceMap.size() == 0) {
 				System.gc();
 			}
@@ -85,7 +87,8 @@ public class NIOResourcePool {
 	public NIOResource newPeer(SelectionKey key, Peer<ByteBuffer> peer) {
 		NIOResource resource = new NIOResource(key, peer);
 		resourceMap.put(key, resource);
-		Logger.logging(_TAG, "resource added, count:" + resourceMap.size());
+		if (mLoggingOn)
+			Logger.logging(_TAG, "resource added, count:" + resourceMap.size());
 		return resource;
 	}
 
@@ -95,5 +98,9 @@ public class NIOResourcePool {
 
 	public int getResourceCount() {
 		return resourceMap.size();
+	}
+	
+	public void enableLog(boolean on) {
+		mLoggingOn = on;
 	}
 }

@@ -15,11 +15,11 @@ import com.bunker.bkframework.newframework.Writer;
 public abstract class CoreBase<PacketType> implements ServerCore<PacketType>, CoreController {
 	private final String _TAG = "CoreBase";
 	private JSONObject mSystemParam;
-	
+
 	public CoreBase() {
 		mSystemParam = parseParamFile();
 	}
-	
+
 	public void start() {
 		
 	}
@@ -50,6 +50,6 @@ public abstract class CoreBase<PacketType> implements ServerCore<PacketType>, Co
 	
 	protected void initPeer(Peer<PacketType> peer, Writer<PacketType> writer, LifeCycle life) {
 		peer.setLifeCycle(life);
-		peer.setWriter(writer);		
+		peer.setWriter(writer);
 	}
 }

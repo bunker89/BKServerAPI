@@ -79,7 +79,7 @@ abstract public class SocketCore<PacketType, SendDataType, ReceiveDataType> exte
 	public abstract LifeCycle getLifeCycle();
 	public abstract void launch(int port); 
 	public abstract String getServerLog();
-	protected abstract void setParam(String paramName, Object param);
+	public abstract void setParam(String paramName, Object param);
 	protected abstract void setPeer(Peer<PacketType> peer);
 	public abstract void usePeerServer(SecureFactory<PacketType> sec, Business<PacketType, SendDataType, ReceiveDataType> business);
 	public abstract void usePeerServer(Business<PacketType, SendDataType, ReceiveDataType> business);

@@ -15,6 +15,11 @@ public class TextServerCore extends CoreBase<String> {
 	}
 
 	@Override
+	public void setParam(String paramName, Object param) {
+	}
+
+	//---------------아래로 서버 컨트롤 관련
+	@Override
 	public void suspendNewPeer() {
 	}
 
@@ -39,4 +44,5 @@ public class TextServerCore extends CoreBase<String> {
 	public boolean moduleStart() {
 		return false;
 	}
+
 }

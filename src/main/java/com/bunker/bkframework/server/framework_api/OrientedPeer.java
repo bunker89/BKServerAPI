@@ -12,7 +12,7 @@ import com.bunker.bkframework.newframework.Resource;
 import com.bunker.bkframework.sec.SecureFactory;
 import com.bunker.bkframework.server.framework_api.ZombieKiller.Killable;
 
-public class ServerPeer<PacketType, SendDataType, ReceiveDataType> extends BusinessPeer<PacketType, SendDataType, ReceiveDataType> implements Killable {
+public class OrientedPeer<PacketType, SendDataType, ReceiveDataType> extends BusinessPeer<PacketType, SendDataType, ReceiveDataType> implements Killable {
 	private ZombieKiller mKiller = new ZombieKiller();
 
 	//--------���� �ȵǴ� ������
@@ -21,13 +21,13 @@ public class ServerPeer<PacketType, SendDataType, ReceiveDataType> extends Busin
 	private boolean mCloseLoopGuard = false;
 	private boolean mIsNetInited = false;
 
-	public ServerPeer(PacketFactory<PacketType> factory, SecureFactory<PacketType> secFac,
+	public OrientedPeer(PacketFactory<PacketType> factory, SecureFactory<PacketType> secFac,
 			BusinessConnector<PacketType, SendDataType, ReceiveDataType> business, int maxPeer) {
 		super(factory, secFac, business);
 		mKiller.start();
 	}
 
-	public ServerPeer(PacketFactory<PacketType> factory, BusinessConnector<PacketType, SendDataType, ReceiveDataType> business, int maxPeer) {
+	public OrientedPeer(PacketFactory<PacketType> factory, BusinessConnector<PacketType, SendDataType, ReceiveDataType> business, int maxPeer) {
 		this(factory, null, business, maxPeer);
 	}
 

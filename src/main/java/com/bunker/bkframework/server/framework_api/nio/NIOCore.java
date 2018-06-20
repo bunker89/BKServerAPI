@@ -11,18 +11,18 @@ import java.util.Iterator;
 import java.util.function.BiConsumer;
 
 import com.bunker.bkframework.business.Business;
-import com.bunker.bkframework.business.ByteBufferBusinessConnector;
 import com.bunker.bkframework.newframework.Constants;
 import com.bunker.bkframework.newframework.FixedSizeByteBufferPacketFactory;
 import com.bunker.bkframework.newframework.LifeCycle;
 import com.bunker.bkframework.newframework.Logger;
-import com.bunker.bkframework.newframework.NIOWriter;
 import com.bunker.bkframework.newframework.Peer;
 import com.bunker.bkframework.newframework.PeerLife;
 import com.bunker.bkframework.newframework.Resource;
+import com.bunker.bkframework.nio.ByteBufferBusinessConnector;
+import com.bunker.bkframework.nio.NIOWriter;
 import com.bunker.bkframework.sec.SecureFactory;
+import com.bunker.bkframework.server.framework_api.OrientedPeer;
 import com.bunker.bkframework.server.framework_api.SocketCore;
-import com.bunker.bkframework.server.framework_api.ServerPeer;
 import com.bunker.bkframework.server.framework_api.ZombieKiller;
 import com.bunker.bkframework.server.framework_api.nio.NIOResourcePool.NIOResource;
 import com.bunker.bkframework.server.resilience.DefaultResilience;
@@ -268,13 +268,13 @@ public class NIOCore extends SocketCore<ByteBuffer, byte[], byte[]> implements L
 	@Override
 	public void usePeerServer(SecureFactory<ByteBuffer> sec, Business<ByteBuffer, byte[], byte[]> business) {
 		if (sec != null)
-			prototypePeer = new ServerPeer<ByteBuffer, byte[], byte[]>(new FixedSizeByteBufferPacketFactory(), sec, new ByteBufferBusinessConnector(business), 2000);
+			prototypePeer = new OrientedPeer<ByteBuffer, byte[], byte[]>(new FixedSizeByteBufferPacketFactory(), sec, new ByteBufferBusinessConnector(business), 2000);
 		setPeer(prototypePeer);
 	}
 
 	@Override
 	public void usePeerServer(Business<ByteBuffer, byte[], byte[]> business) {
-		prototypePeer = new ServerPeer<ByteBuffer, byte[], byte[]>(new FixedSizeByteBufferPacketFactory(), new ByteBufferBusinessConnector(business), 2000);
+		prototypePeer = new OrientedPeer<ByteBuffer, byte[], byte[]>(new FixedSizeByteBufferPacketFactory(), new ByteBufferBusinessConnector(business), 2000);
 		setPeer(prototypePeer);
 	}
 
@@ -291,8 +291,8 @@ public class NIOCore extends SocketCore<ByteBuffer, byte[], byte[]> implements L
 			}
 		};
 
-		if (prototypePeer instanceof ServerPeer) {
-			String zombieLog = makeZombieData(((ServerPeer<ByteBuffer, byte[], byte[]>) prototypePeer).getZombieKiller());
+		if (prototypePeer instanceof OrientedPeer) {
+			String zombieLog = makeZombieData(((OrientedPeer<ByteBuffer, byte[], byte[]>) prototypePeer).getZombieKiller());
 		}
 		mResourcePool.forEarch(consumer);
 		return "test";
@@ -303,9 +303,12 @@ public class NIOCore extends SocketCore<ByteBuffer, byte[], byte[]> implements L
 	}
 
 	@Override
-	protected void setParam(String paramName, Object param) {
+	public void setParam(String paramName, Object param) {
 		if (paramName.equals("write_buffer"))
 			mWriteBufferSizeKb = (int) param;
+		if (paramName.equals("resource_log_enable")) {
+			mResourcePool.enableLog((boolean) param);
+		}
 	}
 
 	@Override
