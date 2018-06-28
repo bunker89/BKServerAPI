@@ -4,11 +4,11 @@ import org.json.JSONObject;
 
 public class WorkTrace {
 	private int mIndex = 0;
-	private int mWork;
+	private Object mWork;
 	private String mWorkName;
 	private JSONObject mJson;
 
-	public void setWorkNumber(int work) {
+	public void setWork(Object work) {
 		mWork = work;
 	}
 	

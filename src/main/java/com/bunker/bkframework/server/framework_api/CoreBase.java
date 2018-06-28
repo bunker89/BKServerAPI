@@ -21,7 +21,6 @@ public abstract class CoreBase<PacketType> implements ServerCore<PacketType>, Co
 	}
 
 	public void start() {
-		
 	}
 
 	public Object getSystemParam(String key) {

@@ -1,7 +1,6 @@
 package com.bunker.bkframework.server.framework_api;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -78,22 +77,22 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 
 	private void driveJson(PeerConnection<SendDataType> connection, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		if (!json.has("working"))
-			throw new NullPointerException("JSon has no working data");
-		int work = json.getInt("working");
+			throw new NullPointerException("json doesn't has working data");
+		Object work = json.get("working");
 		Working working = WorkingFlyWeight.getWorking(work);
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
 		
 		WorkTrace trace = new WorkTrace();
-		trace.setWorkNumber(work);
+		trace.setWork(work);
 		trace.setName(working.getName());
 		
 		Map<String, Object> enviroment = connection.getEnviroment();
 		WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, enviroment, trace);
-		sendToPeer(connection, result, sequence);
 		addTrace(enviroment, trace);
+		sendToPeer(connection, result, sequence);
 	}
-	
+
 	protected abstract void sendToPeer(PeerConnection<SendDataType> connection, WorkingResult result, int sequence);
 
 	private void addTrace(Map<String, Object> enviroment, WorkTrace trace) {
