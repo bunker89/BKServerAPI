@@ -1,13 +1,22 @@
 package com.bunker.bkframework.server.framework_api.text;
 
+import com.bunker.bkframework.business.Business;
+import com.bunker.bkframework.business.BusinessPeer;
 import com.bunker.bkframework.newframework.Peer;
 import com.bunker.bkframework.server.framework_api.CoreBase;
+import com.bunker.bkframework.text.TextBusinessConnector;
+import com.bunker.bkframework.text.TextPacketFactory;
 
 public class TextServerCore extends CoreBase<String> {
+	private BusinessPeer<String, String, String> mPrototype;	
+
+	public TextServerCore(Business<String, String, String> business) {
+		mPrototype = new BusinessPeer<>(new TextPacketFactory(), new TextBusinessConnector(business));
+	}
 
 	@Override
 	public Peer<String> getPrototypePeer() {
-		return null;
+		return mPrototype;
 	}
 
 	@Override
