@@ -53,5 +53,4 @@ public class TextServerCore extends CoreBase<String> {
 	public boolean moduleStart() {
 		return false;
 	}
-
 }

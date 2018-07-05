@@ -1,14 +1,29 @@
 package com.bunker.bkframework.server.working;
 
-public abstract class WorkingSkeletone implements Working {
+import java.util.Map;
+
+import org.json.JSONObject;
+
+import com.bunker.bkframework.server.framework_api.WorkTrace;
+
+@BKWork(key = "workSkeleton")
+public class WorkingSkeletone implements Working {
+
+	@Override
+	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public String getName() {
-		return "unknown";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public String getDescription() {
-		return "nothing";
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
