@@ -19,6 +19,8 @@ import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingFlyWeight;
 import com.bunker.bkframework.server.working.WorkingResult;
 
+import connection.TestPeerConnection;
+
 public class TestServer {
 	public class TestWorking implements Working {
 		@Override
