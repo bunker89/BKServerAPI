@@ -34,7 +34,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	}
 
 	private boolean mLogActionInited = false;
-	private Map<Integer, WorkLog> mWorkLogMap;
+	private Map<String, WorkLog> mWorkLogMap;
 	private final Object mLogMutex = new Object();
 
 	@Override
@@ -55,7 +55,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	protected abstract JSONObject createJSON(ReceiveDataType data);
 
 	private void loggingDriveJson(PeerConnection<SendDataType> connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
-		int work = json.getInt("working");
+		String work = json.getString("working");
 		long time = Calendar.getInstance().getTimeInMillis();
 		driveJson(connector, json, sequence);
 		time = Calendar.getInstance().getTimeInMillis() - time;
@@ -122,10 +122,10 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	@Override
 	public List<Pair> logging() {
 		JSONArray jsonArray = new JSONArray();
-		Iterator<Entry<Integer, WorkLog>> iter = mWorkLogMap.entrySet().iterator();
+		Iterator<Entry<String, WorkLog>> iter = mWorkLogMap.entrySet().iterator();
 
 		while (iter.hasNext()) {
-			Entry<Integer, WorkLog> entry = iter.next();
+			Entry<String, WorkLog> entry = iter.next();
 			WorkLog log = entry.getValue();
 			int averageTime = log.mAccumTime / log.mAccumCount;
 			JSONObject json = new JSONObject();

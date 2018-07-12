@@ -3,6 +3,7 @@ package com.bunker.bkframework.server.working;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,21 @@ public class WorkContainer {
 		mPublicWork.put(key, work);
 		loggingWork("public", key, work);
 	}
+	
+	public void addLinkedWork(String key, String[]workKeys) {
+		StaticLinkedWorking linkedWorking = new StaticLinkedWorking();
+		List<Working> workings = new LinkedList<>();
+		for (String k : workKeys) {
+			Working work = getWork(k);
+			if (work == null) {
+				throw new NullPointerException(_TAG + ", addLinkedWork error, key not registered" + k);
+			}
+			workings.add(work);
+		}
+		linkedWorking.setWorkLink(workings);
+		addWork(key, linkedWorking);
+		Logger.logging(_TAG, "[" + key + "] needs " + linkedWorking.getParamRequired());
+	}
 
 	private void loggingWork(String range, String key, Working work) {
 		Logger.logging(_TAG, "[" + mName + "]" + " registered " + range + " key " + "[" + key + "],named " + work.getName() + "");
@@ -57,7 +73,6 @@ public class WorkContainer {
 					addWorkPrivate(annotation.key(), c.newInstance());
 				}
 			}
-			BKLinkedWork linked = c.getAnnotation(BKLinkedWork.class);
 		}
 	}
 

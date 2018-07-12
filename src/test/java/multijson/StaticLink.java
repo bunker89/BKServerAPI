@@ -6,9 +6,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.bunker.bkframework.server.working.BKWork;
-import com.bunker.bkframework.server.working.MultiJSONWorking;
 import com.bunker.bkframework.server.working.StaticLinkedWorking;
-import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingBase;
 
@@ -25,8 +23,10 @@ public class StaticLink {
 
 	@Test
 	public void test() {
+		List<Working> list = new LinkedList<>();
+		list.add(new Worka());
+		list.add(new Workb());
 		StaticLinkedWorking multiJson = new StaticLinkedWorking();
-		multiJson.addWorkLink(new Worka());
-		multiJson.addWorkLink(new Workb());
+		multiJson.setWorkLink(list);
 	}
 }
