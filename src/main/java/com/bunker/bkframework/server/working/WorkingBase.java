@@ -6,24 +6,25 @@ import org.json.JSONObject;
 
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
-@BKWork(key = "workSkeleton")
-public class WorkingSkeletone implements Working {
-
+/**
+ * must created by default constructor
+ * @author 광수
+ *
+ */
+@BKWork(key = "work-base")
+public class WorkingBase implements Working {
 	@Override
 	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "no named";
 	}
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

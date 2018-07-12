@@ -7,10 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(value = { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BKWork {
-	public boolean enable() default true;
-	public boolean isPublic() default false;
-	public String key();
-	public String []input() default {};
-	public String []output() default {};
+public @interface BKLinkedWork {
+	public String[] names();
 }

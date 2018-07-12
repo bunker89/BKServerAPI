@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
+import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.working.BKWork;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
@@ -20,7 +21,7 @@ public class T {
 			loadWorkings(p);
 		}
 	}
-
+	
 	public void loadWorkings(String packageName) throws InstantiationException, IllegalAccessException {
 		Reflections reflections = new Reflections(packageName);
 		Set<Class<? extends Working>> classes = reflections.getSubTypesOf(Working.class);
@@ -37,11 +38,12 @@ public class T {
 	}
 	
 	public static void main(String []args) {
-		WorkContainer container = new WorkContainer();
+		WorkContainer container = new WorkContainer("test");
 		try {
 			new T(container).loadWorkings("com.bunker.bkframework");
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
+	
 }

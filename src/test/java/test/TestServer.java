@@ -15,8 +15,8 @@ import com.bunker.bkframework.server.framework_api.WorkTrace;
 import com.bunker.bkframework.server.framework_api.nio.NIOCore;
 import com.bunker.bkframework.server.framework_api.nio.NIOJsonBusiness;
 import com.bunker.bkframework.server.reserved.Pair;
+import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
-import com.bunker.bkframework.server.working.WorkingFlyWeight;
 import com.bunker.bkframework.server.working.WorkingResult;
 
 import connection.TestPeerConnection;
@@ -49,7 +49,8 @@ public class TestServer {
 	}
 
 	public TestServer() {
-		NIOJsonBusiness business = new NIOJsonBusiness();
+		WorkContainer works = new WorkContainer();
+		NIOJsonBusiness business = new NIOJsonBusiness(works);
 		SocketCore<ByteBuffer, byte[], byte[]> core = new SocketCoreBuilder<ByteBuffer, byte[], byte[]>(NIOCore.class)
 				.setParam("wrtie_buffer", 8)
 				.setPort(9011)
@@ -60,9 +61,9 @@ public class TestServer {
 
 		business.bindAction();
 		TestWorking working = new TestWorking();
-		WorkingFlyWeight.setCreatedWorking(1, working);
+		works.addWork("1", working);
 		JSONObject json = new JSONObject();
-		json.put("working", 1);
+		json.put("working", "1");
 
 		business.receive(new TestPeerConnection(), json.toString().getBytes(), 1);
 

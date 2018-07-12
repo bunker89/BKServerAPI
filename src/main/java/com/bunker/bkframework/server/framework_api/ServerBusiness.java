@@ -17,12 +17,17 @@ import com.bunker.bkframework.business.PeerConnection;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.reserved.LogComposite;
 import com.bunker.bkframework.server.reserved.Pair;
+import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
-import com.bunker.bkframework.server.working.WorkingFlyWeight;
 import com.bunker.bkframework.server.working.WorkingResult;
 
 public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> implements Business<PacketType, SendDataType, ReceiveDataType>, LogComposite {
 	private final String _TAG = getClass().getSimpleName();
+	private WorkContainer mWorkContainer;
+	
+	public ServerBusiness(WorkContainer workContainer) {
+		mWorkContainer = workContainer;
+	}
 
 	private class WorkLog {
 		private int mAccumTime, mAccumCount, mMaxCalTime;
@@ -78,8 +83,8 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	private void driveJson(PeerConnection<SendDataType> connection, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		if (!json.has("working"))
 			throw new NullPointerException("json doesn't has working data");
-		Object work = json.get("working");
-		Working working = WorkingFlyWeight.getWorking(work);
+		String work = json.getString("working");
+		Working working = mWorkContainer.getPublicWork(work);
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
 		
@@ -88,7 +93,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 		trace.setName(working.getName());
 		
 		Map<String, Object> enviroment = connection.getEnviroment();
-		WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, enviroment, trace);
+		WorkingResult result = mWorkContainer.getPublicWork(work).doWork(json, enviroment, trace);
 		addTrace(enviroment, trace);
 		sendToPeer(connection, result, sequence);
 	}

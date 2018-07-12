@@ -1,4 +1,4 @@
-package com.bunker.bkframework.server.framework_api;
+package com.bunker.bkframework.server.working;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
@@ -9,13 +9,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.bunker.bkframework.newframework.Logger;
-import com.bunker.bkframework.server.working.Working;
-import com.bunker.bkframework.server.working.WorkingFlyWeight;
-import com.bunker.bkframework.server.working.WorkingResult;
-import com.bunker.bkframework.server.working.WorkingSkeletone;
+import com.bunker.bkframework.server.framework_api.WorkTrace;
 
-public class MultiJSONWorking extends WorkingSkeletone {
+public class MultiJSONWorking extends WorkingBase {
 	private final String _TAG = getClass().getSimpleName();
+	private WorkContainer mWorkContainer;
+
+	public MultiJSONWorking(WorkContainer workContainer) {
+		mWorkContainer = workContainer;
+	}
 
 	@Override
 	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
@@ -30,7 +32,7 @@ public class MultiJSONWorking extends WorkingSkeletone {
 		}
 		return result;
 	}
-	
+
 	private JSONArray doClient(JSONArray workingArray, Map<String, Object> enviroment) {
 		JSONArray resultArray = new JSONArray();
 		
@@ -56,6 +58,7 @@ public class MultiJSONWorking extends WorkingSkeletone {
 		while (keys.hasNext()) {
 			String s = keys.next();
 			if (!s.equals("result")) {
+				dest.remove(s);
 				dest.put(s, src.get(s));
 			}
 		}
@@ -64,8 +67,8 @@ public class MultiJSONWorking extends WorkingSkeletone {
 	private WorkingResult driveJson(JSONObject json, Map<String, Object> enviroment) throws UnsupportedEncodingException {
 		if (!json.has("working"))
 			throw new NullPointerException("json doesn't has working data");
-		Object work = json.get("working");
-		Working working = WorkingFlyWeight.getWorking(work);
+		String work = json.getString("working");
+		Working working = mWorkContainer.getPublicWork(work);
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
 		
@@ -73,7 +76,7 @@ public class MultiJSONWorking extends WorkingSkeletone {
 		trace.setWork(work);
 		trace.setName(working.getName());
 		
-		WorkingResult result = WorkingFlyWeight.getWorking(work).doWork(json, enviroment, trace);
+		WorkingResult result = mWorkContainer.getPublicWork(work).doWork(json, enviroment, trace);
 		addTrace(enviroment, trace);
 		return result;
 	}

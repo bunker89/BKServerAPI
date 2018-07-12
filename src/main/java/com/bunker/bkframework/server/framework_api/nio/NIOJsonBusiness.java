@@ -7,9 +7,14 @@ import org.json.JSONObject;
 
 import com.bunker.bkframework.business.PeerConnection;
 import com.bunker.bkframework.server.framework_api.ServerBusiness;
+import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.WorkingResult;
 
 public class NIOJsonBusiness extends ServerBusiness<ByteBuffer, byte[], byte[]> {
+
+	public NIOJsonBusiness(WorkContainer workContainer) {
+		super(workContainer);
+	}
 
 	@Override
 	protected JSONObject createJSON(byte[] data) {
