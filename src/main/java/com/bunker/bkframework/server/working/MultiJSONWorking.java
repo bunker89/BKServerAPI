@@ -11,12 +11,16 @@ import org.json.JSONObject;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
+@BKWork(key = "multi-json")
 public class MultiJSONWorking extends WorkingBase {
 	private final String _TAG = getClass().getSimpleName();
 	private WorkContainer mWorkContainer;
 
-	public MultiJSONWorking(WorkContainer workContainer) {
-		mWorkContainer = workContainer;
+	public MultiJSONWorking() {
+	}
+	
+	public void setWorkContainer(WorkContainer workContainer) {
+		mWorkContainer = workContainer;		
 	}
 
 	@Override

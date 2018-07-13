@@ -12,7 +12,7 @@ import com.bunker.bkframework.server.framework_api.WorkTrace;
  *
  */
 @BKWork(key = "work-base", input={"ab", "cd"})
-public class WorkingBase implements Working {
+class WorkingBase implements Working {
 	@Override
 	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 		return null;
