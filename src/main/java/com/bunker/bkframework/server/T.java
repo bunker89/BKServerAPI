@@ -4,7 +4,6 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
-import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.working.BKWork;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;

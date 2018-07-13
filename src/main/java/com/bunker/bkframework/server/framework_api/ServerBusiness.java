@@ -55,14 +55,15 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	protected abstract JSONObject createJSON(ReceiveDataType data);
 
 	private void loggingDriveJson(PeerConnection<SendDataType> connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
-		String work = json.getString("working");
+		Object workObj = json.get("working");
+		String workKey = objKeyToString(workObj);
 		long time = Calendar.getInstance().getTimeInMillis();
 		driveJson(connector, json, sequence);
 		time = Calendar.getInstance().getTimeInMillis() - time;
-		if (!mWorkLogMap.containsKey(work)) {
+		if (!mWorkLogMap.containsKey(workKey)) {
 			synchronized (mLogMutex) {
-				if (!mWorkLogMap.containsKey(work)) {
-					mWorkLogMap.put(work, new WorkLog());
+				if (!mWorkLogMap.containsKey(workKey)) {
+					mWorkLogMap.put(workKey, new WorkLog());
 				}
 			}
 		}
@@ -70,7 +71,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 		if (time > 10000000)
 			time = 10000000;
 
-		WorkLog wLog = mWorkLogMap.get(work);
+		WorkLog wLog = mWorkLogMap.get(workKey);
 
 		synchronized (mLogMutex) {
 			wLog.mAccumCount++;
@@ -83,19 +84,24 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	private void driveJson(PeerConnection<SendDataType> connection, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		if (!json.has("working"))
 			throw new NullPointerException("json doesn't has working data");
-		String work = json.getString("working");
-		Working working = mWorkContainer.getPublicWork(work);
+		Object workObj = json.get("working");
+		String workKey = objKeyToString(workObj);
+		Working working = mWorkContainer.getPublicWork(workKey);
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
 		
 		WorkTrace trace = new WorkTrace();
-		trace.setWork(work);
+		trace.setWork(workKey);
 		trace.setName(working.getName());
 		
 		Map<String, Object> enviroment = connection.getEnviroment();
-		WorkingResult result = mWorkContainer.getPublicWork(work).doWork(json, enviroment, trace);
+		WorkingResult result = mWorkContainer.getPublicWork(workKey).doWork(json, enviroment, trace);
 		addTrace(enviroment, trace);
 		sendToPeer(connection, result, sequence);
+	}
+	
+	private String objKeyToString(Object workObj) {
+		return workObj instanceof Number ? workObj + "" : workObj.toString();
 	}
 
 	protected abstract void sendToPeer(PeerConnection<SendDataType> connection, WorkingResult result, int sequence);

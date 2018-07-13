@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.json.JSONObject;
+import org.junit.Test;
 
 import com.bunker.bkframework.server.framework_api.SocketCore.SocketCoreBuilder;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
@@ -24,6 +25,7 @@ public class TestServer {
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 			WorkingResult result = new WorkingResult();
 			result.putReplyParam("result", true);
+			System.out.println("abc");
 			return result;
 		}
 
@@ -40,7 +42,8 @@ public class TestServer {
 		}		
 	}
 
-	public TestServer() {
+	
+	public @Test void testServer() {
 		WorkContainer works = new WorkContainer("test");
 		NIOJsonBusiness business = new NIOJsonBusiness(works);
 		new Thread(new SocketCoreBuilder<ByteBuffer, byte[], byte[]>(NIOCore.class).
@@ -54,7 +57,9 @@ public class TestServer {
 		works.addWork("1", working);
 		JSONObject json = new JSONObject();
 		json.put("working", "1");
-		business.receive(new TestPeerConnection(), json.toString().getBytes(), 1);
+		TestPeerConnection connection = new TestPeerConnection();
+		business.established(connection);
+		business.receive(connection, json.toString().getBytes(), 1);
 
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
