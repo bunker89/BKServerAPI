@@ -1,9 +1,9 @@
 package com.bunker.bkframework.server.framework_api;
 
-import com.bunker.bkframework.newframework.Peer;
+import com.bunker.bkframework.server.BKLauncher;
 
-public interface ServerCore<PacketType> {
+public interface ServerCore {
 	public void start();
-	public Peer<PacketType> getPrototypePeer();
 	public void setParam(String paramName, Object param);
+	public void setBKLauncher(BKLauncher launcher);
 }
