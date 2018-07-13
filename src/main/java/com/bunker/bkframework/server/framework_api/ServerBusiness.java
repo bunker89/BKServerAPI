@@ -107,8 +107,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	protected abstract void sendToPeer(PeerConnection<SendDataType> connection, WorkingResult result, int sequence);
 
 	private void addTrace(Map<String, Object> enviroment, WorkTrace trace) {
-		@SuppressWarnings("unchecked")
-		List<WorkTrace> list = (List<WorkTrace>) enviroment.get("trace_list");
+		WorkTraceList list = (WorkTraceList) enviroment.get("trace_list");
 		list.add(trace);
 	}
 
@@ -122,7 +121,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	public void established(PeerConnection<SendDataType> b) {
 		b.getEnviroment().put("connection", b);
 		b.getEnviroment().put("session", new Session());
-		b.getEnviroment().put("trace_list", new LinkedList<>());
+		b.getEnviroment().put("trace_list", new WorkTraceList());
 	}
 
 	@Override
