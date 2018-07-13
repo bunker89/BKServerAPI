@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BKWork {
 	public boolean enable() default true;
-	public boolean isPublic() default false;
+	public boolean isPublic() default true;
 	public String key();
 	public String []input() default {};
 	public String []output() default {};
