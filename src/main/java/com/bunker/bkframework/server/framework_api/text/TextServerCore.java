@@ -2,13 +2,18 @@ package com.bunker.bkframework.server.framework_api.text;
 
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.BusinessPeer;
+import com.bunker.bkframework.newframework.LifeCycle;
+import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.newframework.Peer;
+import com.bunker.bkframework.newframework.PeerLife;
 import com.bunker.bkframework.server.framework_api.CoreBase;
 import com.bunker.bkframework.text.TextBusinessConnector;
 import com.bunker.bkframework.text.TextPacketFactory;
+import com.bunker.bkframework.text.TextWriter;
 
-public class TextServerCore extends CoreBase<String> {
-	private BusinessPeer<String, String, String> mPrototype;	
+public class TextServerCore extends CoreBase<String> implements LifeCycle {
+	private final String _TAG = "TextServerCore";
+	private Peer<String> mPrototype;	
 
 	public TextServerCore(Business<String, String, String> business) {
 		mPrototype = new BusinessPeer<>(new TextPacketFactory(), new TextBusinessConnector(business));
@@ -25,6 +30,30 @@ public class TextServerCore extends CoreBase<String> {
 
 	@Override
 	public void setParam(String paramName, Object param) {
+	}
+
+	public String doWork(String string) {
+		TextWriter writer = new TextWriter();
+		@SuppressWarnings("unchecked")
+		Peer<String> newPeer = newPeer(writer);
+		newPeer.dispatch(string);
+		newPeer.run();
+		return writer.getResult();
+	}
+
+	private Peer<String> newPeer(TextWriter writer) {
+		try {
+			Peer<String> newPeer = (Peer<String>) mPrototype.clone();
+			initPeer(newPeer, writer, this);
+			newPeer.networkInited(new TextResource());
+			newPeer.setWriter(writer);
+
+			return newPeer;
+		} catch (CloneNotSupportedException e) {
+			Logger.err(_TAG, "clone err", e);
+		}
+		
+		return null;
 	}
 
 	//---------------아래로 서버 컨트롤 관련
@@ -52,5 +81,12 @@ public class TextServerCore extends CoreBase<String> {
 	@Override
 	public boolean moduleStart() {
 		return false;
+	}
+
+	@Override
+	public void manageLife(PeerLife arg0) {
+		while (arg0.needRecycle()) {
+			arg0.life();
+		}
 	}
 }

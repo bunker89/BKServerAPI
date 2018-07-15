@@ -24,9 +24,15 @@ import com.bunker.bkframework.server.working.WorkingResult;
 public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> implements Business<PacketType, SendDataType, ReceiveDataType>, LogComposite {
 	private final String _TAG = getClass().getSimpleName();
 	private WorkContainer mWorkContainer;
+	private WorkingResult mExceptionResult = new WorkingResult();
 	
 	public ServerBusiness(WorkContainer workContainer) {
 		mWorkContainer = workContainer;
+	}
+	
+	private void initExceptionResult() {
+		mExceptionResult.putReplyParam("result", false);
+		mExceptionResult.putReplyParam("result_detail", "business exception");		
 	}
 
 	private class WorkLog {
@@ -95,9 +101,14 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 		trace.setName(working.getName());
 		
 		Map<String, Object> enviroment = connection.getEnviroment();
-		WorkingResult result = mWorkContainer.getPublicWork(workKey).doWork(json, enviroment, trace);
-		addTrace(enviroment, trace);
-		sendToPeer(connection, result, sequence);
+		try {
+			WorkingResult result = mWorkContainer.getPublicWork(workKey).doWork(json, enviroment, trace);
+			addTrace(enviroment, trace);
+			sendToPeer(connection, result, sequence);
+		} catch (Exception e) {
+			Logger.err(_TAG, "business exception", e);
+			sendToPeer(connection, mExceptionResult, sequence);
+		}
 	}
 	
 	private String objKeyToString(Object workObj) {

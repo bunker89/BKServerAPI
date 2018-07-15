@@ -19,11 +19,14 @@ public class WorkContainer {
 	private final String _TAG = "WorkContainer";
 
 	public WorkContainer() {
-		mName = "unknown";
+		this("unknown");
 	}
 
 	public WorkContainer(String name) {
 		mName = name;
+		MultiJSONWorking multiWork = new MultiJSONWorking();
+		multiWork.setWorkContainer(this);
+		mPublicWork.put("multi-work", multiWork);
 	}
 
 	public void addWorkPrivate(String key, Working work) {
