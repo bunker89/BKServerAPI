@@ -9,6 +9,7 @@ import org.json.JSONTokener;
 
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.ServerCore;
+import com.bunker.bkframework.server.framework_api.ServerDefaultLog;
 
 public class BKLauncher {
 	private JSONObject mSystemParam;
@@ -16,6 +17,7 @@ public class BKLauncher {
 	
 	public void init() {
 		mSystemParam = parseParamFile();
+		initLoggingSystem();
 	}
 
 	public Object getSystemParam(String key) {
@@ -24,6 +26,13 @@ public class BKLauncher {
 		return null;
 	}
 
+	public void initLoggingSystem() {
+		Boolean debug = (Boolean) getSystemParam("debugging");
+		if (debug == null || debug == false) {
+			Logger.mLog = new ServerDefaultLog();
+		}
+	}
+	
 	private JSONObject parseParamFile() {
 		File file = new File("setting.json");
 		if (!file.exists()) {
