@@ -24,14 +24,6 @@ abstract public class SocketCore<PacketType, SendDataType, ReceiveDataType> exte
 			}
 		}
 
-		public SocketCoreBuilder<PacketType, SendDataType, ReceiveDataType> initLoggingSystem() {
-			Boolean debug = (Boolean) coreBase.getSystemParam("debugging");
-			if (debug == null || debug == false) {
-				Logger.mLog = new ServerDefaultLog();
-			}
-			return this;
-		}
-
 		public SocketCoreBuilder<PacketType, SendDataType, ReceiveDataType> peer(Peer<PacketType> peer) {
 			coreBase.setPeer(peer);
 			isDefaultPeer = false;
