@@ -18,7 +18,7 @@ public class MultiJSONWorking extends WorkingBase {
 
 	public MultiJSONWorking() {
 	}
-	
+
 	public void setWorkContainer(WorkContainer workContainer) {
 		mWorkContainer = workContainer;		
 	}
@@ -26,13 +26,13 @@ public class MultiJSONWorking extends WorkingBase {
 	@Override
 	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 		WorkingResult result = new WorkingResult();
-		JSONArray workingArray = object.getJSONArray("working_array");
+		JSONArray workingArray = object.getJSONArray(WorkConstants.MULTI_JSON_WORKING_ARRAY);
 		JSONArray resultArray = doClient(workingArray, enviroment);
 		if (resultArray != null) {
-			result.putReplyParam("result", true);
-			result.putReplyParam("result_array", resultArray);
+			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
+			result.putReplyParam(WorkConstants.MULTI_JSON_RESULT_ARRAY, resultArray);
 		} else {
-			result.putReplyParam("result", false);
+			result.putReplyParam(WorkConstants.WORKING_RESULT, false);
 		}
 		return result;
 	}

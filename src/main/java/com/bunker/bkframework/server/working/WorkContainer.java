@@ -3,7 +3,6 @@ package com.bunker.bkframework.server.working;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +10,7 @@ import java.util.Set;
 import org.reflections.Reflections;
 
 import com.bunker.bkframework.newframework.Logger;
+import com.bunker.bkframework.server.working.StaticLinkedWorking.LinkedWorkingBuilder;
 
 public class WorkContainer {
 	private String mName;
@@ -26,7 +26,8 @@ public class WorkContainer {
 		mName = name;
 		MultiJSONWorking multiWork = new MultiJSONWorking();
 		multiWork.setWorkContainer(this);
-		mPublicWork.put("multi-work", multiWork);
+		mPublicWork.put(WorkConstants.MULTI_JSON_WORKING, multiWork);
+		mPublicWork.put(WorkConstants.KEY_RENAME_WORKING, new KeyRenameWorking());
 	}
 
 	public void addWorkPrivate(String key, Working work) {
@@ -40,18 +41,18 @@ public class WorkContainer {
 	}
 	
 	public void addLinkedWork(String key, String[]workKeys) {
-		StaticLinkedWorking linkedWorking = new StaticLinkedWorking();
-		List<Working> workings = new LinkedList<>();
-		for (String k : workKeys) {
-			Working work = getWork(k);
-			if (work == null) {
-				throw new NullPointerException(_TAG + ", addLinkedWork error, key not registered" + k);
-			}
-			workings.add(work);
+		LinkedWorkingBuilder workBuilder = new LinkedWorkingBuilder(this);
+		
+		for (String s: workKeys) {
+			workBuilder.addWorkLink(s, null);
 		}
-		linkedWorking.setWorkLink(workings);
+		StaticLinkedWorking linkedWorking = workBuilder.build();
 		addWork(key, linkedWorking);
 		Logger.logging(_TAG, "[" + key + "] needs " + linkedWorking.getParamRequired());
+	}
+	
+	public LinkedWorkingBuilder makeLinkedWorkBuilder() {
+		return new LinkedWorkingBuilder(this);
 	}
 
 	private void loggingWork(String range, String key, Working work) {

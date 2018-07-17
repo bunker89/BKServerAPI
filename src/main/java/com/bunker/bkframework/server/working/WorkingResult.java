@@ -1,7 +1,5 @@
 package com.bunker.bkframework.server.working;
 
-import java.io.Serializable;
-
 import org.json.JSONObject;
 
 public class WorkingResult {
