@@ -1,11 +1,13 @@
 package multijson;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
 import org.junit.Test;
 
 import com.bunker.bkframework.server.framework_api.WorkTrace;
+import com.bunker.bkframework.server.framework_api.WorkTraceList;
 import com.bunker.bkframework.server.working.BKWork;
 import com.bunker.bkframework.server.working.KeyConvertBuilder;
 import com.bunker.bkframework.server.working.StaticLinkedWorking;
@@ -20,8 +22,11 @@ public class StaticLink {
 
 		@Override
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
-			// TODO Auto-generated method stub
-			return null;
+			System.out.println("do a" + object);
+			WorkingResult result = new WorkingResult();
+			result.putReplyParam("c", "cv");
+			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
+			return result;
 		}
 
 		@Override
@@ -43,8 +48,12 @@ public class StaticLink {
 
 		@Override
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
-			// TODO Auto-generated method stub
-			return null;
+			System.out.println("do b" + object);
+
+			WorkingResult result = new WorkingResult();
+			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
+			result.putReplyParam("f", "fv");
+			return result;
 		}
 
 		@Override
@@ -68,11 +77,18 @@ public class StaticLink {
 		StaticLinkedWorking working = container.makeLinkedWorkBuilder()
 				.addWorkLink("a")
 				.addWorkLink(WorkConstants.KEY_RENAME_WORKING, new KeyConvertBuilder()
-						.putConvert("f", "e")
+						.putConvert("c", "e")
 						.build())
 				.addWorkLink("b")
 				.build();
 		container.addWork("test", working);
-		System.out.println(working.getParamRequired());
+
+		JSONObject json = new JSONObject();
+		json.put("a", "av");
+		json.put("tt", "tt");
+
+		Map<String, Object> enviroment = new HashMap<>();
+		enviroment.put("trace_list", new WorkTraceList());
+		working.doWork(json, enviroment, null);
 	}
 }

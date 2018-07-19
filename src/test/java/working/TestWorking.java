@@ -15,6 +15,7 @@ public class TestWorking implements Working {
 		WorkingResult result = new WorkingResult();
 		result.putReplyParam("result", true);
 		result.putReplyParam("test", "Tt");
+		System.out.println("TestWorking param" + object);
 		return result;
 	}
 
