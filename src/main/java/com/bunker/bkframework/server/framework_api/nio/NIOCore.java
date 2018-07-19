@@ -31,13 +31,6 @@ import com.bunker.bkframework.server.resilience.RecoverManager;
 import com.bunker.bkframework.server.resilience.Resilience;
 
 /**
- * 占쌘뱄옙 New IO占쏙옙 클占쏙옙占싱억옙트 占쏙옙占쏙옙, read占쏙옙 占쏙옙占시듸옙 클占쏙옙占쏙옙
- * 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 ThreadPool占쏙옙占쏙옙 占쏙옙占쏙옙占싹댐옙 Thread占썽에占쏙옙 占쌘들링 占싹곤옙
- * 채占싸곤옙 占쏙옙占쏙옙占싶몌옙 ThreadPool占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싼댐옙.
- * 
- * New IO占쏙옙 占싱븝옙트 占쏙옙占� LifeCycle占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占실뤄옙
- * 占쏙옙占쏙옙 占쌍기를 占쏙옙청占쏙옙 占쏙옙 占십울옙占쏙옙 占쏙옙큼 占쏙옙占쏙옙構占� 占쏙옙占쏙옙占싹듸옙占쏙옙 占싼댐옙.
- * 
  * Copyright 2016~ by bunker Corp.,
  * All rights reserved.
  *

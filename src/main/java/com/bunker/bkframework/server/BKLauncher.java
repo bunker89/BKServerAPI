@@ -20,6 +20,10 @@ public class BKLauncher {
 		initLoggingSystem();
 	}
 
+	public void setCore(ServerCore core) {
+		core.setBKLauncher(this);
+	}
+	
 	public Object getSystemParam(String key) {
 		if (mSystemParam.has(key))
 			return mSystemParam.get(key);
