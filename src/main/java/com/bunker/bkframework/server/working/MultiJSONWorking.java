@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
-@BKWork(key = "multi-json")
 public class MultiJSONWorking extends WorkingBase {
 	private final String _TAG = getClass().getSimpleName();
 	private WorkContainer mWorkContainer;
@@ -20,7 +19,7 @@ public class MultiJSONWorking extends WorkingBase {
 	}
 
 	public void setWorkContainer(WorkContainer workContainer) {
-		mWorkContainer = workContainer;		
+		mWorkContainer = workContainer;
 	}
 
 	@Override

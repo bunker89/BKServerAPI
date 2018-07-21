@@ -1,6 +1,7 @@
 package com.bunker.bkframework.server.framework_api;
 
 import com.bunker.bkframework.newframework.LifeCycle;
+import com.bunker.bkframework.newframework.PacketFactory;
 import com.bunker.bkframework.newframework.Peer;
 import com.bunker.bkframework.newframework.Writer;
 import com.bunker.bkframework.server.BKLauncher;
@@ -29,4 +30,5 @@ public abstract class CoreBase<PacketType> implements ServerCore, CoreController
 	}
 
 	public abstract Peer<PacketType> getPrototypePeer();
+	public abstract PacketFactory<PacketType> createPacketFactory();
 }

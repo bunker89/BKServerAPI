@@ -4,6 +4,7 @@ import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.BusinessPeer;
 import com.bunker.bkframework.newframework.LifeCycle;
 import com.bunker.bkframework.newframework.Logger;
+import com.bunker.bkframework.newframework.PacketFactory;
 import com.bunker.bkframework.newframework.Peer;
 import com.bunker.bkframework.newframework.PeerLife;
 import com.bunker.bkframework.server.framework_api.CoreBase;
@@ -16,7 +17,7 @@ public class TextServerCore extends CoreBase<String> implements LifeCycle {
 	private Peer<String> mPrototype;	
 
 	public TextServerCore(Business<String, String, String> business) {
-		mPrototype = new BusinessPeer<>(new TextPacketFactory(), new TextBusinessConnector(business));
+		mPrototype = new BusinessPeer<>(createPacketFactory(), new TextBusinessConnector(business));
 	}
 
 	@Override
@@ -88,5 +89,10 @@ public class TextServerCore extends CoreBase<String> implements LifeCycle {
 		while (arg0.needRecycle()) {
 			arg0.life();
 		}
+	}
+
+	@Override
+	public PacketFactory<String> createPacketFactory() {
+		return new TextPacketFactory();
 	}
 }

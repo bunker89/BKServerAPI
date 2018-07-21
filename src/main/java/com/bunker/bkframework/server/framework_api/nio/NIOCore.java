@@ -14,6 +14,7 @@ import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.newframework.Constants;
 import com.bunker.bkframework.newframework.LifeCycle;
 import com.bunker.bkframework.newframework.Logger;
+import com.bunker.bkframework.newframework.PacketFactory;
 import com.bunker.bkframework.newframework.Peer;
 import com.bunker.bkframework.newframework.PeerLife;
 import com.bunker.bkframework.newframework.Resource;
@@ -104,7 +105,7 @@ public class NIOCore extends SocketCore<ByteBuffer, byte[], byte[]> implements L
 			serverSocket.configureBlocking(false);
 			serverSocket.register(selector, SelectionKey.OP_ACCEPT);
 		} catch (IOException e) {
-			Logger.err(_Tag, "NIOserver launch exception");
+			Logger.err(_Tag, "NIOserver launch exception", e);
 		}
 		
 		try {
@@ -267,7 +268,7 @@ public class NIOCore extends SocketCore<ByteBuffer, byte[], byte[]> implements L
 
 	@Override
 	public void usePeerServer(Business<ByteBuffer, byte[], byte[]> business) {
-		prototypePeer = new OrientedPeer<ByteBuffer, byte[], byte[]>(new FixedSizeByteBufferPacketFactory(), new ByteBufferBusinessConnector(business), 2000);
+		prototypePeer = new OrientedPeer<ByteBuffer, byte[], byte[]>(createPacketFactory(), new ByteBufferBusinessConnector(business), 2000);
 		setPeer(prototypePeer);
 	}
 
@@ -330,5 +331,10 @@ public class NIOCore extends SocketCore<ByteBuffer, byte[], byte[]> implements L
 		
 		reStartLoop();
 		return true;
+	}
+
+	@Override
+	public PacketFactory<ByteBuffer> createPacketFactory() {
+		return new FixedSizeByteBufferPacketFactory();
 	}
 }
