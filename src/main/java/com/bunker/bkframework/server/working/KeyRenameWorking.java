@@ -15,19 +15,21 @@ class KeyRenameWorking extends KeyConvertWorking {
 	@Override
 	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 		JSONArray array = object.getJSONArray(WorkConstants.KEY_CONVERT_ARRAY);
+		WorkingResult result = new WorkingResult();
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject json = array.getJSONObject(i);
 			String input = json.getString(WorkConstants.KEY_CONVERT_INPUT);
 			String output = json.getString(WorkConstants.KEY_CONVERT_OUTPUT);
 			if (object.has(input)) {
-				object.put(output, object.remove(input));
+				result.putReplyParam(output, object.remove(input));
 			}
+			object.remove(WorkConstants.KEY_CONVERT_ARRAY);
 		}
-		
-		WorkingResult result = new WorkingResult();
+
 		result.putReplyParam(WorkConstants.WORKING_RESULT, true);
 		return result;
 	}
+
 
 	@Override
 	public String getName() {
