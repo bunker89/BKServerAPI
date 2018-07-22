@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
-@BKWork(key = "key-convert",
+@BKWork(key = WorkConstants.KEY_RENAME_WORKING,
 input={"key-array"})
 class KeyRenameWorking extends KeyConvertWorking {
 
@@ -30,6 +30,7 @@ class KeyRenameWorking extends KeyConvertWorking {
 		return result;
 	}
 
+
 	@Override
 	public String getName() {
 		return "JSONKeyConvertWorking";
@@ -37,7 +38,7 @@ class KeyRenameWorking extends KeyConvertWorking {
 
 	@Override
 	protected void convertKeys(List<String> list, JSONObject convertJSON) {
-		JSONArray array = convertJSON.getJSONArray("key-array");
+		JSONArray array = convertJSON.getJSONArray(WorkConstants.KEY_CONVERT_ARRAY);
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject json = array.getJSONObject(i);
 			String input = json.getString(WorkConstants.KEY_CONVERT_INPUT);

@@ -1,8 +1,6 @@
 package com.bunker.bkframework.server.working;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -20,7 +18,7 @@ public class MultiJSONWorking extends MultiWorking {
 	}
 
 	public void setWorkContainer(WorkContainer workContainer) {
-		mWorkContainer = workContainer;		
+		mWorkContainer = workContainer;
 	}
 
 	@Override
@@ -39,7 +37,7 @@ public class MultiJSONWorking extends MultiWorking {
 
 	private JSONArray doClient(JSONArray workingArray, Map<String, Object> enviroment) {
 		JSONArray resultArray = new JSONArray();
-		
+
 		JSONObject paramJSON = new JSONObject();
 		for (int i = 0; i < workingArray.length(); i++) {
 			JSONObject json = workingArray.getJSONObject(i);
@@ -64,7 +62,7 @@ public class MultiJSONWorking extends MultiWorking {
 				return resultArray;
 			}
 		}
-		
+
 		return resultArray;
 	}
 }

@@ -66,7 +66,6 @@ public class StaticLink {
 			return null;
 		}
 	}
-
 	@Test
 	public void test() {
 		WorkContainer container = new WorkContainer();

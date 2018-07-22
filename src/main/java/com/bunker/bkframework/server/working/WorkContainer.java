@@ -26,8 +26,12 @@ public class WorkContainer {
 		mName = name;
 		MultiJSONWorking multiWork = new MultiJSONWorking();
 		multiWork.setWorkContainer(this);
-		mPublicWork.put(WorkConstants.MULTI_JSON_WORKING, multiWork);
-		mPublicWork.put(WorkConstants.KEY_RENAME_WORKING, new KeyRenameWorking());
+		try {
+			loadWorkings("com.bunker.bkframework.server.working");
+		} catch (InstantiationException | IllegalAccessException e) {
+			Logger.err(_TAG, "framework working error", e);
+		}
+		addWork(WorkConstants.MULTI_JSON_WORKING, multiWork);
 	}
 
 	public void addWorkPrivate(String key, Working work) {
