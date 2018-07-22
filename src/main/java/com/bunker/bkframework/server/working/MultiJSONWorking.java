@@ -49,7 +49,14 @@ public class MultiJSONWorking extends MultiWorking {
 					throw new NullPointerException("json doesn't has working data");
 				String work = json.getString("working");
 				Working working = mWorkContainer.getPublicWork(work);
-				WorkingResult result = driveWorking(working, work, json, enviroment);
+
+				WorkingResult result;
+				if (working instanceof KeyConvertWorking) {
+					result = driveWorking(working, "multiTest", paramJSON, enviroment);
+				}
+				else {
+					result = driveWorking(working, "multiTest", json, enviroment);
+				}
 				resultArray.put(result.getResultParams());
 				putAllExceptResult(result.getResultParams(), paramJSON);
 			} catch (UnsupportedEncodingException e) {

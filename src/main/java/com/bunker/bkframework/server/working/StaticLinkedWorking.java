@@ -114,9 +114,9 @@ public class StaticLinkedWorking extends MultiWorking {
 			}
 			else {
 				result = driveWorking(working, "multiTest", json, enviroment);
+				putAllExceptResult(result.getResultParams(), resultJSON);
 			}
 			putAllExceptResult(result.getResultParams(), paramJSON);
-			putAllExceptResult(result.getResultParams(), resultJSON);
 		}
 		return resultJSON;
 	}

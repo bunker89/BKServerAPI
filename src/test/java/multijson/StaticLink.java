@@ -9,8 +9,6 @@ import org.junit.Test;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 import com.bunker.bkframework.server.framework_api.WorkTraceList;
 import com.bunker.bkframework.server.working.BKWork;
-import com.bunker.bkframework.server.working.KeyConvertBuilder;
-import com.bunker.bkframework.server.working.StaticLinkedWorking;
 import com.bunker.bkframework.server.working.WorkConstants;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
@@ -74,14 +72,7 @@ public class StaticLink {
 		WorkContainer container = new WorkContainer();
 		container.addWork("a", new Worka());
 		container.addWork("b", new Workb());
-		StaticLinkedWorking working = container.makeLinkedWorkBuilder()
-				.addWorkLink("a")
-				.addWorkLink(WorkConstants.KEY_RENAME_WORKING, new KeyConvertBuilder()
-						.putConvert("c", "e")
-						.build())
-				.addWorkLink("b")
-				.build();
-		container.addWork("test", working);
+		container.addLinkedWork("t", new String[]{"a", "b"});
 
 		JSONObject json = new JSONObject();
 		json.put("a", "av");
@@ -89,6 +80,6 @@ public class StaticLink {
 
 		Map<String, Object> enviroment = new HashMap<>();
 		enviroment.put("trace_list", new WorkTraceList());
-		working.doWork(json, enviroment, null);
+		container.getWork("t").doWork(json, enviroment, null);
 	}
 }
