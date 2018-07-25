@@ -31,7 +31,7 @@ public class WorkContainer {
 		} catch (InstantiationException | IllegalAccessException e) {
 			Logger.err(_TAG, "framework working error", e);
 		}
-		addWork(WorkConstants.MULTI_JSON_WORKING, multiWork);
+		addWork(WorkConstants.MULTI_WORKING, multiWork);
 	}
 
 	public void addWorkPrivate(String key, Working work) {

@@ -15,7 +15,7 @@ public class MultiWorking extends WorkingBase {
 		Iterator<String> keys = src.keys();
 		while (keys.hasNext()) {
 			String s = keys.next();
-			if (!s.equals("result")) {
+			if (!s.equals(WorkConstants.WORKING_RESULT)) {
 				dest.remove(s);
 				dest.put(s, src.get(s));
 			}

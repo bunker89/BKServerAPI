@@ -17,6 +17,7 @@ import com.bunker.bkframework.business.PeerConnection;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.reserved.LogComposite;
 import com.bunker.bkframework.server.reserved.Pair;
+import com.bunker.bkframework.server.working.WorkConstants;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingResult;
@@ -28,11 +29,6 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	
 	public ServerBusiness(WorkContainer workContainer) {
 		mWorkContainer = workContainer;
-	}
-	
-	private void initExceptionResult() {
-		mExceptionResult.putReplyParam("result", false);
-		mExceptionResult.putReplyParam("result_detail", "business exception");		
 	}
 
 	private class WorkLog {
@@ -61,7 +57,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	protected abstract JSONObject createJSON(ReceiveDataType data);
 
 	private void loggingDriveJson(PeerConnection<SendDataType> connector, JSONObject json, int sequence) throws UnsupportedEncodingException {
-		Object workObj = json.get("working");
+		Object workObj = json.get(WorkConstants.WORKING);
 		String workKey = objKeyToString(workObj);
 		long time = Calendar.getInstance().getTimeInMillis();
 		driveJson(connector, json, sequence);
@@ -88,9 +84,9 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	}
 
 	private void driveJson(PeerConnection<SendDataType> connection, JSONObject json, int sequence) throws UnsupportedEncodingException {
-		if (!json.has("working"))
+		if (!json.has(WorkConstants.WORKING))
 			throw new NullPointerException("json doesn't has working data");
-		Object workObj = json.get("working");
+		Object workObj = json.get(WorkConstants.WORKING);
 		String workKey = objKeyToString(workObj);
 		Working working = mWorkContainer.getPublicWork(workKey);
 		if (working == null)

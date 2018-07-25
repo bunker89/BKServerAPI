@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
 @BKWork(key = WorkConstants.KEY_RENAME_WORKING,
-input={"key-array"})
+input={WorkConstants.KEY_CONVERT_ARRAY})
 class KeyRenameWorking extends KeyConvertWorking {
 
 	@Override

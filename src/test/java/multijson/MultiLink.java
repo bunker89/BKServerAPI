@@ -14,7 +14,6 @@ public class MultiLink {
 		WorkContainer container = new WorkContainer();
 		container.addWork("a", new Worka());
 		container.addWork("b", new Workb());
-		Working working = container.getWork(WorkConstants.MULTI_JSON_WORKING);
-		
+		Working working = container.getWork(WorkConstants.MULTI_WORKING);
 	}
 }

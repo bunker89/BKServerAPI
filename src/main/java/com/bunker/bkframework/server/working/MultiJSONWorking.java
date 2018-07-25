@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
-@BKWork(key = "multi-json")
+@BKWork(key = WorkConstants.MULTI_WORKING)
 public class MultiJSONWorking extends MultiWorking {
 	private final String _TAG = getClass().getSimpleName();
 	private WorkContainer mWorkContainer;
@@ -24,11 +24,11 @@ public class MultiJSONWorking extends MultiWorking {
 	@Override
 	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 		WorkingResult result = new WorkingResult();
-		JSONArray workingArray = object.getJSONArray(WorkConstants.MULTI_JSON_WORKING_ARRAY);
+		JSONArray workingArray = object.getJSONArray(WorkConstants.MULTI_WORKING_ARRAY);
 		JSONArray resultArray = doClient(workingArray, enviroment);
 		if (resultArray != null) {
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
-			result.putReplyParam(WorkConstants.MULTI_JSON_RESULT_ARRAY, resultArray);
+			result.putReplyParam(WorkConstants.MULTI_WORKING_RESULT_ARRAY, resultArray);
 		} else {
 			result.putReplyParam(WorkConstants.WORKING_RESULT, false);
 		}
@@ -43,9 +43,9 @@ public class MultiJSONWorking extends MultiWorking {
 			JSONObject json = workingArray.getJSONObject(i);
 			putAllExceptResult(paramJSON, json);
 			try {
-				if (!json.has("working"))
+				if (!json.has(WorkConstants.WORKING))
 					throw new NullPointerException("json doesn't has working data");
-				String work = json.getString("working");
+				String work = json.getString(WorkConstants.WORKING);
 				Working working = mWorkContainer.getPublicWork(work);
 
 				WorkingResult result;
