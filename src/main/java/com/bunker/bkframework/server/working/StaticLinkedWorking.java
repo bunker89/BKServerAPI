@@ -1,6 +1,7 @@
 package com.bunker.bkframework.server.working;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +19,10 @@ public class StaticLinkedWorking extends MultiWorking {
 	private static final String _TAG = "StaticLinkedWorking";
 	private class WorkingSet {
 		Working working;
-		JSONObject convert;
-		WorkingSet(Working working, JSONObject convert) {
+		JSONObject workingParam;
+		WorkingSet(Working working, JSONObject workingParam) {
 			this.working = working;
-			this.convert = convert;
+			this.workingParam = workingParam;
 		}
 	}
 
@@ -38,13 +39,13 @@ public class StaticLinkedWorking extends MultiWorking {
 			return this;
 		}
 
-		public LinkedWorkingBuilder addWorkLink(String workKey, @Nullable JSONObject convert) {
+		public LinkedWorkingBuilder addWorkLink(String workKey, @Nullable JSONObject workingParam) {
 			Working work = workContainer.getWork(workKey);
 			if (work == null) {
 				throw new NullPointerException(_TAG + ", addLinkedWork error, key not registered" + workKey);
 			}
 
-			working.mWorkLink.add(working.new WorkingSet(work, convert));
+			working.mWorkLink.add(working.new WorkingSet(work, workingParam));
 			return this;
 		}
 
@@ -74,12 +75,6 @@ public class StaticLinkedWorking extends MultiWorking {
 			for (String s : outputs) {
 				outputOccum.add(s);
 			}
-
-			if (w.working instanceof KeyConvertWorking) {
-				if (w.convert != null) {
-					((KeyConvertWorking) w.working).convertKeys(outputOccum, w.convert);
-				}
-			}
 		}
 		return paramRequired;
 	}
@@ -98,25 +93,22 @@ public class StaticLinkedWorking extends MultiWorking {
 		} catch (UnsupportedEncodingException e) {
 			Logger.err(_TAG, "doWork errlr", e);
 		}
-		
+
 		return result;
 	}
 
 	private JSONObject doClient(JSONObject json, Map<String, Object> enviroment) throws UnsupportedEncodingException {
 		JSONObject paramJSON = json;
 		JSONObject resultJSON = new JSONObject();
+		HashMap<String, JSONObject> resultMap = new HashMap<>();
 		for (WorkingSet w : mWorkLink) {
 			Working working = w.working;
 			WorkingResult result;
-			if (w.convert != null) {
-				paramJSON.put(WorkConstants.KEY_CONVERT_ARRAY, w.convert.get(WorkConstants.KEY_CONVERT_ARRAY));
-				result = driveWorking(working, "multiTest", paramJSON, enviroment);
+			if (w.workingParam != null) {
+				json.put(WorkConstants.WORKING_PARAM_JSON, w.workingParam);
 			}
-			else {
-				result = driveWorking(working, "multiTest", json, enviroment);
-				putAllExceptResult(result.getResultParams(), resultJSON);
-			}
-			putAllExceptResult(result.getResultParams(), paramJSON);
+			result = driveWorking(resultMap, working, "multiTest", json, enviroment);
+			putAllExceptResult(result.getResultParams(), resultJSON);
 		}
 		return resultJSON;
 	}

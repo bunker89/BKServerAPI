@@ -29,6 +29,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	
 	public ServerBusiness(WorkContainer workContainer) {
 		mWorkContainer = workContainer;
+		mExceptionResult.putReplyParam(WorkConstants.WORKING_RESULT, false);
 	}
 
 	private class WorkLog {

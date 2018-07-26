@@ -1,6 +1,7 @@
 package com.bunker.bkframework.server.working;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -9,12 +10,11 @@ import org.json.JSONObject;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
-@BKWork(key = WorkConstants.MULTI_WORKING)
-public class MultiJSONWorking extends MultiWorking {
+public class DynamicLinkedWorking extends MultiWorking {
 	private final String _TAG = getClass().getSimpleName();
 	private WorkContainer mWorkContainer;
 
-	public MultiJSONWorking() {
+	public DynamicLinkedWorking() {
 	}
 
 	public void setWorkContainer(WorkContainer workContainer) {
@@ -37,6 +37,7 @@ public class MultiJSONWorking extends MultiWorking {
 
 	private JSONArray doClient(JSONArray workingArray, Map<String, Object> enviroment) {
 		JSONArray resultArray = new JSONArray();
+		Map<String, JSONObject> resultMap = new HashMap<>();
 
 		JSONObject paramJSON = new JSONObject();
 		for (int i = 0; i < workingArray.length(); i++) {
@@ -49,14 +50,8 @@ public class MultiJSONWorking extends MultiWorking {
 				Working working = mWorkContainer.getPublicWork(work);
 
 				WorkingResult result;
-				if (working instanceof KeyConvertWorking) {
-					result = driveWorking(working, "multiTest", paramJSON, enviroment);
-				}
-				else {
-					result = driveWorking(working, "multiTest", json, enviroment);
-				}
+				result = driveWorking(resultMap, working, "multiTest", json, enviroment);
 				resultArray.put(result.getResultParams());
-				putAllExceptResult(result.getResultParams(), paramJSON);
 			} catch (UnsupportedEncodingException e) {
 				Logger.err(_TAG, "un support encoding", e);
 				return resultArray;

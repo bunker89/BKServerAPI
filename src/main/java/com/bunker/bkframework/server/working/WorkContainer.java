@@ -24,7 +24,7 @@ public class WorkContainer {
 
 	public WorkContainer(String name) {
 		mName = name;
-		MultiJSONWorking multiWork = new MultiJSONWorking();
+		DynamicLinkedWorking multiWork = new DynamicLinkedWorking();
 		multiWork.setWorkContainer(this);
 		try {
 			loadWorkings("com.bunker.bkframework.server.working");
