@@ -17,12 +17,16 @@ public class StaticLinkedWorking extends MultiWorking {
 	private List<WorkingSet> mWorkLink = new LinkedList<>();
 	private List<String> mParamRequired = new LinkedList<>();
 	private static final String _TAG = "StaticLinkedWorking";
+	
 	private class WorkingSet {
 		Working working;
 		JSONObject workingParam;
-		WorkingSet(Working working, JSONObject workingParam) {
+		String as;
+		
+		WorkingSet(Working working, String as, JSONObject workingParam) {
 			this.working = working;
 			this.workingParam = workingParam;
+			this.as = as;
 		}
 	}
 
@@ -34,18 +38,18 @@ public class StaticLinkedWorking extends MultiWorking {
 			this.workContainer = workContainer;
 		}
 
-		public LinkedWorkingBuilder addWorkLink(String workKey) {
-			this.addWorkLink(workKey, null);
+		public LinkedWorkingBuilder addWorkLink(String workKey, @Nullable String as) {
+			addWorkLink(workKey, as, null);
 			return this;
 		}
 
-		public LinkedWorkingBuilder addWorkLink(String workKey, @Nullable JSONObject workingParam) {
+		public LinkedWorkingBuilder addWorkLink(String workKey, @Nullable String as, @Nullable JSONObject workingParam) {
 			Working work = workContainer.getWork(workKey);
 			if (work == null) {
 				throw new NullPointerException(_TAG + ", addLinkedWork error, key not registered" + workKey);
 			}
 
-			working.mWorkLink.add(working.new WorkingSet(work, workingParam));
+			working.mWorkLink.add(working.new WorkingSet(work, as, workingParam));
 			return this;
 		}
 
@@ -58,7 +62,7 @@ public class StaticLinkedWorking extends MultiWorking {
 	public StaticLinkedWorking() {
 	}
 
-	protected List<String> getRequired() {
+	protected List<String> getRequired() { 
 		List<String> paramRequired = new LinkedList<>();
 		List<String> outputOccum = new LinkedList<>();
 		for (WorkingSet w : mWorkLink) {
@@ -89,7 +93,6 @@ public class StaticLinkedWorking extends MultiWorking {
 		try {
 			JSONObject resultJSON = doClient(json, enviroment);
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
-			System.out.println(resultJSON);
 		} catch (UnsupportedEncodingException e) {
 			Logger.err(_TAG, "doWork errlr", e);
 		}
@@ -106,6 +109,10 @@ public class StaticLinkedWorking extends MultiWorking {
 			WorkingResult result;
 			if (w.workingParam != null) {
 				json.put(WorkConstants.WORKING_PARAM_JSON, w.workingParam);
+			}
+			
+			if (w.as != null) {
+				json.put(WorkConstants.WORKING_RESULT_AS, w.as);
 			}
 			result = driveWorking(resultMap, working, "multiTest", json, enviroment);
 			putAllExceptResult(result.getResultParams(), resultJSON);
