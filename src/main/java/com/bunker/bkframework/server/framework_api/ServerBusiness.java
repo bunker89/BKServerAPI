@@ -86,7 +86,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 
 	private void driveJson(PeerConnection<SendDataType> connection, JSONObject json, int sequence) throws UnsupportedEncodingException {
 		if (!json.has(WorkConstants.WORKING))
-			throw new NullPointerException("json doesn't has working data");
+			throw new NullPointerException("json doesn't has working data\n" + json);
 		Object workObj = json.get(WorkConstants.WORKING);
 		String workKey = objKeyToString(workObj);
 		Working working = mWorkContainer.getPublicWork(workKey);
