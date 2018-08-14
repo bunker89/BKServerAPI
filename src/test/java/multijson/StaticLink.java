@@ -12,6 +12,7 @@ import com.bunker.bkframework.server.working.BKWork;
 import com.bunker.bkframework.server.working.WorkConstants;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
+import com.bunker.bkframework.server.working.WorkingParamBuilder;
 import com.bunker.bkframework.server.working.WorkingResult;
 
 public class StaticLink {
@@ -69,9 +70,13 @@ public class StaticLink {
 	@Test
 	public void test() {
 		WorkContainer container = new WorkContainer();
-		container.addWork("a", new Worka());
-		container.addWork("b", new Workb());
-		container.addLinkedWork("t", new String[]{"a", "b"});
+		container.addWork("1", new Worka());
+		container.addWork("2", new Workb());
+		container.addWork("3", container.makeLinkedWorkBuilder()
+				.addWorkLink("1", "1")
+				.addWorkLink("2", "c", new WorkingParamBuilder().bringParam("1", "c", "wp").build())
+				.addWorkLink("1", "3")
+				.build());
 
 		JSONObject json = new JSONObject();
 		json.put("a", "av");
@@ -79,6 +84,6 @@ public class StaticLink {
 
 		Map<String, Object> enviroment = new HashMap<>();
 		enviroment.put("trace_list", new WorkTraceList());
-		container.getWork("t").doWork(json, enviroment, null);
+		container.getWork("3").doWork(json, enviroment, null);
 	}
 }
