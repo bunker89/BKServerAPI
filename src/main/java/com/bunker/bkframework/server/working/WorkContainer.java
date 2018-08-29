@@ -70,7 +70,10 @@ public class WorkContainer {
 	}
 
 	public void loadWorkings(String packageName) throws InstantiationException, IllegalAccessException {
-		Reflections reflections = new Reflections(packageName);
+		loadWorkings(new Reflections(packageName));
+	}
+	
+	public void loadWorkings(Reflections reflections) throws InstantiationException, IllegalAccessException {
 		Set<Class<? extends Working>> classes = reflections.getSubTypesOf(Working.class);
 		for (Class<? extends Working> c : classes) {
 			BKWork annotation = c.getAnnotation(BKWork.class);
@@ -81,7 +84,7 @@ public class WorkContainer {
 					addWorkPrivate(annotation.key(), c.newInstance());
 				}
 			}
-		}
+		}		
 	}
 
 	public Working getPublicWork(String key) {
