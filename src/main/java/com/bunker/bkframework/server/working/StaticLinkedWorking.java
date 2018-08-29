@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import org.json.JSONObject;
 
 import com.bunker.bkframework.newframework.Logger;
@@ -38,12 +36,12 @@ public class StaticLinkedWorking extends MultiWorking {
 			this.workContainer = workContainer;
 		}
 
-		public LinkedWorkingBuilder addWorkLink(String workKey, @Nullable String as) {
+		public LinkedWorkingBuilder addWorkLink(String workKey, String as) {
 			addWorkLink(workKey, as, null);
 			return this;
 		}
 
-		public LinkedWorkingBuilder addWorkLink(String workKey, @Nullable String as, @Nullable JSONObject workingParam) {
+		public LinkedWorkingBuilder addWorkLink(String workKey, String as, JSONObject workingParam) {
 			Working work = workContainer.getWork(workKey);
 			if (work == null) {
 				throw new NullPointerException(_TAG + ", addLinkedWork error, key not registered" + workKey);

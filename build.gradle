@@ -28,7 +28,7 @@ dependencies {
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     
-   	compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
+	compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
     compile 'com.github.bunker89:BKFramwork:e29eb2b7f7'
     compile 'org.json:json:20171018'
     testCompile 'junit:junit:4.12'
