@@ -16,7 +16,10 @@ public class TextServerCore extends CoreBase<String> implements LifeCycle {
 	private final String _TAG = "TextServerCore";
 	private Peer<String> mPrototype;	
 
-	public TextServerCore(Business<String, String, String> business) {
+	public TextServerCore() {
+	}
+	
+	public void setPeer(Business<String, String, String> business) {
 		mPrototype = new BusinessPeer<>(createPacketFactory(), new TextBusinessConnector(business));
 	}
 
@@ -32,7 +35,7 @@ public class TextServerCore extends CoreBase<String> implements LifeCycle {
 	@Override
 	public void setParam(String paramName, Object param) {
 	}
-
+	
 	public String doWork(String string) {
 		TextWriter writer = new TextWriter();
 		@SuppressWarnings("unchecked")
@@ -90,7 +93,7 @@ public class TextServerCore extends CoreBase<String> implements LifeCycle {
 			arg0.life();
 		}
 	}
-
+	
 	@Override
 	public PacketFactory<String> createPacketFactory() {
 		return new TextPacketFactory();
