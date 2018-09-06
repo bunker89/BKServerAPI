@@ -17,7 +17,8 @@ public class TextBusiness {
 		WorkContainer works = new WorkContainer();
 		TextJSONBusiness business = new TextJSONBusiness(works);
 		works.addWork("test", new TestWorking());
-		TextServerCore textCore = new TextServerCore(business);
+		TextServerCore textCore = new TextServerCore();
+		textCore.setPeer(business);
 		bkLauncher.startServer(textCore);
 		System.out.println(textCore.doWork("{\"working\":\"test\"}"));
 	}
