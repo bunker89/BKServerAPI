@@ -12,15 +12,21 @@ import com.bunker.bkframework.server.framework_api.ServerCore;
 import com.bunker.bkframework.server.framework_api.ServerDefaultLog;
 
 public class BKLauncher {
+	private static BKLauncher This;
 	private JSONObject mSystemParam;
 	private final String _TAG = "BKLauncher";
 	
-	public void init() {
-		mSystemParam = parseParamFile();
-		initLoggingSystem();
+	public static void init() {
+		This = new BKLauncher();
+		This.mSystemParam = This.parseParamFile();
+		This.initLoggingSystem();
+	}
+	
+	public static BKLauncher getLauncher() {
+		return This;
 	}
 
-	public void setCore(ServerCore core) {
+	public void initCore(ServerCore core) {
 		core.setBKLauncher(this);
 	}
 	

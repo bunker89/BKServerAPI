@@ -87,7 +87,7 @@ public class ServerDefaultLog implements Log {
 			output = new FileOutputStream(file);
 			PrintWriter writer = new PrintWriter(output);
 			writer.write(text + "\n\n "
-					+ "*****stack trace*****\n");
+					+ "*****stack trace*****\n" + e.getMessage() + "\n");
 			e.printStackTrace(writer);
 			writer.flush();
 			writer.close();
