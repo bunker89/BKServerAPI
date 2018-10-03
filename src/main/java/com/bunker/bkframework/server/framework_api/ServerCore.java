@@ -1,6 +1,5 @@
 package com.bunker.bkframework.server.framework_api;
 
-import com.bunker.bkframework.newframework.PacketFactory;
 import com.bunker.bkframework.server.BKLauncher;
 
 public interface ServerCore {

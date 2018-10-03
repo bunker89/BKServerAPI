@@ -19,6 +19,7 @@ public class WorkingResult {
 	 */
 	@Deprecated
 	public JSONObject param;
+	private JSONObject privateParam;
 	public byte[] byteParam;
 		
 	public void putReplyParam(String key, Object data) {
@@ -27,11 +28,23 @@ public class WorkingResult {
 		param.put(key, data);
 	}
 	
+	public void putAllParam(String key, JSONObject param) {
+		
+	}
+	
+	public void putPrivateParam(String key, Object data) {
+		privateParam.put(key, data);
+	}
+	
 	public Object getParam(String key) {
 		return param.get(key);
 	}
 
 	public JSONObject getResultParams() {
 		return param;
+	}
+	
+	public JSONObject getPrivateParams() {
+		return privateParam;
 	}
 }

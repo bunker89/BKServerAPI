@@ -16,7 +16,7 @@ import com.bunker.bkframework.server.working.WorkingParamBuilder;
 import com.bunker.bkframework.server.working.WorkingResult;
 
 public class StaticLink {
-	@BKWork(key = "1", input={"a"}, output={"c","d"})
+	@BKWork(key = "1", input={"a"}, output={"c","d"}, isPublic=false)
 	class Worka implements Working {
 
 		@Override
@@ -67,10 +67,11 @@ public class StaticLink {
 			return null;
 		}
 	}
+	
 	@Test
 	public void test() {
 		WorkContainer container = new WorkContainer();
-		container.addWork("1", new Worka());
+		container.addWorkPrivate("1", new Worka());
 		container.addWork("2", new Workb());
 		container.addWork("3", container.makeLinkedWorkBuilder()
 				.addWorkLink("1", "1")
@@ -84,6 +85,6 @@ public class StaticLink {
 
 		Map<String, Object> enviroment = new HashMap<>();
 		enviroment.put("trace_list", new WorkTraceList());
-		container.getWork("3").doWork(json, enviroment, null);
+		container.getPublicWork("3").doWork(json, enviroment, null);
 	}
 }
