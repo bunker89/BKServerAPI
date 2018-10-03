@@ -91,6 +91,7 @@ public class StaticLinkedWorking extends MultiWorking {
 		try {
 			JSONObject resultJSON = doClient(json, enviroment);
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
+			result.putAllParam(resultJSON);
 		} catch (UnsupportedEncodingException e) {
 			Logger.err(_TAG, "doWork errlr", e);
 		}

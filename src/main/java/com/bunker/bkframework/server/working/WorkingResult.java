@@ -1,5 +1,7 @@
 package com.bunker.bkframework.server.working;
 
+import java.util.Iterator;
+
 import org.json.JSONObject;
 
 public class WorkingResult {
@@ -28,8 +30,12 @@ public class WorkingResult {
 		param.put(key, data);
 	}
 	
-	public void putAllParam(String key, JSONObject param) {
-		
+	public void putAllParam(JSONObject param) {
+		Iterator<String> keys = param.keys();
+		while (keys.hasNext()) {
+			String key = keys.next();
+			putReplyParam(key, param.get(key));
+		}
 	}
 	
 	public void putPrivateParam(String key, Object data) {
