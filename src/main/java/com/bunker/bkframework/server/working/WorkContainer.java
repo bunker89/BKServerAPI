@@ -33,7 +33,7 @@ public class WorkContainer {
 		}
 		addWork(WorkConstants.MULTI_WORKING, multiWork);
 	}
-
+	
 	public void addWorkPrivate(String key, Working work) {
 		mPrivateWork.put(key, work);
 		loggingWork("private", key, work);
@@ -44,15 +44,24 @@ public class WorkContainer {
 		loggingWork("public", key, work);
 	}
 	
-	public void addLinkedWork(String key, String[]workKeys) {
+	public void addLinkedWorkPublic(String key, String[] workKeys) {
+		StaticLinkedWorking linkedWorking = makeLinkedWork(mPublicWork, key, workKeys);
+		addWork(key, linkedWorking);
+	}
+	
+	public void addLinkedWorkPrivate(String key, String[] workKeys) {
+		StaticLinkedWorking linkedWorking = makeLinkedWork(mPublicWork, key, workKeys);
+		addWorkPrivate(key, linkedWorking);
+	}
+	
+	public StaticLinkedWorking makeLinkedWork(Map<String, Working> workMap, String key, String[]workKeys) {
 		LinkedWorkingBuilder workBuilder = new LinkedWorkingBuilder(this);
 		
 		for (String s: workKeys) {
 			workBuilder.addWorkLink(s, null);
 		}
 		StaticLinkedWorking linkedWorking = workBuilder.build();
-		addWork(key, linkedWorking);
-		Logger.logging(_TAG, "[" + key + "] needs " + linkedWorking.getParamRequired());
+		return linkedWorking;
 	}
 	
 	public LinkedWorkingBuilder makeLinkedWorkBuilder() {

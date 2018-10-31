@@ -11,21 +11,48 @@ import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.ServerCore;
 import com.bunker.bkframework.server.framework_api.ServerDefaultLog;
 
+/**
+ * 
+ * Class for launch bk-framework server api.
+ * 
+ * {@link #This} This is singleton pattern of BKLauncher.
+
+ * Recommend to use just call to {@link #init()} at first time and
+ * othes times use {@link #getLauncher()}.
+ * 
+ * if you want to launch instance of ServerCore 
+ * than you initializing the core through {@link #initCore(ServerCore)}
+ * 
+ * framework parameter is readed by file of 'setting.json'
+ * @author ys89
+ *
+ */
 public class BKLauncher {
 	private static BKLauncher This;
 	private JSONObject mSystemParam;
 	private final String _TAG = "BKLauncher";
 	
+	/**
+	 * init framework and load parameter
+	 */
 	public static void init() {
 		This = new BKLauncher();
 		This.mSystemParam = This.parseParamFile();
 		This.initLoggingSystem();
 	}
 	
+	/**
+	 * return the singleton instance
+	 * @return singleton instance
+	 */
 	public static BKLauncher getLauncher() {
 		return This;
 	}
 
+	/**
+	 * initializing server core, example NIOCore,
+	 * @param core
+	 */
 	public void initCore(ServerCore core) {
 		core.setBKLauncher(this);
 	}

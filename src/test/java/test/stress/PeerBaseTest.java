@@ -17,25 +17,25 @@ import connection.TestPeerConnection;
 
 public class PeerBaseTest {
 	public class TestWorking implements Working {
-
+		
 		@Override
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 			WorkingResult result = new WorkingResult();
 			result.putReplyParam("result", true);
 			return result;
 		}
-
+		
 		@Override
 		public String getName() {
 			return null;
 		}
-
+		
 		@Override
 		public String getDescription() {
 			return null;
 		}
 	}
-
+	
 	public PeerBaseTest() {
 		WorkContainer works = new WorkContainer();
 		NIOJsonBusiness business = new NIOJsonBusiness(works);
