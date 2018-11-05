@@ -17,6 +17,7 @@ public class WorkContainer {
 	private Map <String, Working> mPrivateWork = new HashMap<>();
 	private Map <String, Working> mPublicWork = new HashMap<>();
 	private final String _TAG = "WorkContainer";
+	private Map<String, List<List<Working>>> mInjectionMap = new HashMap<>();
 
 	public WorkContainer() {
 		this("unknown");
@@ -87,15 +88,19 @@ public class WorkContainer {
 		for (Class<? extends Working> c : classes) {
 			BKWork annotation = c.getAnnotation(BKWork.class);
 			if (annotation != null && annotation.enable()) {
+				String chainJSON = annotation.chainJSON();
+				if (chainJSON != null && !chainJSON.equals("")) {
+					
+				}
 				if (annotation.isPublic()) {
 					addWork(annotation.key(), c.newInstance());
 				} else {
 					addWorkPrivate(annotation.key(), c.newInstance());
 				}
 			}
-		}		
+		}
 	}
-
+	
 	public Working getPublicWork(String key) {
 		return mPublicWork.get(key);
 	}
