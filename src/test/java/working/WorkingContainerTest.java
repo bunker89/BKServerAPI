@@ -9,7 +9,6 @@ public class WorkingContainerTest {
 		WorkContainer container = new WorkContainer();
 		try {
 			container.loadWorkings("com.bunker.bkframework");
-			container.addLinkedWorkPublic("linked", new String[]{"work-base"});
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

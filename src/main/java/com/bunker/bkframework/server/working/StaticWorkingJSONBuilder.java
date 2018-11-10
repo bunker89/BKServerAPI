@@ -3,15 +3,13 @@ package com.bunker.bkframework.server.working;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class StaticWorkingJSONBuilder {
 	private List<JSONObject> mWorks = new LinkedList<>();
 	
-	public StaticWorkingJSONBuilder insertWorking(String name, String as, @Nullable JSONObject workingParam) {
+	public StaticWorkingJSONBuilder insertWorking(String name, String as, JSONObject workingParam) {
 		JSONObject json = new JSONObject();
 		json.put("name", name);
 		json.put("as", as);

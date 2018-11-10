@@ -34,7 +34,7 @@ public class DynamicLinkedWorking extends MultiWorking {
 		}
 		return result;
 	}
-
+	
 	private JSONArray doClient(JSONArray workingArray, Map<String, Object> enviroment) {
 		JSONArray resultArray = new JSONArray();
 		Map<String, JSONObject> resultMap = new HashMap<>();

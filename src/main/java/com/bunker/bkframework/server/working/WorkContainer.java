@@ -3,6 +3,7 @@ package com.bunker.bkframework.server.working;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,12 +13,17 @@ import org.reflections.Reflections;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.working.StaticLinkedWorking.LinkedWorkingBuilder;
 
+/**
+ * WorkContainer class was not synchronized.
+ * @author 광수
+ *
+ */
 public class WorkContainer {
 	private String mName;
 	private Map <String, Working> mPrivateWork = new HashMap<>();
 	private Map <String, Working> mPublicWork = new HashMap<>();
 	private final String _TAG = "WorkContainer";
-	private Map<String, List<List<Working>>> mInjectionMap = new HashMap<>();
+	private Map<String, List<StaticLinkedWorking>> mInjectionMap = new HashMap<>();
 
 	public WorkContainer() {
 		this("unknown");
@@ -35,34 +41,36 @@ public class WorkContainer {
 		addWork(WorkConstants.MULTI_WORKING, multiWork);
 	}
 	
+	void addInjection(String key, StaticLinkedWorking working) {
+		List<StaticLinkedWorking> list = mInjectionMap.get(key);
+		if (list == null) {
+			list = new LinkedList<>();
+			mInjectionMap.put(key, list);
+		}
+		
+		list.add(working);
+	}
+	
+	private void addWorkCommon(String key, Working work) {
+		if (mInjectionMap.containsKey(key)) {
+			List<StaticLinkedWorking> list = mInjectionMap.get(key);
+			
+			for (StaticLinkedWorking s : list) {
+				s.injectionWorking(key, work);
+			}
+		}
+	}
+	
 	public void addWorkPrivate(String key, Working work) {
+		addWorkCommon(key, work);
 		mPrivateWork.put(key, work);
 		loggingWork("private", key, work);
 	}
 
 	public void addWork(String key, Working work) {
+		addWorkCommon(key, work);
 		mPublicWork.put(key, work);
 		loggingWork("public", key, work);
-	}
-	
-	public void addLinkedWorkPublic(String key, String[] workKeys) {
-		StaticLinkedWorking linkedWorking = makeLinkedWork(mPublicWork, key, workKeys);
-		addWork(key, linkedWorking);
-	}
-	
-	public void addLinkedWorkPrivate(String key, String[] workKeys) {
-		StaticLinkedWorking linkedWorking = makeLinkedWork(mPublicWork, key, workKeys);
-		addWorkPrivate(key, linkedWorking);
-	}
-	
-	public StaticLinkedWorking makeLinkedWork(Map<String, Working> workMap, String key, String[]workKeys) {
-		LinkedWorkingBuilder workBuilder = new LinkedWorkingBuilder(this);
-		
-		for (String s: workKeys) {
-			workBuilder.addWorkLink(s, null);
-		}
-		StaticLinkedWorking linkedWorking = workBuilder.build();
-		return linkedWorking;
 	}
 	
 	public LinkedWorkingBuilder makeLinkedWorkBuilder() {

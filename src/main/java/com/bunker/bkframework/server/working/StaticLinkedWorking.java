@@ -57,9 +57,10 @@ public class StaticLinkedWorking extends MultiWorking {
 		}
 	}
 
-	public StaticLinkedWorking() {
+	void injectionWorking(String key, Working working) {
+		
 	}
-
+	
 	protected List<String> getRequired() { 
 		List<String> paramRequired = new LinkedList<>();
 		List<String> outputOccum = new LinkedList<>();
