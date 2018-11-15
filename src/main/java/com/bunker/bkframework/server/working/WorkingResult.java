@@ -39,6 +39,9 @@ public class WorkingResult {
 	}
 	
 	public void putPrivateParam(String key, Object data) {
+		if (privateParam == null) {
+			privateParam = new JSONObject();
+		}
 		privateParam.put(key, data);
 	}
 	

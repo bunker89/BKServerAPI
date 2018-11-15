@@ -20,22 +20,24 @@ public class StaticLinkedWorking extends MultiWorking {
 		Working working;
 		JSONObject workingParam;
 		String as;
+		String key;
 		
-		WorkingSet(Working working, String as, JSONObject workingParam) {
+		WorkingSet(String key, Working working, String as, JSONObject workingParam) {
 			this.working = working;
 			this.workingParam = workingParam;
 			this.as = as;
+			this.key = key;
 		}
 	}
-
+	
 	public static class LinkedWorkingBuilder {
 		StaticLinkedWorking working = new StaticLinkedWorking();
 		WorkContainer workContainer;
-
+		
 		public LinkedWorkingBuilder(WorkContainer workContainer) {
 			this.workContainer = workContainer;
 		}
-
+		
 		public LinkedWorkingBuilder addWorkLink(String workKey, String as) {
 			addWorkLink(workKey, as, null);
 			return this;
@@ -44,21 +46,34 @@ public class StaticLinkedWorking extends MultiWorking {
 		public LinkedWorkingBuilder addWorkLink(String workKey, String as, JSONObject workingParam) {
 			Working work = workContainer.getWork(workKey);
 			if (work == null) {
-				throw new NullPointerException(_TAG + ", addLinkedWork error, key not registered" + workKey);
+				work = new DynamicFlagWorking(workKey);
+				workContainer.addInjection(workKey, working);
+				return this;
 			}
-
-			working.mWorkLink.add(working.new WorkingSet(work, as, workingParam));
+			
+			working.mWorkLink.add(working.new WorkingSet(workKey, work, as, workingParam));
 			return this;
 		}
-
+		
 		public StaticLinkedWorking build() {
 			working.mParamRequired = working.getRequired();
 			return working;
 		}
 	}
+	
+	@Deprecated
+	public void iteratePringWorkings() {
+		for (WorkingSet w : mWorkLink) {
+			System.out.println(w.working);
+		}
+	}
 
 	void injectionWorking(String key, Working working) {
-		
+		for (WorkingSet w : mWorkLink) {
+			if (w.key.equals(key)) {
+				w.working = working;
+			}
+		}
 	}
 	
 	protected List<String> getRequired() { 
@@ -81,11 +96,11 @@ public class StaticLinkedWorking extends MultiWorking {
 		}
 		return paramRequired;
 	}
-
+	
 	public List<String> getParamRequired() {
 		return mParamRequired;
 	}
-
+	
 	@Override
 	final public WorkingResult doWork(JSONObject json, Map<String, Object> enviroment, WorkTrace trace) {
 		WorkingResult result = new WorkingResult();

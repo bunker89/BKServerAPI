@@ -48,7 +48,7 @@ public class BKLauncher {
 	public static BKLauncher getLauncher() {
 		return This;
 	}
-
+	
 	/**
 	 * initializing server core, example NIOCore,
 	 * @param core
