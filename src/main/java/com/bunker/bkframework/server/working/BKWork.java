@@ -13,5 +13,4 @@ public @interface BKWork {
 	public String key();
 	public String []input() default {};
 	public String []output() default {};
-	public String chainJSON() default "";
 }

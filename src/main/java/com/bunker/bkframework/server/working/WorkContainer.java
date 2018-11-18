@@ -81,7 +81,7 @@ public class WorkContainer {
 	private void loggingWork(String range, String key, Working work) {
 		Logger.logging(_TAG, "[" + mName + "]" + " registered " + range + " key " + "[" + key + "],named " + work.getName() + "");
 	}
-
+	
 	public void loadWorkings(String []packageNames) throws InstantiationException, IllegalAccessException {
 		for (String p : packageNames) {
 			loadWorkings(p);
@@ -93,21 +93,20 @@ public class WorkContainer {
 	}
 
 	public void loadWorkings(Reflections reflections) throws InstantiationException, IllegalAccessException {
-		Set<Class<? extends Working>> classes = reflections.getSubTypesOf(Working.class);
-		for (Class<? extends Working> c : classes) {
+		Set<Class<? extends Working>> singleClasses = reflections.getSubTypesOf(Working.class);
+		for (Class<? extends Working> c : singleClasses) {
 			BKWork annotation = c.getAnnotation(BKWork.class);
 			
 			if (annotation != null && annotation.enable()) {
 				Working working = c.newInstance();
-				String chainJSON = annotation.chainJSON();
-				if (chainJSON != null && !chainJSON.equals("")) {
-					JSONArray paramArray = new JSONArray(annotation.chainJSON());
-					setStaticWorking(paramArray, annotation.isPublic());
-				}
 				
 				addWork(annotation.key(), working, annotation.isPublic());
 			}
 		}
+	}
+	
+	public void addLinkedWork(String key, JSONArray chainJSON, boolean isPublic) {
+		setStaticWorking(key, chainJSON, isPublic);
 	}
 	
 	private void addWork(String key, Working working, boolean isPublic) {
@@ -122,15 +121,15 @@ public class WorkContainer {
 	private void setStaticWorking(String linkedKey, JSONArray paramArray, boolean isPublic) {
 		LinkedWorkingBuilder linkedBuilder = makeLinkedWorkBuilder();
 		for (int i = 0; i < paramArray.length(); i++) {
-			String key = ((JSONObject) paramArray.get(i)).getString("key");
-			String as = ((JSONObject) paramArray.get(i)).getString("as");
 			JSONObject item = ((JSONObject) paramArray.get(i));
+			String key = item.getString("key");
+			String as = item.getString("as");
 			JSONObject workingParam = null;
 			
 			if (item.has("param")) {
 				workingParam = item.getJSONObject("param");
-				linkedBuilder.addWorkLink(key, as, workingParam);
 			}
+			linkedBuilder.addWorkLink(key, as, workingParam);
 		}
 		StaticLinkedWorking working = linkedBuilder.build();
 		addWork(linkedKey, working, isPublic);

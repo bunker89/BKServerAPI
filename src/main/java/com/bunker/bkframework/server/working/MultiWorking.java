@@ -8,11 +8,19 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
 public class MultiWorking extends WorkingBase {
+	private final String _TAG = "MultiWorking";
+	
+	protected void putAllExceptResult(WorkingResult result, JSONObject dest) {
+		putAllExceptResult(result.getResultParams(), dest);
+	}
+
 	protected void putAllExceptResult(JSONObject src, JSONObject dest) {
 		Iterator<String> keys = src.keys();
+		
 		while (keys.hasNext()) {
 			String s = keys.next();
 			if (!s.equals(WorkConstants.WORKING_RESULT)) {
@@ -41,6 +49,7 @@ public class MultiWorking extends WorkingBase {
 		if (json.has(WorkConstants.WORKING_RESULT_AS)) {
 			String resultAs = json.getString(WorkConstants.WORKING_RESULT_AS);
 			resultMap.put(resultAs, result.getResultParams());
+			resultMap.put(resultAs, result.getPrivateParams());
 		}
 	}
 	
@@ -69,7 +78,14 @@ public class MultiWorking extends WorkingBase {
 		Iterator<String> keys = paramJSON.keys();
 		while (keys.hasNext()) {
 			String key = keys.next();
+			try {
 			dest.put(paramJSON.getString(key), resultMap.get(resultAs).get(key));
+			} catch(Exception e) {
+				Logger.err(_TAG, "param missmatched\n"
+						+ "[result map:" + resultMap + "]\n"
+								+ "result as:" + resultAs + "\n"
+								+ "key:" + key);
+			}
 		}
 	}
 

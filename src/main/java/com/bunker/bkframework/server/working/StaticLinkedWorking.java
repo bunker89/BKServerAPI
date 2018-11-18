@@ -42,7 +42,7 @@ public class StaticLinkedWorking extends MultiWorking {
 			addWorkLink(workKey, as, null);
 			return this;
 		}
-
+		
 		public LinkedWorkingBuilder addWorkLink(String workKey, String as, JSONObject workingParam) {
 			Working work = workContainer.getWork(workKey);
 			if (work == null) {
@@ -67,7 +67,7 @@ public class StaticLinkedWorking extends MultiWorking {
 			System.out.println(w.working);
 		}
 	}
-
+	
 	void injectionWorking(String key, Working working) {
 		for (WorkingSet w : mWorkLink) {
 			if (w.key.equals(key)) {
@@ -76,7 +76,7 @@ public class StaticLinkedWorking extends MultiWorking {
 		}
 	}
 	
-	protected List<String> getRequired() { 
+	protected List<String> getRequired() {
 		List<String> paramRequired = new LinkedList<>();
 		List<String> outputOccum = new LinkedList<>();
 		for (WorkingSet w : mWorkLink) {
@@ -131,7 +131,7 @@ public class StaticLinkedWorking extends MultiWorking {
 				paramJSON.put(WorkConstants.WORKING_RESULT_AS, w.as);
 			}
 			result = driveWorking(resultMap, working, "multiTest", paramJSON, enviroment);
-			putAllExceptResult(result.getResultParams(), resultJSON);
+			putAllExceptResult(result, resultJSON);
 		}
 		return resultJSON;
 	}
