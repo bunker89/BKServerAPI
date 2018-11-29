@@ -2,7 +2,7 @@
 
 BKServer is similar with microservice architecture.
 It is separated into small, independent services named 'Working'.
-Every service in the 'Working' class must be linked to use parameter of JSON.
+Every service in the 'Working' class can be linked to use parameter of JSON.
 ------------------------------- helped by andrei----------------------------------
 For example Calculator Server can has 'PlusWorking', 'MinusWorking', 'MultiWorking', 'DivideWorking'.
 'WorkContainer' could be consist of many coordination.
