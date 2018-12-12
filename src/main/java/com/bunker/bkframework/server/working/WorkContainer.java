@@ -52,7 +52,7 @@ public class WorkContainer {
 
 		list.add(working);
 	}
-
+	
 	private void addWorkCommon(String key, Working work) {
 		List<StaticLinkedWorking> list = mInjectionMap.remove(key);
 		if (list != null) {
@@ -61,19 +61,19 @@ public class WorkContainer {
 			}
 		}
 	}
-
+	
 	public void addWorkPrivate(String key, Working work) {
 		addWorkCommon(key, work);
 		mPrivateWork.put(key, work);
 		loggingWork("private", key, work);
 	}
-
+	
 	public void addWork(String key, Working work) {
 		addWorkCommon(key, work);
 		mPublicWork.put(key, work);
 		loggingWork("public", key, work);
 	}
-
+	
 	public LinkedWorkingBuilder makeLinkedWorkBuilder() {
 		return new LinkedWorkingBuilder(this);
 	}
@@ -91,7 +91,7 @@ public class WorkContainer {
 	public void loadWorkings(String packageName) throws InstantiationException, IllegalAccessException {
 		loadWorkings(new Reflections(packageName));
 	}
-
+	
 	public void loadWorkings(Reflections reflections) throws InstantiationException, IllegalAccessException {
 		Set<Class<? extends Working>> singleClasses = reflections.getSubTypesOf(Working.class);
 		for (Class<? extends Working> c : singleClasses) {
@@ -115,7 +115,6 @@ public class WorkContainer {
 		} else {
 			addWorkPrivate(key, working);
 		}
-		
 	}
 	
 	private void setStaticWorking(String linkedKey, JSONArray paramArray, boolean isPublic) {
@@ -145,7 +144,7 @@ public class WorkContainer {
 			return work;
 		return mPrivateWork.get(key);
 	}
-
+	
 	public List<String> getRegisteredKeys(boolean isPublic) {
 		List<String> list = new ArrayList<>(mPublicWork.size() + mPrivateWork.size());
 
