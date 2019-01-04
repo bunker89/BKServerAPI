@@ -42,7 +42,7 @@ public class WorkContainer {
 		}
 		addWork(WorkConstants.MULTI_WORKING, multiWork);
 	}
-
+	
 	void addInjection(String key, StaticLinkedWorking working) {
 		List<StaticLinkedWorking> list = mInjectionMap.get(key);
 		if (list == null) {

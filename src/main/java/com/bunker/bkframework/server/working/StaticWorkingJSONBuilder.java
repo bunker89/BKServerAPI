@@ -29,10 +29,11 @@ public class StaticWorkingJSONBuilder {
 	}
 	
 	public static void main(String []args) {
+		
 		StaticWorkingJSONBuilder staticWorkingBuilder = new StaticWorkingJSONBuilder();
-		staticWorkingBuilder.insertWorking("test", "t", null);
-		staticWorkingBuilder.insertWorking("test2", "t2", new WorkingParamBuilder().bringParam("t1", "t1-src", "t1-dst").build());
-		staticWorkingBuilder.insertWorking("test3", "t3", new WorkingParamBuilder().bringParam("t2", "t2-src", "t2-dst").build());
+		staticWorkingBuilder.insertWorking("host-detail-private", "detail", null);
+		staticWorkingBuilder.insertWorking("host-detail", "coin", new WorkingParamBuilder()
+				.bringParam("detail", "coin_request_array", "coin_request_array").build());
 		System.out.println(staticWorkingBuilder.build());
 	}
 }
