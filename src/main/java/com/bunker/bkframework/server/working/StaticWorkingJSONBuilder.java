@@ -30,10 +30,19 @@ public class StaticWorkingJSONBuilder {
 	
 	public static void main(String []args) {
 		
+		/*
 		StaticWorkingJSONBuilder staticWorkingBuilder = new StaticWorkingJSONBuilder();
 		staticWorkingBuilder.insertWorking("host-detail-private", "detail", null);
 		staticWorkingBuilder.insertWorking("host-detail", "coin", new WorkingParamBuilder()
 				.bringParam("detail", "coin_request_array", "coin_request_array").build());
 		System.out.println(staticWorkingBuilder.build());
+		*/
+		StaticWorkingJSONBuilder builder = new StaticWorkingJSONBuilder();
+		builder.insertWorking("signin-internal", "sign", null);
+		builder.insertWorking("generate_auth", "gen-s", new WorkingParamBuilder()
+				.bringParam("sign", "user_internal_id", "user_internal_id")
+				.bringParam("sign", "user_external_id", "user_external_id")
+				.build());
+		System.out.println(builder.build());
 	}
 }
