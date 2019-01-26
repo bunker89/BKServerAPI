@@ -1,0 +1,20 @@
+business exception
+
+ *****stack trace*****
+JSONObject["abc"] not found.
+org.json.JSONException: JSONObject["abc"] not found.
+	at org.json.JSONObject.get(JSONObject.java:520)
+	at org.json.JSONObject.getString(JSONObject.java:806)
+	at test.TestServer$TestWorking.doWork(TestServer.java:22)
+	at com.bunker.bkframework.server.framework_api.ServerBusiness.driveJson(ServerBusiness.java:105)
+	at com.bunker.bkframework.server.framework_api.ServerBusiness.receive(ServerBusiness.java:53)
+	at com.bunker.bkframework.text.TextBusinessConnector.sendToBusiness(TextBusinessConnector.java:21)
+	at com.bunker.bkframework.text.TextBusinessConnector.sendToBusiness(TextBusinessConnector.java:10)
+	at com.bunker.bkframework.business.BusinessPeer.decodePacket(BusinessPeer.java:49)
+	at com.bunker.bkframework.newframework.PeerBase.pushPacket(PeerBase.java:100)
+	at com.bunker.bkframework.newframework.PeerBase.life(PeerBase.java:85)
+	at com.bunker.bkframework.server.framework_api.text.TextServerCore.manageLife(TextServerCore.java:93)
+	at com.bunker.bkframework.newframework.PeerBase.run(PeerBase.java:109)
+	at com.bunker.bkframework.server.framework_api.text.TextServerCore.doWork(TextServerCore.java:44)
+	at test.TestServer.<init>(TestServer.java:56)
+	at test.TestServer.main(TestServer.java:61)
