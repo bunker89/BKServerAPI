@@ -15,18 +15,20 @@ import org.json.JSONObject;
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.PeerConnection;
 import com.bunker.bkframework.newframework.Logger;
+import com.bunker.bkframework.server.framework_api.text.TextJSONBusiness;
 import com.bunker.bkframework.server.reserved.LogComposite;
 import com.bunker.bkframework.server.reserved.Pair;
 import com.bunker.bkframework.server.working.WorkConstants;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingResult;
+import com.bunker.bkframework.text.TextBusinessConnector;
 
 public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> implements Business<PacketType, SendDataType, ReceiveDataType>, LogComposite {
-	private final String _TAG = getClass().getSimpleName();
+	private final String _TAG = "ServerBusiness";
 	private WorkContainer mWorkContainer;
 	private WorkingResult mExceptionResult = new WorkingResult();
-	
+
 	public ServerBusiness(WorkContainer workContainer) {
 		mWorkContainer = workContainer;
 		mExceptionResult.putReplyParam(WorkConstants.WORKING_RESULT, false);
@@ -92,14 +94,15 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 		Working working = mWorkContainer.getPublicWork(workKey);
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
-		
+
 		WorkTrace trace = new WorkTrace();
 		trace.setWork(workKey);
 		trace.setName(working.getName());
-		
+
 		Map<String, Object> enviroment = connection.getEnviroment();
+
 		try {
-			WorkingResult result = mWorkContainer.getPublicWork(workKey).doWork(json, enviroment, trace);
+			WorkingResult result = working.doWork(json, enviroment, trace);
 			addTrace(enviroment, trace);
 			sendToPeer(connection, result, sequence);
 		} catch (Exception e) {
@@ -107,7 +110,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 			sendToPeer(connection, mExceptionResult, sequence);
 		}
 	}
-	
+
 	private String objKeyToString(Object workObj) {
 		return workObj instanceof Number ? workObj + "" : workObj.toString();
 	}
@@ -169,4 +172,5 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 	@Override
 	public void invokeTestErr() {
 	}
+
 }

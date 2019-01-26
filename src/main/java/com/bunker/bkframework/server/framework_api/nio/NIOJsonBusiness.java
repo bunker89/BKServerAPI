@@ -6,11 +6,13 @@ import java.nio.ByteBuffer;
 import org.json.JSONObject;
 
 import com.bunker.bkframework.business.PeerConnection;
+import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.ServerBusiness;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.WorkingResult;
 
 public class NIOJsonBusiness extends ServerBusiness<ByteBuffer, byte[], byte[]> {
+	private final String _TAG = "NIOJSONBusiness";
 
 	public NIOJsonBusiness(WorkContainer workContainer) {
 		super(workContainer);
@@ -27,7 +29,7 @@ public class NIOJsonBusiness extends ServerBusiness<ByteBuffer, byte[], byte[]> 
 		try {
 			connection.sendToPeer(result.getResultParams().toString().getBytes("utf-8"), sequence);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			Logger.err(_TAG, "send to peer error", e);
 		}
 	}
 }

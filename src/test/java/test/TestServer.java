@@ -1,31 +1,25 @@
 package test;
 
-import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.json.JSONObject;
 
-import com.bunker.bkframework.server.framework_api.SocketCore;
-import com.bunker.bkframework.server.framework_api.SocketCore.SocketCoreBuilder;
+import com.bunker.bkframework.newframework.Logger;
+import com.bunker.bkframework.server.framework_api.ServerDefaultLog;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
-import com.bunker.bkframework.server.framework_api.nio.NIOCore;
-import com.bunker.bkframework.server.framework_api.nio.NIOJsonBusiness;
-import com.bunker.bkframework.server.reserved.Pair;
+import com.bunker.bkframework.server.framework_api.text.TextJSONBusiness;
+import com.bunker.bkframework.server.framework_api.text.TextServerCore;
+import com.bunker.bkframework.server.working.WorkConstants;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingResult;
 
-import connection.TestPeerConnection;
-
 public class TestServer {
-	public class TestWorking implements Working {
+	private class TestWorking implements Working {
 		@Override
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 			WorkingResult result = new WorkingResult();
+			object.getString("abc");
 			result.putReplyParam("result", true);
 			try {
 				Thread.sleep(300);
@@ -49,41 +43,21 @@ public class TestServer {
 	}
 
 	public TestServer() {
-		WorkContainer works = new WorkContainer();
-		NIOJsonBusiness business = new NIOJsonBusiness(works);
-		SocketCore<ByteBuffer, byte[], byte[]> core = new SocketCoreBuilder<ByteBuffer, byte[], byte[]>(NIOCore.class)
-				.setParam("wrtie_buffer", 8)
-				.setPort(9011)
-				.useServerPeer(business)
-				.build(); 
-		new Thread(core).start();
-		System.out.println(core.getSystemParam("use_ping_port"));
-
-		business.bindAction();
-		TestWorking working = new TestWorking();
-		works.addWork("1", working);
+		Logger.mLog = new ServerDefaultLog();
+		WorkContainer container = new WorkContainer();
+		container.addWork("a", new TestWorking());
 		JSONObject json = new JSONObject();
-		json.put("working", "1");
+		json.put(WorkConstants.WORKING, "a");
 
-		business.receive(new TestPeerConnection(), json.toString().getBytes(), 1);
-
-		Timer timer = new Timer();
-		TimerTask task = new TimerTask() {
-
-			@Override
-			public void run() {
-				System.out.println("run");
-
-				List<Pair> list = business.logging();
-				Iterator<Pair> iter = list.iterator();
-				System.out.println(iter.next().getValue());
-			}
-		};
-
-		timer.schedule(task, 0);
+		TextServerCore server = new TextServerCore();
+		TextJSONBusiness business = new TextJSONBusiness(container);
+		server.setPeer(business);
+		
+		server.doWork(json.toString());
 	}
 
 	public static void main(String []args) {
+		Logger.mLog = new ServerDefaultLog();
 		new TestServer();
 	}
 }

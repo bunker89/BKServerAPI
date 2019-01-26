@@ -106,7 +106,6 @@ public class StaticLinkedWorking extends MultiWorking {
 		WorkingResult result = new WorkingResult();
 		try {
 			JSONObject resultJSON = doClient(json, enviroment);
-			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
 			result.putAllParam(resultJSON);
 		} catch (UnsupportedEncodingException e) {
 			Logger.err(_TAG, "doWork errlr", e);
@@ -117,6 +116,7 @@ public class StaticLinkedWorking extends MultiWorking {
 
 	private JSONObject doClient(JSONObject json, Map<String, Object> enviroment) throws UnsupportedEncodingException {
 		JSONObject resultJSON = new JSONObject();
+		resultJSON.put(WorkConstants.WORKING_RESULT, true);
 		HashMap<String, JSONObject> resultMap = new HashMap<>();
 		for (WorkingSet w : mWorkLink) {
 			JSONObject paramJSON = new JSONObject();
@@ -132,6 +132,11 @@ public class StaticLinkedWorking extends MultiWorking {
 			}
 			result = driveWorking(resultMap, working, "multiTest", paramJSON, enviroment);
 			putAllExceptResult(result, resultJSON);
+			if ((boolean) result.getParam(WorkConstants.WORKING_RESULT) == false) {
+				resultJSON.remove(WorkConstants.WORKING_RESULT);
+				resultJSON.put(WorkConstants.WORKING_RESULT, false);
+				return resultJSON;
+			}
 		}
 		return resultJSON;
 	}

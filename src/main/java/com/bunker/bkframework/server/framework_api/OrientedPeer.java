@@ -26,7 +26,7 @@ public class OrientedPeer<PacketType, SendDataType, ReceiveDataType> extends Bus
 		super(factory, secFac, business);
 		mKiller.start();
 	}
-
+ 
 	public OrientedPeer(PacketFactory<PacketType> factory, BusinessConnector<PacketType, SendDataType, ReceiveDataType> business, int maxPeer) {
 		this(factory, null, business, maxPeer);
 	}
@@ -42,7 +42,7 @@ public class OrientedPeer<PacketType, SendDataType, ReceiveDataType> extends Bus
 		else
 			mIsNetInited = true;
 	}
-
+	
 	@Override
 	public void decodePacket(PacketType packet, int sequence) {
 		super.decodePacket(packet, sequence);
