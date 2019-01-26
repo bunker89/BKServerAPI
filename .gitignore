@@ -15,6 +15,10 @@ local.properties
 .loadpath
 .recommenders
 
+log
+error
+error_info
+error_info/*
 
 # External tool builders
 .externalToolBuilders/
