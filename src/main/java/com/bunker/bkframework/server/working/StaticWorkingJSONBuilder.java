@@ -38,9 +38,9 @@ public class StaticWorkingJSONBuilder {
 		System.out.println(staticWorkingBuilder.build());
 		*/
 		StaticWorkingJSONBuilder builder = new StaticWorkingJSONBuilder();
-		builder.insertWorking("resolve-auth", "auth", null);
-		builder.insertWorking("create-payment-internal", "payment", new WorkingParamBuilder()
-				.bringParam("auth", "user_internal_id", "user_internal_id")
+		builder.insertWorking("listing-banner-internal", "banner", null);
+		builder.insertWorking("listing-event", "store", new WorkingParamBuilder()
+				.bringParam("banner", "event_index_array", "event_index_array")
 				.build());
 		System.out.println(builder.build());
 	}

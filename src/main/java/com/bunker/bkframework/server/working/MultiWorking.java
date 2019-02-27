@@ -79,12 +79,12 @@ public class MultiWorking extends WorkingBase {
 		while (keys.hasNext()) {
 			String key = keys.next();
 			try {
-			dest.put(paramJSON.getString(key), resultMap.get(resultAs).get(key));
+				dest.put(paramJSON.getString(key), resultMap.get(resultAs).get(key));
 			} catch(Exception e) {
 				Logger.err(_TAG, "param missmatched\n"
 						+ "[result map:" + resultMap + "]\n"
 								+ "result as:" + resultAs + "\n"
-								+ "key:" + key);
+								+ "key:" + key, e);
 			}
 		}
 	}
@@ -94,5 +94,4 @@ public class MultiWorking extends WorkingBase {
 		List<WorkTrace> list = (List<WorkTrace>) enviroment.get("trace_list");
 		list.add(trace);
 	}
-
 }

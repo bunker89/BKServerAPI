@@ -57,7 +57,6 @@ public class DynamicLinkedWorking extends MultiWorking {
 				return resultArray;
 			}
 		}
-
 		return resultArray;
 	}
 }
