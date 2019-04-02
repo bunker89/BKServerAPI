@@ -15,14 +15,12 @@ import org.json.JSONObject;
 import com.bunker.bkframework.business.Business;
 import com.bunker.bkframework.business.PeerConnection;
 import com.bunker.bkframework.newframework.Logger;
-import com.bunker.bkframework.server.framework_api.text.TextJSONBusiness;
 import com.bunker.bkframework.server.reserved.LogComposite;
 import com.bunker.bkframework.server.reserved.Pair;
 import com.bunker.bkframework.server.working.WorkConstants;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
 import com.bunker.bkframework.server.working.WorkingResult;
-import com.bunker.bkframework.text.TextBusinessConnector;
 
 public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> implements Business<PacketType, SendDataType, ReceiveDataType>, LogComposite {
 	private final String _TAG = "ServerBusiness";
@@ -106,7 +104,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 			addTrace(enviroment, trace);
 			sendToPeer(connection, result, sequence);
 		} catch (Exception e) {
-			Logger.err(_TAG, "business exception", e);
+			Logger.err(_TAG, "business exception\n" + json.toString(), e);
 			sendToPeer(connection, mExceptionResult, sequence);
 		}
 	}

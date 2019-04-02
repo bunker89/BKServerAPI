@@ -71,7 +71,7 @@ public class MultiWorking extends WorkingBase {
 				//iterate to param names
 				iterateParamJSON(resultMap, resultAs, j, json);
 			}
-		}		
+		}
 	}
 	
 	private void iterateParamJSON(Map<String, JSONObject> resultMap, String resultAs, JSONObject paramJSON, JSONObject dest) {
@@ -79,7 +79,9 @@ public class MultiWorking extends WorkingBase {
 		while (keys.hasNext()) {
 			String key = keys.next();
 			try {
-				dest.put(paramJSON.getString(key), resultMap.get(resultAs).get(key));
+				JSONObject asResult = resultMap.get(resultAs);
+				if (asResult.has(key))
+					dest.put(paramJSON.getString(key), asResult.get(key));
 			} catch(Exception e) {
 				Logger.err(_TAG, "param missmatched\n"
 						+ "[result map:" + resultMap + "]\n"
