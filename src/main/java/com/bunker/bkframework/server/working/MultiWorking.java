@@ -82,11 +82,16 @@ public class MultiWorking extends WorkingBase {
 			String key = keys.next();
 			try {
 				JSONObject asResult = resultMap.get(resultAs);
-				JSONObject privateParam = asResult.getJSONObject("private");
-				JSONObject resultParam = asResult.getJSONObject("result");
-				if (privateParam.has(key))
+				JSONObject privateParam = null;
+				if (asResult.has("private"))
+					privateParam = asResult.getJSONObject("private");
+				JSONObject resultParam = null;
+				if (asResult.has("result"))
+					resultParam = asResult.getJSONObject("result");
+				
+				if (privateParam != null && privateParam.has(key))
 					dest.put(paramJSON.getString(key), privateParam.get(key));
-				else if (resultParam.has(key))
+				else if (resultParam != null && resultParam.has(key))
 					dest.put(paramJSON.getString(key), resultParam.get(key));
 			} catch(Exception e) {
 				Logger.err(_TAG, "param missmatched\n"

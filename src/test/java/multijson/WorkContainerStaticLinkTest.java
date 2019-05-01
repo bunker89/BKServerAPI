@@ -25,7 +25,6 @@ public class WorkContainerStaticLinkTest {
 		@Override
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 			WorkingResult result = new WorkingResult();
-			result.putPrivateParam(name + "-src", name);
 			System.out.println(name);
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
 			return result;
