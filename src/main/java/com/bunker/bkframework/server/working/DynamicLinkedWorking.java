@@ -48,7 +48,7 @@ public class DynamicLinkedWorking extends MultiWorking {
 					throw new NullPointerException("json doesn't has working data");
 				String work = json.getString(WorkConstants.WORKING);
 				Working working = mWorkContainer.getPublicWork(work);
-
+				
 				WorkingResult result;
 				result = driveWorking(resultMap, working, "multiTest", json, enviroment);
 				resultArray.put(result.getResultParams());

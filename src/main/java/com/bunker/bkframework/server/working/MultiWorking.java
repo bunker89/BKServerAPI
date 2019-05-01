@@ -48,8 +48,10 @@ public class MultiWorking extends WorkingBase {
 	private void putResultAs(Map<String, JSONObject> resultMap, JSONObject json, WorkingResult result) {
 		if (json.has(WorkConstants.WORKING_RESULT_AS)) {
 			String resultAs = json.getString(WorkConstants.WORKING_RESULT_AS);
-			resultMap.put(resultAs, result.getResultParams());
-			resultMap.put(resultAs, result.getPrivateParams());
+			JSONObject resultAsJSON = new JSONObject();
+			resultAsJSON.put("private", result.getPrivateParams());
+			resultAsJSON.put("result", result.getResultParams());
+			resultMap.put(resultAs, resultAsJSON);
 		}
 	}
 	
@@ -57,9 +59,9 @@ public class MultiWorking extends WorkingBase {
 		if (!json.has(WorkConstants.WORKING_PARAM_JSON)) {
 			return;
 		}
-
+		
 		JSONObject workParam = json.getJSONObject(WorkConstants.WORKING_PARAM_JSON);
-
+		
 		Iterator<String> resultAses = workParam.keys();
 		//iterate to result keys
 		while (resultAses.hasNext()) {
@@ -80,8 +82,12 @@ public class MultiWorking extends WorkingBase {
 			String key = keys.next();
 			try {
 				JSONObject asResult = resultMap.get(resultAs);
-				if (asResult.has(key))
-					dest.put(paramJSON.getString(key), asResult.get(key));
+				JSONObject privateParam = asResult.getJSONObject("private");
+				JSONObject resultParam = asResult.getJSONObject("result");
+				if (privateParam.has(key))
+					dest.put(paramJSON.getString(key), privateParam.get(key));
+				else if (resultParam.has(key))
+					dest.put(paramJSON.getString(key), resultParam.get(key));
 			} catch(Exception e) {
 				Logger.err(_TAG, "param missmatched\n"
 						+ "[result map:" + resultMap + "]\n"
@@ -90,7 +96,7 @@ public class MultiWorking extends WorkingBase {
 			}
 		}
 	}
-
+	
 	private void addTrace(Map<String, Object> enviroment, WorkTrace trace) {
 		@SuppressWarnings("unchecked")
 		List<WorkTrace> list = (List<WorkTrace>) enviroment.get("trace_list");

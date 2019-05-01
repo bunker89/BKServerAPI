@@ -26,7 +26,7 @@ public class WorkContainer {
 	private Map <String, Working> mPublicWork = new HashMap<>();
 	private final String _TAG = "WorkContainer";
 	private Map<String, List<StaticLinkedWorking>> mInjectionMap = new HashMap<>();
-
+	
 	public WorkContainer() {
 		this("unknown");
 	}
