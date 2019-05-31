@@ -25,7 +25,7 @@ public class ServerDefaultLog implements Log {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		File file = new File("error_info");
 		file.mkdir();
-
+		
 		file = new File("error");
 		file.delete();
 		try {
@@ -38,7 +38,7 @@ public class ServerDefaultLog implements Log {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private File createErrorFile(String tag, long errorId) {
 		try {
 			mErrorOutput.write(errorId + " " + dateFormat.format(new Date()) + " " + tag + "\n");
@@ -46,7 +46,7 @@ public class ServerDefaultLog implements Log {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
+		
 		File file = new File(ERROR_FOLDER + errorId);
 		if (!file.exists()) {
 			try {
