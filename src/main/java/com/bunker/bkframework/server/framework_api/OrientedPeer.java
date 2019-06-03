@@ -79,7 +79,7 @@ public class OrientedPeer<PacketType, SendDataType, ReceiveDataType> extends Bus
 	}
 	
 	@Override
-	protected void logPacket(long arg0, List<Packet<PacketType>> arg1, List<PacketType> arg2, List<PacketType> arg3,
+	protected void logPacket(String arg0, List<Packet<PacketType>> arg1, List<PacketType> arg2, List<PacketType> arg3,
 			String arg4) throws IOException {
 		if (arg4 != null)
 			super.logPacket(arg0, arg1, arg2, arg3, arg4 + "\n" + mResource.getClientHostInfo());

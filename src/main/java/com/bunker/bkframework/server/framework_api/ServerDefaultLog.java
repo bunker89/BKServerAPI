@@ -8,10 +8,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import com.bunker.bkframework.newframework.Log;
 import com.bunker.bkframework.newframework.Logger;
@@ -20,6 +22,7 @@ public class ServerDefaultLog implements Log {
 	private final String ERROR_FOLDER = "error_info/";
 	private FileWriter mErrorOutput;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("[yyyy:MM:dd HH:mm:ss]");
+	private SecureRandom random = new SecureRandom();
 	
 	public ServerDefaultLog() {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
@@ -39,7 +42,7 @@ public class ServerDefaultLog implements Log {
 		}
 	}
 	
-	private File createErrorFile(String tag, long errorId) {
+	private File createErrorFile(String tag, String errorId) {
 		try {
 			mErrorOutput.write(errorId + " " + dateFormat.format(new Date()) + " " + tag + "\n");
 			mErrorOutput.flush();
@@ -57,10 +60,10 @@ public class ServerDefaultLog implements Log {
 		}
 		return file;
 	}
-
+	
 	@Override
-	public long err(String tag, String text) {
-		long id = Calendar.getInstance().getTimeInMillis();
+	public String err(String tag, String text) {
+		String id = Calendar.getInstance().getTimeInMillis() + UUID.randomUUID().toString();
 		File file = createErrorFile(tag, id);
 
 		FileOutputStream output;
@@ -74,12 +77,12 @@ public class ServerDefaultLog implements Log {
 			e1.printStackTrace();
 		}
 
-		return id;
+		return id + "";
 	}
 
 	@Override
-	public long err(String tag, String text, Exception e) {
-		long id = Calendar.getInstance().getTimeInMillis();
+	public String err(String tag, String text, Exception e) {
+		String id = Calendar.getInstance().getTimeInMillis() + UUID.randomUUID().toString();
 		
 		File file = createErrorFile(tag, id);
 		FileOutputStream output;
@@ -94,7 +97,7 @@ public class ServerDefaultLog implements Log {
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		return id;
+		return id + "";
 	}
 
 	@Override
@@ -108,7 +111,7 @@ public class ServerDefaultLog implements Log {
 		String tag = dateFormat.format(new Date()) + ":" + title + " : " + text;
 		System.out.println(tag);
 	}
-
+	
 	public static void main(String []args) {
 		Log log = new ServerDefaultLog();
 		try {
