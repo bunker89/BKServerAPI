@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,7 +21,6 @@ public class ServerDefaultLog implements Log {
 	private final String ERROR_FOLDER = "error_info/";
 	private FileWriter mErrorOutput;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("[yyyy:MM:dd HH:mm:ss]");
-	private SecureRandom random = new SecureRandom();
 	
 	public ServerDefaultLog() {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));

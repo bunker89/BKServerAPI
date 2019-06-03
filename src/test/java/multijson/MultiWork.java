@@ -1,7 +1,6 @@
 package multijson;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Test;
 
 public class MultiWork {
