@@ -17,7 +17,7 @@ public class MultiWorking extends WorkingBase {
 	protected void putAllExceptResult(WorkingResult result, JSONObject dest) {
 		putAllExceptResult(result.getResultParams(), dest);
 	}
-
+	
 	protected void putAllExceptResult(JSONObject src, JSONObject dest) {
 		Iterator<String> keys = src.keys();
 		

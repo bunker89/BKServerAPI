@@ -23,6 +23,16 @@ public class ServerDefaultLog implements Log {
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("[yyyy:MM:dd HH:mm:ss]");
 	
 	public ServerDefaultLog() {
+		this("Asia/Seoul");
+	}
+	
+	public ServerDefaultLog(String timeZoneName) {
+		TimeZone timeZone;
+		if (timeZoneName == null)
+			timeZone = TimeZone.getTimeZone("Asia/Seoul");
+		else
+			timeZone = TimeZone.getTimeZone(timeZoneName);
+		
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		File file = new File("error_info");
 		file.mkdir();
@@ -111,7 +121,7 @@ public class ServerDefaultLog implements Log {
 	}
 	
 	public static void main(String []args) {
-		Log log = new ServerDefaultLog();
+		Log log = new ServerDefaultLog("Asia/Seoul");
 		try {
 			FileInputStream stream = new FileInputStream("asbass");
 		} catch (FileNotFoundException e) {
