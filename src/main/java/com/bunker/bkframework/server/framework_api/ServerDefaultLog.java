@@ -71,7 +71,7 @@ public class ServerDefaultLog implements Log {
 	
 	@Override
 	public String err(String tag, String text) {
-		String id = Calendar.getInstance().getTimeInMillis() + UUID.randomUUID().toString();
+		String id = Calendar.getInstance().getTimeInMillis() + "-" + UUID.randomUUID().toString().substring(0, 10);
 		File file = createErrorFile(tag, id);
 
 		FileOutputStream output;

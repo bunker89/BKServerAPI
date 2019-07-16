@@ -9,6 +9,6 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.21'
     
 	compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
-	implementation 'com.github.bunker89:BKClientAPI:acea2aee45'
+	implementation 'com.github.bunker89:BKClientAPI:23014f5731'
     testCompile 'junit:junit:4.12'
 }
