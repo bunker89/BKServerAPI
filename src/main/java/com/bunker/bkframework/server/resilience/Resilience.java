@@ -1,8 +1,6 @@
 package com.bunker.bkframework.server.resilience;
 
 /**
- * 실패에 대한 복원가능한 모듈의 복원 인터페이스
- * @author 광수
  *
  */
 public interface Resilience {

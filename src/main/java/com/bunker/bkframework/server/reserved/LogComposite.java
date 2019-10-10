@@ -5,7 +5,6 @@ import java.util.List;
 /**
  * 
  * 
- * @author ±¤¼ö
  *
  */
 public interface LogComposite {
