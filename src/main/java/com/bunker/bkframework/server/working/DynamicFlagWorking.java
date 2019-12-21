@@ -19,8 +19,7 @@ public class DynamicFlagWorking implements Working {
 
 	@Override
 	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException(mKey + " is not registerd, by DynamicFlagWorking (default class)");
 	}
 
 	@Override

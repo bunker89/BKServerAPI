@@ -60,7 +60,7 @@ public class MultiWorking extends WorkingBase {
 			return;
 		}
 		
-		JSONObject workParam = json.getJSONObject(WorkConstants.WORKING_PARAM_JSON);
+		JSONObject workParam = (JSONObject) json.remove(WorkConstants.WORKING_PARAM_JSON);
 		
 		Iterator<String> resultAses = workParam.keys();
 		//iterate to result keys
@@ -93,11 +93,13 @@ public class MultiWorking extends WorkingBase {
 					dest.put(paramJSON.getString(key), privateParam.get(key));
 				else if (resultParam != null && resultParam.has(key))
 					dest.put(paramJSON.getString(key), resultParam.get(key));
+				else
+					throw new RuntimeException();
 			} catch(Exception e) {
 				Logger.err(_TAG, "param missmatched\n"
-						+ "[result map:" + resultMap + "]\n"
-								+ "result as:" + resultAs + "\n"
-								+ "key:" + key, e);
+						+ "[result map]:\n" + resultMap + "\n\n"
+								+ "from as:" + resultAs + "\n"
+								+ "from key:" + key, e);
 			}
 		}
 	}

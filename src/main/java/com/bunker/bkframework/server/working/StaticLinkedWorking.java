@@ -6,14 +6,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
-public class StaticLinkedWorking extends MultiWorking {
+public class StaticLinkedWorking extends MultiWorking {	
 	private List<WorkingSet> mWorkLink = new LinkedList<>();
-	private List<String> mParamRequired = new LinkedList<>();
+//	private List<String> mParamRequired = new LinkedList<>();
 	private static final String _TAG = "StaticLinkedWorking";
 	
 	private class WorkingSet {
@@ -30,37 +31,32 @@ public class StaticLinkedWorking extends MultiWorking {
 		}
 	}
 	
-	public static class LinkedWorkingBuilder {
-		StaticLinkedWorking working = new StaticLinkedWorking();
-		WorkContainer workContainer;
+	@Jsonparam public void setParam(JSONObject json) {
+		WorkContainer container = (WorkContainer) json.get("work-container");
+		JSONArray linkParams = json.getJSONArray("link-data");
 		
-		public LinkedWorkingBuilder(WorkContainer workContainer) {
-			this.workContainer = workContainer;
-		}
-		
-		public LinkedWorkingBuilder addWorkLink(String workKey, String as) {
-			addWorkLink(workKey, as, null);
-			return this;
-		}
-		
-		public LinkedWorkingBuilder addWorkLink(String workKey, String as, JSONObject workingParam) {
-			Working work = workContainer.getWork(workKey);
-			if (work == null) {
-				work = new DynamicFlagWorking(workKey);
-				workContainer.addInjection(workKey, working);
-				return this;
-			}
-			
-			working.mWorkLink.add(working.new WorkingSet(workKey, work, as, workingParam));
-			return this;
-		}
-		
-		public StaticLinkedWorking build() {
-			working.mParamRequired = working.getRequired();
-			return working;
+		for (int i = 0; i < linkParams.length(); i++) {
+			JSONObject workData = linkParams.getJSONObject(i);
+			String subWork = workData.getString("key");
+			String as = workData.getString("as");
+			JSONObject param = null;
+			if (workData.has("param"))
+				param = workData.getJSONObject("param");
+			addWorkLink(container, subWork, as, param);
 		}
 	}
 	
+	public void addWorkLink(WorkContainer container, String workKey, String as, JSONObject workingParam) {
+		Working work = container.getWork(workKey);
+		if (work == null) {
+			work = new DynamicFlagWorking(workKey);
+			container.addInjection(workKey, this);
+			return;
+		}
+		
+		mWorkLink.add(new WorkingSet(workKey, work, as, workingParam));
+	}
+		
 	@Deprecated
 	public void iteratePringWorkings() {
 		for (WorkingSet w : mWorkLink) {
@@ -96,11 +92,7 @@ public class StaticLinkedWorking extends MultiWorking {
 		}
 		return paramRequired;
 	}
-	
-	public List<String> getParamRequired() {
-		return mParamRequired;
-	}
-	
+		
 	@Override
 	final public WorkingResult doWork(JSONObject json, Map<String, Object> enviroment, WorkTrace trace) {
 		WorkingResult result = new WorkingResult();

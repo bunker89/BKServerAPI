@@ -70,11 +70,6 @@ public class StaticLink {
 		WorkContainer container = new WorkContainer();
 		container.addWorkPrivate("1", new Worka());
 		container.addWork("2", new Workb());
-		container.addWork("3", container.makeLinkedWorkBuilder()
-				.addWorkLink("1", "1")
-				.addWorkLink("2", "c", new WorkingParamBuilder().bringParam("1", "c", "wp").build())
-				.addWorkLink("1", "3")
-				.build());
 
 		JSONObject json = new JSONObject();
 		json.put("a", "av");

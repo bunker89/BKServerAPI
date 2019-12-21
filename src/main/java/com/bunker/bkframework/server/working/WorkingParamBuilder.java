@@ -21,4 +21,8 @@ public class WorkingParamBuilder {
 	public JSONObject build() {
 		return mJSON;
 	}
+	
+	public static void main(String []args) {
+		System.out.println(new WorkingParamBuilder().bringParam("from", "src", "dest").build());
+	}
 }

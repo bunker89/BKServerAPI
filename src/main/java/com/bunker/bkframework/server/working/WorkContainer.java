@@ -20,7 +20,6 @@ import org.json.JSONTokener;
 import org.reflections.Reflections;
 
 import com.bunker.bkframework.newframework.Logger;
-import com.bunker.bkframework.server.working.StaticLinkedWorking.LinkedWorkingBuilder;
 
 /**
  * WorkContainer class was not synchronized.
@@ -49,10 +48,11 @@ public class WorkContainer {
 		} catch (InstantiationException | IllegalAccessException e) {
 			Logger.err(_TAG, "framework working error", e);
 		}
-		addWork(WorkConstants.MULTI_WORKING, multiWork);
+		addWork(WorkConstants.DYNAMIC_LINKED_WORKING, multiWork);
+		addformWork(WorkConstants.STATIC_LINKED_FORM, StaticLinkedWorking.class);
 	}
 	
-	public void addformWorkWork(String formName, Class<? extends Working> cl) {
+	public void addformWork(String formName, Class<? extends Working> cl) {
 		formWork.put(formName, cl);
 	}
 	
@@ -78,15 +78,14 @@ public class WorkContainer {
 	
 	private void createFormWorking(String key, File jsonFile) {
 		JSONObject json = jsonFromFile(jsonFile);
-		if (!json.has("new"))
+		if (!json.has("form"))
 			return;
-		if (!json.getBoolean("new"))
-			return;
-		if (!formWork.containsKey(key))
-			throw new RuntimeException("there is no key at formwork. key:" + key);
+		String form = json.getString("form");
+		if (!formWork.containsKey(form))
+			throw new RuntimeException("There is no key at formwork. key:" + key);
 		
 		try {
-			Working working = formWork.get(key).newInstance();
+			Working working = formWork.get(form).newInstance();
 			
 			boolean isPublic = false;
 			if (json.has("is-public"))
@@ -134,6 +133,7 @@ public class WorkContainer {
 			Annotation a = m.getAnnotation(Jsonparam.class);
 			if (a != null) {
 				JSONObject json = jsonFromFile(jsonFolder + "/" + key + ".json");
+				json.put("work-container", this);
 				try {
 					m.invoke(work, json);
 				} catch (IllegalAccessException e) {
@@ -170,10 +170,6 @@ public class WorkContainer {
 		addWorkCommon(key, work);
 		mPublicWork.put(key, work);
 		loggingWork("public", key, work);
-	}
-
-	public LinkedWorkingBuilder makeLinkedWorkBuilder() {
-		return new LinkedWorkingBuilder(this);
 	}
 
 	private void loggingWork(String range, String key, Working work) {
@@ -216,19 +212,10 @@ public class WorkContainer {
 	}
 
 	private void setStaticWorking(String linkedKey, JSONArray paramArray, boolean isPublic) {
-		LinkedWorkingBuilder linkedBuilder = makeLinkedWorkBuilder();
-		for (int i = 0; i < paramArray.length(); i++) {
-			JSONObject item = ((JSONObject) paramArray.get(i));
-			String key = item.getString("key");
-			String as = item.getString("as");
-			JSONObject workingParam = null;
-
-			if (item.has("param")) {
-				workingParam = item.getJSONObject("param");
-			}
-			linkedBuilder.addWorkLink(key, as, workingParam);
-		}
-		StaticLinkedWorking working = linkedBuilder.build();
+		StaticLinkedWorking working = new StaticLinkedWorking();
+		JSONObject json = new JSONObject();
+		json.put("work-container", this);
+		json.put("link-data", paramArray);
 		addWork(linkedKey, working, isPublic);
 	}
 
