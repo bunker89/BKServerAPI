@@ -27,13 +27,7 @@ public class ServerDefaultLog implements Log {
 	}
 	
 	public ServerDefaultLog(String timeZoneName) {
-		TimeZone timeZone;
-		if (timeZoneName == null)
-			timeZone = TimeZone.getTimeZone("Asia/Seoul");
-		else
-			timeZone = TimeZone.getTimeZone(timeZoneName);
-		
-		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+			dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		File file = new File("error_info");
 		file.mkdir();
 		
@@ -90,7 +84,7 @@ public class ServerDefaultLog implements Log {
 
 	@Override
 	public String err(String tag, String text, Exception e) {
-		String id = Calendar.getInstance().getTimeInMillis() + UUID.randomUUID().toString();
+		String id = Calendar.getInstance().getTimeInMillis() + "_" + UUID.randomUUID().toString().replace("-", "").substring(0, 10);
 		
 		File file = createErrorFile(tag, id);
 		FileOutputStream output;
@@ -98,7 +92,7 @@ public class ServerDefaultLog implements Log {
 			output = new FileOutputStream(file);
 			PrintWriter writer = new PrintWriter(output);
 			writer.write(text + "\n\n "
-					+ "*****stack trace*****\n" + e.getMessage() + "\n");
+					+ "*****stack trace*****\n");
 			e.printStackTrace(writer);
 			writer.flush();
 			writer.close();
@@ -110,22 +104,27 @@ public class ServerDefaultLog implements Log {
 
 	@Override
 	public void warning(String title, String text) {
-		String tag = dateFormat.format(new Date()) + ":" + title + " : " + text;
+		String tag = dateFormat.format(new Date()) + title + " : " + text;
 		System.out.println("*** warning -> " + tag + "***");
 	}
 
 	@Override
 	public void log(String title, String text) {
-		String tag = dateFormat.format(new Date()) + ":" + title + " : " + text;
+		String tag = dateFormat.format(new Date()) + title + " : " + text;
 		System.out.println(tag);
 	}
 	
 	public static void main(String []args) {
 		Log log = new ServerDefaultLog("Asia/Seoul");
+		Logger.mLog = log;
 		try {
-			FileInputStream stream = new FileInputStream("asbass");
+		try {
+			new FileInputStream("asbass");
 		} catch (FileNotFoundException e) {
 			Logger.err("tag", "test", e);
+		}
+		} catch (Exception e) {
+			Logger.err("tag", "tttt", e);
 		}
 	}
 }

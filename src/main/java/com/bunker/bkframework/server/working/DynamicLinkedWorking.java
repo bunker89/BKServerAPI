@@ -49,8 +49,7 @@ public class DynamicLinkedWorking extends MultiWorking {
 				String work = json.getString(WorkConstants.WORKING);
 				Working working = mWorkContainer.getPublicWork(work);
 				
-				WorkingResult result;
-				result = driveWorking(resultMap, working, "multiTest", json, enviroment);
+				WorkingResult result = driveWorking(resultMap, working, "multiTest", json, enviroment);
 				resultArray.put(result.getResultParams());
 			} catch (UnsupportedEncodingException e) {
 				Logger.err(_TAG, "un support encoding", e);

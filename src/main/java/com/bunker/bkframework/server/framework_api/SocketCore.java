@@ -8,19 +8,19 @@ import com.bunker.bkframework.sec.SecureFactory;
 
 abstract public class SocketCore<PacketType, SendDataType, ReceiveDataType> extends CoreBase<PacketType> implements Runnable {
 	private int port = 9011;
-	private String _TAG = getClass().getSimpleName();
 
 	public static class SocketCoreBuilder<PacketType, SendDataType, ReceiveDataType> {
 		private SocketCore<PacketType, SendDataType, ReceiveDataType> coreBase;
 		private boolean isDefaultPeer = true;
+		private final String _TAG = "SocketCoreBuilder";
 
 		public SocketCoreBuilder(Class<? extends SocketCore<PacketType, SendDataType, ReceiveDataType>> cl) {
 			try {
 				coreBase = cl.newInstance();
 			} catch (InstantiationException e) {
-				Logger.err("CoreBase", "class loadException", e);
+				Logger.err(_TAG, "class loadException", e);
 			} catch (IllegalAccessException e) {
-				Logger.err("CoreBase", "class loadException", e);
+				Logger.err(_TAG, "class loadException", e);
 			}
 		}
 
