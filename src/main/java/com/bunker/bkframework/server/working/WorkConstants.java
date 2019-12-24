@@ -3,6 +3,8 @@ package com.bunker.bkframework.server.working;
 public class WorkConstants {
 	public static final String WORKING = "bk-working";
 	public static final String WORKING_RESULT = "bk-result";
+	public static final String RESULT_FROM = "bk-result-from";
+	public static final String RESULT_DETAIL = "bk-result-detail";
 	
 	public static final String DYNAMIC_LINKED_WORKING = "bk-dynamic-linked";
 	public static final String STATIC_LINKED_FORM = "linked";

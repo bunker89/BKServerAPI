@@ -12,7 +12,6 @@ import com.bunker.bkframework.server.working.BKWork;
 import com.bunker.bkframework.server.working.WorkConstants;
 import com.bunker.bkframework.server.working.WorkContainer;
 import com.bunker.bkframework.server.working.Working;
-import com.bunker.bkframework.server.working.WorkingParamBuilder;
 import com.bunker.bkframework.server.working.WorkingResult;
 
 public class StaticLink {

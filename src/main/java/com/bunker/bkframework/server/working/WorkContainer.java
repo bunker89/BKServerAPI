@@ -216,6 +216,7 @@ public class WorkContainer {
 		JSONObject json = new JSONObject();
 		json.put("work-container", this);
 		json.put("link-data", paramArray);
+		working.setParam(json);
 		addWork(linkedKey, working, isPublic);
 	}
 

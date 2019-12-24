@@ -25,7 +25,8 @@ public class WorkContainerStaticLinkTest {
 		@Override
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 			WorkingResult result = new WorkingResult();
-			System.out.println(name);
+			System.out.println();
+			result.putReplyParam(name + "-src", "Asg");
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
 			return result;
 		}
@@ -56,6 +57,6 @@ public class WorkContainerStaticLinkTest {
 		HashMap<String, Object> enviroment = new HashMap<>();
 		
 		enviroment.put("trace_list", new LinkedList<>());
-		container.getWork("testLink").doWork(new JSONObject(), enviroment, new WorkTrace());
+		System.out.println(container.getWork("testLink").doWork(new JSONObject(), enviroment, new WorkTrace()).param);
 	}
 }
