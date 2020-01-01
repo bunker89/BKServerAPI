@@ -41,15 +41,17 @@ public class WorkContainer {
 
 	public WorkContainer(String name) {
 		mName = name;
-		DynamicLinkedWorking multiWork = new DynamicLinkedWorking();
-		multiWork.setWorkContainer(this);
 		try {
 			loadWorkings("com.bunker.bkframework.server.working");
 		} catch (InstantiationException | IllegalAccessException e) {
 			Logger.err(_TAG, "framework working error", e);
 		}
-		addWork(WorkConstants.DYNAMIC_LINKED_WORKING, multiWork);
 		addformWork(WorkConstants.STATIC_LINKED_FORM, StaticLinkedWorking.class);
+	}
+	
+	public void setDynamicLinkedWork(int maxDepth) {
+		DynamicLinkedWorking multiWork = new DynamicLinkedWorking(maxDepth, this);
+		addWork(WorkConstants.DYNAMIC_LINKED_WORKING, multiWork);
 	}
 	
 	public void addformWork(String formName, Class<? extends Working> cl) {

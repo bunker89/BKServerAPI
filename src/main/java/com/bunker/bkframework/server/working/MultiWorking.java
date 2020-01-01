@@ -8,7 +8,6 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
 public class MultiWorking extends WorkingBase {

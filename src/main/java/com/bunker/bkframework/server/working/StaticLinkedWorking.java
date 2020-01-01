@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
-public class StaticLinkedWorking extends MultiWorking {	
+public final class StaticLinkedWorking extends MultiWorking {	
 	private List<WorkingSet> mWorkLink = new LinkedList<>();
 //	private List<String> mParamRequired = new LinkedList<>();
 	private static final String _TAG = "StaticLinkedWorking";
@@ -46,12 +46,27 @@ public class StaticLinkedWorking extends MultiWorking {
 		}
 	}
 	
+	void checkTriangle(String key) {
+		for (WorkingSet set : mWorkLink) {
+			if (set.working instanceof StaticLinkedWorking) {
+				((StaticLinkedWorking) set.working).checkTriangle(key);
+			}
+			
+			if (key.equals(set.key)) {
+				throw new RuntimeException("StaticLinkedWorking has triangle");
+			}
+		}
+	}
+	
 	public void addWorkLink(WorkContainer container, String workKey, String as, JSONObject workingParam) {
 		Working work = container.getWork(workKey);
+		if (work instanceof StaticLinkedWorking) {
+			StaticLinkedWorking staticLinked = (StaticLinkedWorking) work;
+			staticLinked.checkTriangle(workKey);
+		}
 		if (work == null) {
 			work = new DynamicFlagWorking(workKey);
 			container.addInjection(workKey, this);
-			return;
 		}
 		
 		mWorkLink.add(new WorkingSet(workKey, work, as, workingParam));
@@ -65,6 +80,9 @@ public class StaticLinkedWorking extends MultiWorking {
 	}
 	
 	void injectionWorking(String key, Working working) {
+		if (working instanceof StaticLinkedWorking) {
+			((StaticLinkedWorking) working).checkTriangle(key);
+		}
 		for (WorkingSet w : mWorkLink) {
 			if (w.key.equals(key)) {
 				w.working = working;

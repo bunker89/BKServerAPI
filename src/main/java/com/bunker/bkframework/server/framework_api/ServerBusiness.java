@@ -50,7 +50,6 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 			else
 				driveJson(connector, json, sequence);
 		} catch (Exception e) {
-			e.printStackTrace();
 			Logger.err(_TAG, "receive err", e);
 		}
 	}

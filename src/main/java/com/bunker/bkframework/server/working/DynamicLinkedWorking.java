@@ -10,21 +10,24 @@ import org.json.JSONObject;
 import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
-public class DynamicLinkedWorking extends MultiWorking {
+final public class DynamicLinkedWorking extends MultiWorking {
 	private final String _TAG = getClass().getSimpleName();
-	private WorkContainer mWorkContainer;
-
-	public DynamicLinkedWorking() {
-	}
-
-	public void setWorkContainer(WorkContainer workContainer) {
-		mWorkContainer = workContainer;
+	private final WorkContainer mWorkContainer;
+	private final int maxDepth;
+	
+	public DynamicLinkedWorking(int maxDepth, WorkContainer container) {
+		this.maxDepth = maxDepth;
+		mWorkContainer = container;
 	}
 
 	@Override
 	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 		WorkingResult result = new WorkingResult();
 		JSONArray workingArray = object.getJSONArray(WorkConstants.MULTI_WORKING_ARRAY);
+		if (workingArray.length() > maxDepth) {
+			result.putReplyParam(WorkConstants.WORKING_RESULT, false);
+			result.putReplyParam(WorkConstants.RESULT_DETAIL, "dynamic working limited 5");
+		}
 		JSONArray resultArray = doClient(workingArray, enviroment);
 		if (resultArray != null) {
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
