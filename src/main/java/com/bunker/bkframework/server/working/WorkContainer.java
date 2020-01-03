@@ -66,7 +66,7 @@ public class WorkContainer {
 		
 		for (File f : files) {
 			if (f.isDirectory())
-				setJSONParam(jsonFolder);
+				setJSONParam(f.getPath());
 			else {
 				String key = f.getName().replace(".json", "");
 				Working working = getWork(key);

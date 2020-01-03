@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 
 public class MultiWorking extends WorkingBase {
-	private final String _TAG = "MultiWorking";
 
 	protected void putAllExceptResult(WorkingResult result, JSONObject dest) {
 		putAllExceptResult(result.getResultParams(), dest);
@@ -65,13 +64,9 @@ public class MultiWorking extends WorkingBase {
 		//iterate to result keys
 		while (resultAses.hasNext()) {
 			String resultAs = resultAses.next();
-			JSONArray paramArray = workParam.getJSONArray(resultAs);
+			JSONObject paramArray = workParam.getJSONObject(resultAs);
 
-			for (int i = 0; i < paramArray.length(); i++) {
-				JSONObject j =  paramArray.getJSONObject(i);
-				//iterate to param names
-				iterateParamJSON(resultMap, resultAs, j, json);
-			}
+			iterateParamJSON(resultMap, resultAs, paramArray, json);
 		}
 	}
 

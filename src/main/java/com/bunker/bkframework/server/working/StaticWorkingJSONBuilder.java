@@ -40,7 +40,8 @@ public class StaticWorkingJSONBuilder {
 		StaticWorkingJSONBuilder builder = new StaticWorkingJSONBuilder();
 		builder.insertWorking("listing-banner-internal", "banner", null);
 		builder.insertWorking("listing-event", "store", new WorkingParamBuilder()
-				.bringParam("banner", "event_index_array", "event_index_array")
+				.bringParam("banner", "event_index_array", "event_index_array2")
+				.bringParam("banner", "banner_name", "banner_name2")
 				.build());
 		System.out.println(builder.build());
 	}

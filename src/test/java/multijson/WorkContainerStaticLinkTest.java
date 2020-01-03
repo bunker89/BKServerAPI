@@ -25,8 +25,10 @@ public class WorkContainerStaticLinkTest {
 		@Override
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 			WorkingResult result = new WorkingResult();
-			System.out.println("ab");
-			result.putReplyParam(name + "-src", "Asg");
+			System.out.println(object);
+			result.putReplyParam(name + "-src1", "Asg");
+			result.putReplyParam(name + "-src2", "Asg");
+			result.putReplyParam(name + "-src3", "Asg");
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
 			return result;
 		}
@@ -47,13 +49,17 @@ public class WorkContainerStaticLinkTest {
 	@Test
 	public void triangleTest() {
 		WorkContainer container = new WorkContainer();
-		String chainOne = "[{\"as\":\"t1\",\"key\":\"test1\"},{\"as\":\"t2\",\"key\":\"2\"}]";
+		String chainOne = "["
+				+ "{\"as\":\"t1\",\"key\":\"test1\"},"
+				+ "{\"as\":\"t1-1\",\"key\":\"test1\"},"
+				+ "{\"as\":\"t2\",\"key\":\"test2\",\"param\":{\"t1\":{\"t1-src2\":\"t1-src2\",\"t1-src3\":\"t1-src3\",\"t1-src1\":\"t1-src1\"}}},"
+				+ "{\"as\":\"t3\",\"key\":\"test3\",\"param\":{\"t1\":{\"t1-src2\":\"t1-src2\",\"t1-src3\":\"t1-src3\",\"t1-src1\":\"t1-src1\"}}},"
+				+ "]";
 		container.addWork("test1", new TestWorking("t1"));
+		container.addWork("test2", new TestWorking("t2"));
+		container.addWork("test3", new TestWorking("t3"));
 		
-		String chainTwo = "[{\"as\":\"t1\",\"key\":\"test1\"},{\"as\":\"t2\",\"key\":\"1\"}]";
-
 		container.addLinkedWork("1", new JSONArray(chainOne), true);
-		container.addLinkedWork("2", new JSONArray(chainTwo), true);
 		HashMap<String, Object> enviroment = new HashMap<>();
 		
 		enviroment.put("trace_list", new LinkedList<>());
