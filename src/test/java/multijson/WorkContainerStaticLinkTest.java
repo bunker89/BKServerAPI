@@ -46,39 +46,7 @@ public class WorkContainerStaticLinkTest {
 		}
 	}
 	
-	@Test
-	public void triangleTest() {
-		WorkContainer container = new WorkContainer();
-		String chainOne = "["
-				+ "{\"as\":\"t1\",\"key\":\"test1\"},"
-				+ "{\"as\":\"t1-1\",\"key\":\"test1\"},"
-				+ "{\"as\":\"t2\",\"key\":\"test2\",\"param\":{\"t1\":{\"t1-src2\":\"t1-src2\",\"t1-src3\":\"t1-src3\",\"t1-src1\":\"t1-src1\"}}},"
-				+ "{\"as\":\"t3\",\"key\":\"test3\",\"param\":{\"t1\":{\"t1-src2\":\"t1-src2\",\"t1-src3\":\"t1-src3\",\"t1-src1\":\"t1-src1\"}}},"
-				+ "]";
-		container.addWork("test1", new TestWorking("t1"));
-		container.addWork("test2", new TestWorking("t2"));
-		container.addWork("test3", new TestWorking("t3"));
-		
-		container.addLinkedWork("1", new JSONArray(chainOne), true);
-		HashMap<String, Object> enviroment = new HashMap<>();
-		
-		enviroment.put("trace_list", new LinkedList<>());
-		System.out.println(container.getWork("1").doWork(new JSONObject(), enviroment, new WorkTrace()).param);
-	}
-	
 //	@Test
 	public void workLoadTest() {
-		String chainJSONString = "[{\"as\":\"t1\",\"key\":\"test1\"},{\"as\":\"t2\",\"param\":{\"t1\":[{\"t1-src\":\"t1-dst\"}]},\"key\":\"test2\"},{\"as\":\"t3\",\"param\":{\"t2\":[{\"t2-src\":\"t2-dst\"}]},\"key\":\"test3\"}]";
-		WorkContainer container = new WorkContainer();
-		
-		container.addWork("test1", new TestWorking("t1"));
-		container.addWork("test2", new TestWorking("t2"));
-		container.addWork("test3", new TestWorking("t3"));
-		
-		container.addLinkedWork("testLink", new JSONArray(chainJSONString), true);
-		HashMap<String, Object> enviroment = new HashMap<>();
-		
-		enviroment.put("trace_list", new LinkedList<>());
-		System.out.println(container.getWork("testLink").doWork(new JSONObject(), enviroment, new WorkTrace()).param);
 	}
 }

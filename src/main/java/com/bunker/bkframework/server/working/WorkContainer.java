@@ -28,11 +28,11 @@ import com.bunker.bkframework.newframework.Logger;
  */
 public class WorkContainer {
 	private String mName;
-	private String jsonFolder;
 	private Map<String, Class<? extends Working>> formWork = new HashMap<>();
 	private Map <String, Working> mPrivateWork = new HashMap<>();
 	private Map <String, Working> mPublicWork = new HashMap<>();
 	private final String _TAG = "WorkContainer";
+	private Map<String, String> jsonParamMap = new HashMap<String, String>();
 	private Map<String, List<StaticLinkedWorking>> mInjectionMap = new HashMap<>();
 
 	public WorkContainer() {
@@ -48,27 +48,30 @@ public class WorkContainer {
 		}
 		addformWork(WorkConstants.STATIC_LINKED_FORM, StaticLinkedWorking.class);
 	}
-	
+
 	public void setDynamicLinkedWork(int maxDepth) {
 		DynamicLinkedWorking multiWork = new DynamicLinkedWorking(maxDepth, this);
 		addWork(WorkConstants.DYNAMIC_LINKED_WORKING, multiWork);
 	}
-	
+
 	public void addformWork(String formName, Class<? extends Working> cl) {
 		formWork.put(formName, cl);
 	}
-	
+
 	public void setJSONParam(String jsonFolder) {
-		this.jsonFolder = jsonFolder;
-		
+		setJSONParamRecursive(jsonFolder);
+	}
+	
+	void setJSONParamRecursive(String jsonFolder) {
 		File root = new File(jsonFolder);
 		File [] files = root.listFiles();
-		
+
 		for (File f : files) {
 			if (f.isDirectory())
-				setJSONParam(f.getPath());
+				setJSONParamRecursive(f.getPath());
 			else {
 				String key = f.getName().replace(".json", "");
+				jsonParamMap.put(key, f.getPath());
 				Working working = getWork(key);
 				if (working != null) {
 					jsonParamInject(key, working);
@@ -77,7 +80,7 @@ public class WorkContainer {
 			}
 		}
 	}
-	
+
 	private void createFormWorking(String key, File jsonFile) {
 		JSONObject json = jsonFromFile(jsonFile);
 		if (!json.has("form"))
@@ -85,24 +88,23 @@ public class WorkContainer {
 		String form = json.getString("form");
 		if (!formWork.containsKey(form))
 			throw new RuntimeException("There is no key at formwork. key:" + key);
-		
+
 		try {
 			Working working = formWork.get(form).newInstance();
-			
+
 			boolean isPublic = false;
 			if (json.has("is-public"))
 				isPublic = json.getBoolean("is-public");
-			
+
 			addWork(key, working, isPublic);
 		} catch (InstantiationException e) {
-			e.printStackTrace();
 			Logger.err(_TAG, "create formwork error", e);
 		} catch (IllegalAccessException e) {
 			Logger.err(_TAG, "create formwork error", e);
 		}
-				
+
 	}
-	
+
 	void addInjection(String key, StaticLinkedWorking working) {
 		List<StaticLinkedWorking> list = mInjectionMap.get(key);
 		if (list == null) {
@@ -112,7 +114,7 @@ public class WorkContainer {
 
 		list.add(working);
 	}
-	
+
 	private JSONObject jsonFromFile(File file) {
 		JSONTokener tokener;
 		try {
@@ -128,29 +130,32 @@ public class WorkContainer {
 	private JSONObject jsonFromFile(String fileName) {
 		return this.jsonFromFile(new File(fileName));
 	}
-	
+
 	private void jsonParamInject(String key, Working work) {
 		Method[] methods = work.getClass().getMethods();
 		for (Method m : methods) {
 			Annotation a = m.getAnnotation(Jsonparam.class);
 			if (a != null) {
-				JSONObject json = jsonFromFile(jsonFolder + "/" + key + ".json");
+				JSONObject json = jsonFromFile(jsonParamMap.get(key));
 				json.put("work-container", this);
 				try {
 					m.invoke(work, json);
-				} catch (IllegalAccessException e) {
-					Logger.err(_TAG, "illegal access error", e);
-				} catch (IllegalArgumentException e) {
-					Logger.err(_TAG, "illegal argument error", e);
+				} catch (IllegalAccessException | IllegalArgumentException e) {
+					Logger.err(_TAG, key + " method invoke error"
+							+ "\nwork:" + work + ""
+							+ "\n" + m, e);
 				} catch (InvocationTargetException e) {
-					Logger.err(_TAG, "invocation target error", e);
-				}
+					Logger.err(_TAG, key + " method invoke error"
+							+ "\nwork:" + work + ""
+							+ "\n" + m, e);
+					e.getTargetException().printStackTrace();
+				} 
 			}
 		}
 	}
 
 	private void addWorkCommon(String key, Working work) {
-		if (jsonFolder != null) {
+		if (!jsonParamMap.isEmpty()) {
 			jsonParamInject(key, work);
 		}
 
