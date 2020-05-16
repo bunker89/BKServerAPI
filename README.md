@@ -1,12 +1,6 @@
-# BKServerAPI
+﻿
+안녕하세요. 스타트업을 준비하고있는 개인개발자입니다.
 
-BKServer is similar with microservice architecture.
-It is separated into small, independent services named 'Working'.
-Every service in the 'Working' class can be linked to use parameter of JSON.
-------------------------------- helped by andrei----------------------------------
-For example Calculator Server can has 'PlusWorking', 'MinusWorking', 'MultiWorking', 'DivideWorking'.
-'WorkContainer' could be consist of many coordination.
-It can be reduce the association.
-'Working' don't have dependency to Java. 'Working' can bridge to every laungage of can using JSON.
-'PlusWorking' can be made by 'Java' and 'MinusWorking' can be made by 'C'.
-Even though ther are developded several laungage, they can be linked very simply.
+제가 기획하고 만들고 있는 오픈소스 API 프레임워크(MIT 라이센스)를 소개하려 합니다. 현재 사업과는 관계 없고 그냥 취미생활입니다. 프로젝트의 이름은 BKFramework 이며 목적은 JSON API Framwork 라고 하겠습니다. http API가 아닌 http의 개념을 없앤 추상적인 json api들을 유연하게 연결하는 프레임워크입니다. Api들은 입력 프로토콜에 따라 http, 소켓, 블루투스를 통해 제공 될 수 있습니다. 코어는 Java로 개발되었지만 api간 입출력을 json으로 하여 언어의 종속성을 없앴습니다.
+
+﻿
