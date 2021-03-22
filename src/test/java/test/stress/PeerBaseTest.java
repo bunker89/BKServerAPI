@@ -29,11 +29,6 @@ public class PeerBaseTest {
 		public String getName() {
 			return null;
 		}
-		
-		@Override
-		public String getDescription() {
-			return null;
-		}
 	}
 	
 	public PeerBaseTest() {

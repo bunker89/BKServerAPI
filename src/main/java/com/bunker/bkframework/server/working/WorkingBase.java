@@ -22,9 +22,4 @@ class WorkingBase implements Working {
 	public String getName() {
 		return "no named";
 	}
-
-	@Override
-	public String getDescription() {
-		return null;
-	}
 }
