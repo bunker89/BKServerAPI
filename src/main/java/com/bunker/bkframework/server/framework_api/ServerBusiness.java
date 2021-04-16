@@ -90,7 +90,7 @@ public abstract class ServerBusiness<PacketType, SendDataType, ReceiveDataType> 
 		String workKey = objKeyToString(workObj);
 		Working working = mWorkContainer.getPublicWork(workKey);
 		if (working == null)
-			throw new NullPointerException("Working is not registered");
+			throw new NullPointerException("Working is not registered" + workObj);
 
 		WorkTrace trace = new WorkTrace();
 		trace.setWork(workKey);
