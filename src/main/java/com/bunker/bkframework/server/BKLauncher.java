@@ -35,9 +35,10 @@ public class BKLauncher {
 	/**
 	 * init framework and load parameter
 	 */
-	public static void init() {
+	public static void init(File paramFile) {
+		File file = paramFile != null ? paramFile : new File("setting.json");
 		This = new BKLauncher();
-		This.mSystemParam = This.parseParamFile();
+		This.mSystemParam = This.parseParamFile(file);
 		This.initLoggingSystem();
 	}
 	
@@ -80,8 +81,7 @@ public class BKLauncher {
 		}
 	}
 	
-	private JSONObject parseParamFile() {
-		File file = new File("setting.json");
+	private JSONObject parseParamFile(File file) {
 		if (!file.exists()) {
 			Logger.logging(_TAG , "setting.json is not found");
 			return new JSONObject();
