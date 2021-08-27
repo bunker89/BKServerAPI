@@ -66,6 +66,10 @@ public class BKLauncher {
 
 	public void initLoggingSystem() {
 		Boolean debug = (Boolean) getSystemParam("debugging");
+		Boolean bkLog = (Boolean) getSystemParam("bklog_enable");
+		
+		if (bkLog == null)
+			bkLog = true;
 		
 		Object timeZoneO = getSystemParam("time_zome");
 		String timeZone = null;
@@ -76,7 +80,7 @@ public class BKLauncher {
 		if (loggingTimeZoneO != null)
 			timeZone = (String) loggingTimeZoneO;
 		
-		if (debug == null || debug == false) {
+		if ((debug == null || debug == false) && bkLog) {
 			Logger.mLog = new ServerDefaultLog(timeZone);
 		}
 	}
