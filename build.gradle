@@ -9,7 +9,7 @@ repositories {
 dependencies {
 	implementation group: 'org.reflections', name: 'reflections', version: '0.9.11'
 	implementation group: 'org.json', name: 'json', version: '20180813'
-    implementation 'com.github.bunker89:BKFramwork:b751fa98c2'
-	implementation 'com.github.bunker89:BKClientAPI:412521ff9a'
-	testCompile 'junit:junit:4.12'
+    implementation 'com.github.bunker89:BKFramwork:3a04ee2f76'
+	implementation 'com.github.bunker89:BKClientAPI:de9a3d4078'
+	testImplementation 'junit:junit:4.12'
 }
