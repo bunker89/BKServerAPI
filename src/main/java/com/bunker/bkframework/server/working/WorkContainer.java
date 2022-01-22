@@ -122,7 +122,7 @@ public class WorkContainer {
 			JSONObject json = new JSONObject(tokener);
 			return json;
 		} catch (FileNotFoundException e) {
-			Logger.err(_TAG, "json read error", e);
+			Logger.err(_TAG, "json read error" + file.getPath(), e);
 		}
 		return null;		
 	}
