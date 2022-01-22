@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.reflections.Reflections;
@@ -121,7 +122,7 @@ public class WorkContainer {
 			tokener = new JSONTokener(new FileReader(file));
 			JSONObject json = new JSONObject(tokener);
 			return json;
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException | JSONException e) {
 			Logger.err(_TAG, "json read error" + file.getPath(), e);
 		}
 		return null;		
