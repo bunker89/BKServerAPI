@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 
 import com.bunker.bkframework.newframework.Logger;
 
@@ -191,7 +192,7 @@ public class WorkContainer {
 	}
 
 	public void loadWorkings(String packageName) throws InstantiationException, IllegalAccessException {
-		loadWorkings(new Reflections(packageName));
+		loadWorkings(new Reflections(new ConfigurationBuilder().forPackage(packageName)));
 	}
 
 	public void loadWorkings(Reflections reflections) throws InstantiationException, IllegalAccessException {
