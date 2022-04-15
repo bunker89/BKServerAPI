@@ -1,15 +1,14 @@
 apply plugin: 'java'
 
-sourceCompatibility = '1.8'
 repositories {
     jcenter() 
     maven { url "https://jitpack.io" }
 }
 
 dependencies {
-	implementation group: 'org.reflections', name: 'reflections', version: '0.9.11'
-	implementation group: 'org.json', name: 'json', version: '20180813'
-    implementation 'com.github.bunker89:BKFramwork:3a04ee2f76'
-	implementation 'com.github.bunker89:BKClientAPI:de9a3d4078'
+	implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
+	implementation group: 'org.json', name: 'json', version: '20220320'
+    implementation 'com.github.bunker89:BKFramwork:8524a492bf'
+	implementation 'com.github.bunker89:BKClientAPI:57d00fb85d'
 	testImplementation 'junit:junit:4.12'
 }
