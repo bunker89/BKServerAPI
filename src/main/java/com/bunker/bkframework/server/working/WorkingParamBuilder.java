@@ -1,6 +1,5 @@
 package com.bunker.bkframework.server.working;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class WorkingParamBuilder {

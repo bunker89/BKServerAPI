@@ -6,6 +6,7 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import com.bunker.bkframework.newframework.Logger;
 import com.bunker.bkframework.server.framework_api.WorkTrace;
 import com.bunker.bkframework.server.framework_api.WorkTraceList;
 import com.bunker.bkframework.server.working.BKWork;
@@ -20,9 +21,9 @@ public class StaticLink {
 
 		@Override
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
-			System.out.println("do a" + object);
 			WorkingResult result = new WorkingResult();
 			result.putReplyParam("c", "cv");
+			result.putReplyParam("d", "error");
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
 			return result;
 		}
@@ -35,11 +36,9 @@ public class StaticLink {
 
 	@BKWork(key = "2", input={"c", "d", "e"}, output={"f","g"})
 	class Workb implements Working {
-
 		@Override
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
-			System.out.println("do b" + object);
-
+			Logger.logging("Workb", object.toString());
 			WorkingResult result = new WorkingResult();
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
 			result.putReplyParam("f", "fv");
@@ -58,6 +57,7 @@ public class StaticLink {
 		WorkContainer container = new WorkContainer();
 		container.addWorkPrivate("1", new Worka());
 		container.addWork("2", new Workb());
+		container.setJSONParam("working");
 
 		JSONObject json = new JSONObject();
 		json.put("a", "av");
@@ -65,6 +65,6 @@ public class StaticLink {
 
 		Map<String, Object> enviroment = new HashMap<>();
 		enviroment.put("trace_list", new WorkTraceList());
-		container.getPublicWork("3").doWork(json, enviroment, null);
+		container.getPublicWork("static-test").doWork(json, enviroment, null);
 	}
 }

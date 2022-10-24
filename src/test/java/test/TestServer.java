@@ -20,7 +20,7 @@ public class TestServer {
 		public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
 			WorkingResult result = new WorkingResult();
 			object.getString("abc");
-			result.putReplyParam("result", true);
+			result.putReplyParam("bk-result", true);
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {
