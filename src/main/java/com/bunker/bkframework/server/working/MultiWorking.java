@@ -27,7 +27,7 @@ public class MultiWorking extends WorkingBase {
 		}
 	}
 
-	protected WorkingResult driveWorking(Map<String, JSONObject> resultMap, Working working, String work, JSONObject json, Map<String, Object> enviroment) throws UnsupportedEncodingException {
+	protected WorkingResult driveWorking(Map<String, JSONObject> resultMap, Working working, String work, JSONObject json, Map<String, Object> environment) throws UnsupportedEncodingException {
 		if (working == null)
 			throw new NullPointerException("Working is not registered");
 
@@ -36,9 +36,9 @@ public class MultiWorking extends WorkingBase {
 		trace.setName(working.getName());
 
 		bringWorkParam(resultMap, json);
-		WorkingResult result = working.doWork(json, enviroment, trace);
+		WorkingResult result = working.doWork(json, environment, trace);
 		putResultAs(resultMap, json, result);
-		addTrace(enviroment, trace);
+		addTrace(environment, trace);
 		return result;
 	}
 
@@ -93,9 +93,9 @@ public class MultiWorking extends WorkingBase {
 		}
 	}
 
-	private void addTrace(Map<String, Object> enviroment, WorkTrace trace) {
+	private void addTrace(Map<String, Object> environment, WorkTrace trace) {
 		@SuppressWarnings("unchecked")
-		List<WorkTrace> list = (List<WorkTrace>) enviroment.get("trace_list");
+		List<WorkTrace> list = (List<WorkTrace>) environment.get("trace_list");
 		list.add(trace);
 	}
 }

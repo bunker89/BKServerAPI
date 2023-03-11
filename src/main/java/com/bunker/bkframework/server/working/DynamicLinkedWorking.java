@@ -21,14 +21,14 @@ final public class DynamicLinkedWorking extends MultiWorking {
 	}
 
 	@Override
-	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
+	public WorkingResult doWork(JSONObject object, Map<String, Object> environment, WorkTrace trace) {
 		WorkingResult result = new WorkingResult();
 		JSONArray workingArray = object.getJSONArray(WorkConstants.MULTI_WORKING_ARRAY);
 		if (workingArray.length() > maxDepth) {
 			result.putReplyParam(WorkConstants.WORKING_RESULT, false);
 			result.putReplyParam(WorkConstants.RESULT_DETAIL, "dynamic working limited 5");
 		}
-		JSONArray resultArray = doClient(workingArray, enviroment);
+		JSONArray resultArray = doClient(workingArray, environment);
 		if (resultArray != null) {
 			result.putReplyParam(WorkConstants.WORKING_RESULT, true);
 			result.putReplyParam(WorkConstants.MULTI_WORKING_RESULT_ARRAY, resultArray);
@@ -38,7 +38,7 @@ final public class DynamicLinkedWorking extends MultiWorking {
 		return result;
 	}
 	
-	private JSONArray doClient(JSONArray workingArray, Map<String, Object> enviroment) {
+	private JSONArray doClient(JSONArray workingArray, Map<String, Object> environment) {
 		JSONArray resultArray = new JSONArray();
 		Map<String, JSONObject> resultMap = new HashMap<>();
 
@@ -52,7 +52,7 @@ final public class DynamicLinkedWorking extends MultiWorking {
 				String work = json.getString(WorkConstants.WORKING);
 				Working working = mWorkContainer.getPublicWork(work);
 				
-				WorkingResult result = driveWorking(resultMap, working, "multiTest", json, enviroment);
+				WorkingResult result = driveWorking(resultMap, working, "multiTest", json, environment);
 				resultArray.put(result.getResultParams());
 			} catch (UnsupportedEncodingException e) {
 				Logger.err(_TAG, "un support encoding", e);

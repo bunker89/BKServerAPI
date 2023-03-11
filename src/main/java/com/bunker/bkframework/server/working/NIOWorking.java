@@ -12,7 +12,7 @@ public final class NIOWorking implements Working {
 	}
 
 	@Override
-	public WorkingResult doWork(JSONObject object, Map<String, Object> enviroment, WorkTrace trace) {
+	public WorkingResult doWork(JSONObject object, Map<String, Object> environment, WorkTrace trace) {
 		return null;
 	}
 

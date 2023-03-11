@@ -51,7 +51,7 @@ public final class StaticLinkedWorking extends MultiWorking {
 			addWorkLink(container, subWork, as, param, staticParam);
 		}
 	}
-	
+
 	void checkTriangle(String key) {
 		for (WorkingSet set : mWorkLink) {
 			if (set.working instanceof StaticLinkedWorking) {
@@ -77,7 +77,7 @@ public final class StaticLinkedWorking extends MultiWorking {
 		
 		mWorkLink.add(new WorkingSet(workKey, work, as, workingParam, staticParam));
 	}
-		
+
 	@Deprecated
 	public void iteratePringWorkings() {
 		for (WorkingSet w : mWorkLink) {
@@ -118,10 +118,10 @@ public final class StaticLinkedWorking extends MultiWorking {
 	}
 		
 	@Override
-	final public WorkingResult doWork(JSONObject json, Map<String, Object> enviroment, WorkTrace trace) {
+	final public WorkingResult doWork(JSONObject json, Map<String, Object> environment, WorkTrace trace) {
 		WorkingResult result = new WorkingResult();
 		try {
-			JSONObject resultJSON = doClient(json, enviroment);
+			JSONObject resultJSON = doClient(json, environment);
 			result.putAllParam(resultJSON);
 		} catch (UnsupportedEncodingException e) {
 			Logger.err(_TAG, "doWork errlr", e);
@@ -130,7 +130,7 @@ public final class StaticLinkedWorking extends MultiWorking {
 		return result;
 	}
 	
-	private JSONObject doClient(JSONObject json, Map<String, Object> enviroment) throws UnsupportedEncodingException {
+	private JSONObject doClient(JSONObject json, Map<String, Object> environment) throws UnsupportedEncodingException {
 		JSONObject resultJSON = new JSONObject();
 		resultJSON.put(WorkConstants.WORKING_RESULT, true);
 		HashMap<String, JSONObject> resultMap = new HashMap<>();
@@ -155,7 +155,7 @@ public final class StaticLinkedWorking extends MultiWorking {
 				paramJSON.put(WorkConstants.WORKING_RESULT_AS, w.as);
 			}
 			Logger.logging(_TAG, paramJSON.toString());
-			result = driveWorking(resultMap, working, "multiTest", paramJSON, enviroment);
+			result = driveWorking(resultMap, working, "multiTest", paramJSON, environment);
 			putAllExceptResult(result, resultJSON);
 			if ((boolean) result.getParam(WorkConstants.WORKING_RESULT) == false) {
 				resultJSON.remove(WorkConstants.WORKING_RESULT);
