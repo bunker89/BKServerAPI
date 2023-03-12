@@ -154,7 +154,6 @@ public final class StaticLinkedWorking extends MultiWorking {
 			if (w.as != null) {
 				paramJSON.put(WorkConstants.WORKING_RESULT_AS, w.as);
 			}
-			Logger.logging(_TAG, paramJSON.toString());
 			result = driveWorking(resultMap, working, "multiTest", paramJSON, environment);
 			putAllExceptResult(result, resultJSON);
 			if ((boolean) result.getParam(WorkConstants.WORKING_RESULT) == false) {
